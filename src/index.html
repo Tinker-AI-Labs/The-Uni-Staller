@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1NK3R-V3R53 // UNI-STALLER</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo">T1NK3R<span>.</span>TRIBOOT</div>
+    <div class="header-sub">SOVEREIGN STACK // NANITE GOD MODE // FRESH INSTALL EDITION</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div class="detected-label">DETECTED OS:</div>
+    <span id="osBadge" class="os-badge unknown">DETECTING...</span>
+    <span id="archBadge" class="os-badge unknown">DETECTING ARCH...</span>
+    <div class="stats"><span class="count" id="totalCount">0</span>SELECTED</div>
+  </div>
+</header>
+
+<div id="detectBanner" class="detect-banner unknown">Detecting operating system...</div>
+
+<!-- OPENROUTER -->
+<div class="or-panel" id="orPanel">
+  <div class="or-head" onclick="toggleOR()">
+    <span style="font-size:20px">🔑</span>
+    <div>
+      <div class="or-title">OPENROUTER API KEY IMPORTER</div>
+      <div class="or-sub">Writes key to the correct location for your OS + generates tinker_openrouter.py</div>
+    </div>
+    <span class="or-chevron" id="orChevron">▼</span>
+  </div>
+  <div class="or-body" id="orBody">
+    <div class="or-note">
+      Key is written to the correct path per OS. <strong>Tiny11</strong> → PowerShell profile + %APPDATA%\tinker-verse\openrouter.env.
+      <strong>CachyOS/Bazzite</strong> → ~/.bashrc + ~/.config/tinker-verse/openrouter.env.<br>
+      <strong>Companions are NEVER routed through OpenRouter — local Ollama only.</strong>
+      Tier 1: Qwen/DeepSeek (fast) | Tier 2: Kimi K2 / Gemini Flash (codegen) | Tier 3: Claude Sonnet (architecture).
+    </div>
+    <div class="or-row">
+      <input class="or-input" id="orKey" type="password" placeholder="sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      <button class="or-btn or-apply" onclick="applyOR()">⚡ IMPORT</button>
+      <button class="or-btn or-show" onclick="toggleORvis()">👁 SHOW</button>
+      <button class="or-btn or-clr" onclick="clearOR()">✕ CLEAR</button>
+    </div>
+    <div class="or-status info" id="orStatus">Paste your OpenRouter key and click IMPORT.</div>
+    <div class="or-targets">
+      <div class="or-target"><div class="ot-os" style="color:var(--win)">TINY11 / WINDOWS</div>
+        <div class="ot-path">$env:APPDATA\tinker-verse\openrouter.env<br>$PROFILE (PowerShell)</div></div>
+      <div class="or-target"><div class="ot-os" style="color:var(--cachy)">CACHYOS / LINUX</div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+      <div class="or-target"><div class="ot-os" style="color:#a08fff">BAZZITE / LINUX</div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+      <div class="or-target"><div class="ot-os" style="color:var(--fedora)">FEDORA / LINUX</div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+      <div class="or-target"><div class="ot-os" style="color:var(--ubuntu)">UBUNTU / DEBIAN</div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+      <div class="or-target"><div class="ot-os" style="color:var(--arch)">ARCH / LINUX</div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+      <div class="or-target"><div class="ot-os" style="color:var(--macos)">MACOS</div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.zshrc</div></div>
+      <div class="or-target"><div class="ot-os" style="color:var(--ipados)">IPADOS</div>
+        <div class="ot-path">a-Shell: ~/.config/tinker-verse/openrouter.env<br>iSH: ~/.profile</div></div>
+      <div class="or-target"><div class="ot-os" style="color:var(--android)">ANDROID / TERMUX</div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+    </div>
+    <div class="or-script-out" id="orOut">
+      <div class="or-script-label" id="orLabel">// GENERATED SETUP SCRIPT</div>
+      <pre class="or-script-code" id="orCode"></pre>
+      <div style="font-size:10px;color:var(--amber);margin-top:6px;letter-spacing:1px;" id="orHint"></div>
+      <button class="or-btn or-show" style="margin-top:8px" onclick="copyOR()">[ COPY ]</button>
+    </div>
+  </div>
+</div>
+
+<!-- OS TABS -->
+<div class="tab-bar">
+  <div class="tab win" id="tab-win" onclick="switchTab('win')">
+    🪟 TINY11
+    <span class="cross-warn" id="cwarn-win"></span>
+  </div>
+  <div class="tab cachy" id="tab-cachy" onclick="switchTab('cachy')">
+    ⚙️ CACHYOS
+    <span class="cross-warn" id="cwarn-cachy"></span>
+  </div>
+  <div class="tab bazzite" id="tab-bazzite" onclick="switchTab('bazzite')">
+    🎮 BAZZITE
+    <span class="cross-warn" id="cwarn-bazzite"></span>
+  </div>
+  <div class="tab fedora" id="tab-fedora" onclick="switchTab('fedora')">
+    🎩 FEDORA
+    <span class="cross-warn" id="cwarn-fedora"></span>
+  </div>
+  <div class="tab ubuntu" id="tab-ubuntu" onclick="switchTab('ubuntu')">
+    🐧 UBUNTU/DEBIAN
+    <span class="cross-warn" id="cwarn-ubuntu"></span>
+  </div>
+  <div class="tab arch" id="tab-arch" onclick="switchTab('arch')">
+    🏗️ ARCH
+    <span class="cross-warn" id="cwarn-arch"></span>
+  </div>
+  <div class="tab macos" id="tab-macos" onclick="switchTab('macos')">
+    🍎 MACOS
+    <span class="cross-warn" id="cwarn-macos"></span>
+  </div>
+  <div class="tab ipados" id="tab-ipados" onclick="switchTab('ipados')">
+    📱 IPADOS
+    <span class="cross-warn" id="cwarn-ipados"></span>
+  </div>
+  <div class="tab android" id="tab-android" onclick="switchTab('android')">
+    🤖 ANDROID
+    <span class="cross-warn" id="cwarn-android"></span>
+  </div>
+</div>
+
+<!-- TINY11 TAB -->
+<div class="tab-content" id="content-win">
+  <div class="cross-banner" id="xbanner-win" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on Windows. This generates a <strong>PowerShell (.ps1)</strong> script to copy to Tiny11.
+    Windows-only apps marked <span class="unavail-badge">WIN ONLY</span>. Some tools have AppImage/Linux alternatives shown.
+  </div>
+  <div class="jumpstart" id="js-win">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — WIN GOD MODE</div>
+          <div class="js-sub">Bootstrap → winget → Chocolatey → everything. Self-elevating PS1. Fresh Tiny11 → armed in one run.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('win')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('win')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-win"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('win','all')">ALL</button>
+    <button class="btn" onclick="filterCat('win','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('win','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('win')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('win',this.value)">
+  </div>
+  <div class="grid" id="grid-win"></div>
+  <button class="generate-btn" onclick="generateScript('win')">⚡ GENERATE POWERSHELL INSTALL SCRIPT (.ps1)</button>
+  <div class="output-panel" id="out-win">
+    <div class="output-label">// TINY11 BOOTSTRAP SCRIPT — SAVE AS install.ps1 — RUN AS ADMIN</div>
+    <pre class="output-code" id="code-win"></pre>
+    <button class="copy-btn" onclick="copyScript('win')">[ COPY TO CLIPBOARD ]</button>
+  </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-win">
+    <div class="gapfill-head" onclick="toggleGapfill('win')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:var(--win)">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
+        <div class="gapfill-sub">Browsers, office, graphics, media, gaming, dev & system utilities not covered by CATS.windows above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-win">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-win">
+      <iframe class="gapfill-frame" id="gapfillFrame-win" data-src="gapfill-windows.html" title="Uni-Staller Gap-Fill Companion — Windows"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- CACHYOS TAB -->
+<div class="tab-content" id="content-cachy">
+  <div class="cross-banner" id="xbanner-cachy" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on CachyOS. This generates a <strong>bash (.sh)</strong> script for CachyOS.
+    Script bootstraps yay, pipx, cargo, nvm before anything else.
+  </div>
+  <div class="jumpstart" id="js-cachy">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — CACHY GOD MODE</div>
+          <div class="js-sub">Bootstrap: base-devel → yay → flatpak → nvm → cargo → pipx → companions. One run.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('cachy')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('cachy')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-cachy"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('cachy','all')">ALL</button>
+    <button class="btn" onclick="filterCat('cachy','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('cachy','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('cachy')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('cachy',this.value)">
+  </div>
+  <div class="grid" id="grid-cachy"></div>
+  <button class="generate-btn" onclick="generateScript('cachy')">⚡ GENERATE CACHYOS BASH SCRIPT (.sh)</button>
+  <div class="output-panel" id="out-cachy">
+    <div class="output-label">// CACHYOS BOOTSTRAP SCRIPT — save as install.sh → run: bash install.sh &nbsp;⚠ DO NOT run with ./install.sh in fish</div>
+    <pre class="output-code" id="code-cachy"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('cachy')">[ COPY RUN COMMAND ]</button>
+      <button class="copy-btn" onclick="downloadScript('cachy')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+</div>
+
+<!-- BAZZITE TAB -->
+<div class="tab-content" id="content-bazzite">
+  <div class="cross-banner" id="xbanner-bazzite" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on Bazzite. Generates a <strong>bash (.sh)</strong> for Bazzite.
+    Note: rpm-ostree requires a reboot after layering. Steam/MangoHud/Gamescope pre-installed on Bazzite.
+  </div>
+  <div class="jumpstart" id="js-bazzite">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — BAZZITE GOD MODE</div>
+          <div class="js-sub">Bootstrap: flathub → toolbox → rpm-ostree layers → flatpaks → companions. Reboot after layer step.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('bazzite')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('bazzite')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-bazzite"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('bazzite','all')">ALL</button>
+    <button class="btn" onclick="filterCat('bazzite','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('bazzite','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('bazzite')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('bazzite',this.value)">
+  </div>
+  <div class="grid" id="grid-bazzite"></div>
+  <button class="generate-btn" onclick="generateScript('bazzite')">⚡ GENERATE BAZZITE BASH SCRIPT (.sh)</button>
+  <div class="output-panel" id="out-bazzite">
+    <div class="output-label">// BAZZITE BOOTSTRAP SCRIPT — save as install.sh → run: bash install.sh &nbsp;⚠ DO NOT run with ./install.sh in fish</div>
+    <pre class="output-code" id="code-bazzite"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('bazzite')">[ COPY RUN COMMAND ]</button>
+      <button class="copy-btn" onclick="downloadScript('bazzite')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEDORA TAB -->
+<div class="tab-content" id="content-fedora">
+  <div class="cross-banner" id="xbanner-fedora" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on Fedora. Generates a <strong>bash (.sh)</strong> for Fedora Workstation.
+    Script uses dnf for system packages and supports Flatpak/Flathub.
+  </div>
+  <div class="jumpstart" id="js-fedora">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — FEDORA GOD MODE</div>
+          <div class="js-sub">Bootstrap: dnf → flatpak → nvm → cargo → pipx → companions. One run.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('fedora')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('fedora')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-fedora"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('fedora','all')">ALL</button>
+    <button class="btn" onclick="filterCat('fedora','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('fedora','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('fedora')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('fedora',this.value)">
+  </div>
+  <div class="grid" id="grid-fedora"></div>
+  <button class="generate-btn" onclick="generateScript('fedora')">⚡ GENERATE FEDORA BASH SCRIPT (.sh)</button>
+  <div class="output-panel" id="out-fedora">
+    <div class="output-label">// FEDORA BOOTSTRAP SCRIPT — save as install.sh → run: bash install.sh &nbsp;⚠ DO NOT run with ./install.sh in fish</div>
+    <pre class="output-code" id="code-fedora"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('fedora')">[ COPY RUN COMMAND ]</button>
+      <button class="copy-btn" onclick="downloadScript('fedora')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-fedora">
+    <div class="gapfill-head" onclick="toggleGapfill('fedora')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
+        <div class="gapfill-sub">Browsers, office, graphics, media, gaming, dev & system utilities not covered by CATS.fedora above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-fedora">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-fedora">
+      <iframe class="gapfill-frame" id="gapfillFrame-fedora" data-src="gapfill-fedora.html" title="Uni-Staller Gap-Fill Companion — Fedora"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- UBUNTU/DEBIAN TAB -->
+<div class="tab-content" id="content-ubuntu">
+  <div class="cross-banner" id="xbanner-ubuntu" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on Ubuntu/Debian. Generates a <strong>bash (.sh)</strong> for Ubuntu/Debian.
+    Script uses apt for system packages and supports Flatpak/Flathub.
+  </div>
+  <div class="jumpstart" id="js-ubuntu">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — UBUNTU GOD MODE</div>
+          <div class="js-sub">Bootstrap: apt → flatpak → nvm → cargo → pipx → companions. One run.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('ubuntu')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('ubuntu')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-ubuntu"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('ubuntu','all')">ALL</button>
+    <button class="btn" onclick="filterCat('ubuntu','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('ubuntu','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('ubuntu')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('ubuntu',this.value)">
+  </div>
+  <div class="grid" id="grid-ubuntu"></div>
+  <button class="generate-btn" onclick="generateScript('ubuntu')">⚡ GENERATE UBUNTU/DEBIAN BASH SCRIPT (.sh)</button>
+  <div class="output-panel" id="out-ubuntu">
+    <div class="output-label">// UBUNTU/DEBIAN BOOTSTRAP SCRIPT — save as install.sh → run: bash install.sh &nbsp;⚠ DO NOT run with ./install.sh in fish</div>
+    <pre class="output-code" id="code-ubuntu"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('ubuntu')">[ COPY RUN COMMAND ]</button>
+      <button class="copy-btn" onclick="downloadScript('ubuntu')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-ubuntu">
+    <div class="gapfill-head" onclick="toggleGapfill('ubuntu')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:var(--ubuntu)">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
+        <div class="gapfill-sub">Browsers, office, graphics, media, gaming, dev & system utilities not covered by CATS.ubuntu above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-ubuntu">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-ubuntu">
+      <iframe class="gapfill-frame" id="gapfillFrame-ubuntu" data-src="gapfill-ubuntu.html" title="Uni-Staller Gap-Fill Companion — Ubuntu/Debian"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ARCH TAB -->
+<div class="tab-content" id="content-arch">
+  <div class="cross-banner" id="xbanner-arch" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on Arch. Generates a <strong>bash (.sh)</strong> for Arch Linux.
+    Uses pacman/aur + Flatpak. If on ARM/ARM64 check the AARCH64 toggle below.
+  </div>
+  <div class="jumpstart" id="js-arch">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — ARCH GOD MODE</div>
+          <div class="js-sub">Bootstrap: base-devel → yay/paru → flatpak → nvm → cargo → pipx → companions. One run.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('arch')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('arch')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-arch"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('arch','all')">ALL</button>
+    <button class="btn" onclick="filterCat('arch','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('arch','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('arch')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('arch',this.value)">
+  </div>
+  <div class="grid" id="grid-arch"></div>
+  <button class="generate-btn" onclick="generateScript('arch')">⚡ GENERATE ARCH BASH SCRIPT (.sh)</button>
+  <div class="output-panel" id="out-arch">
+    <div class="output-label">// ARCH BOOTSTRAP SCRIPT — save as install.sh → run: bash install.sh &nbsp;⚠ DO NOT run with ./install.sh in fish</div>
+    <pre class="output-code" id="code-arch"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('arch')">[ COPY RUN COMMAND ]</button>
+      <button class="copy-btn" onclick="downloadScript('arch')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+</div>
+
+<!-- MACOS TAB -->
+<div class="tab-content" id="content-macos">
+  <div class="cross-banner" id="xbanner-macos" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on macOS. Generates a <strong>zsh (.sh)</strong> for macOS.
+    Uses Homebrew (brew) as the primary package manager.
+  </div>
+  <div class="jumpstart" id="js-macos">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — MACOS GOD MODE</div>
+          <div class="js-sub">Bootstrap: brew → nvm → cargo → pipx → companions. One run.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('macos')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('macos')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-macos"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('macos','all')">ALL</button>
+    <button class="btn" onclick="filterCat('macos','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('macos','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('macos')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('macos',this.value)">
+  </div>
+  <div class="grid" id="grid-macos"></div>
+  <button class="generate-btn" onclick="generateScript('macos')">⚡ GENERATE MACOS ZSH SCRIPT (.sh)</button>
+  <div class="output-panel" id="out-macos">
+    <div class="output-label">// MACOS BOOTSTRAP SCRIPT — save as install.sh → run: zsh install.sh</div>
+    <pre class="output-code" id="code-macos"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('macos')">[ COPY RUN COMMAND ]</button>
+      <button class="copy-btn" onclick="downloadScript('macos')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+</div>
+
+<!-- IPADOS TAB -->
+<div class="tab-content" id="content-ipados">
+  <div class="cross-banner" id="xbanner-ipados" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on iPadOS. Generates guidance for iPadOS.
+    iPadOS requires a-Shell or iSH for CLI. Many desktop apps are unavailable.
+  </div>
+  <div class="jumpstart" id="js-ipados">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — IPADOS GOD MODE</div>
+          <div class="js-sub">Bootstrap: a-Shell or iSH → pip → Ollama if supported → companions.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('ipados')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('ipados')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-ipados"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('ipados','all')">ALL</button>
+    <button class="btn" onclick="filterCat('ipados','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('ipados','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('ipados')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('ipados',this.value)">
+  </div>
+  <div class="grid" id="grid-ipados"></div>
+  <button class="generate-btn" onclick="generateScript('ipados')">⚡ GENERATE IPADOS SETUP GUIDE</button>
+  <div class="output-panel" id="out-ipados">
+    <div class="output-label">// IPADOS SETUP GUIDE — Generated by T1NK3R.TRIBOOT</div>
+    <pre class="output-code" id="code-ipados"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('ipados')">[ COPY TO CLIPBOARD ]</button>
+    </div>
+  </div>
+</div>
+
+<!-- ANDROID TAB -->
+<div class="tab-content" id="content-android">
+  <div class="cross-banner" id="xbanner-android" style="display:none">
+    ⚠ <strong>CROSS-OS MODE</strong> — You are not on Android. Generates a <strong>bash (.sh)</strong> for Termux.
+    Termux runs on Android without root. Ollama may need prooted environment on older devices.
+  </div>
+  <div class="jumpstart" id="js-android">
+    <div class="js-head">
+      <div class="js-title-wrap"><span class="js-icon">⚡</span>
+        <div><div class="js-title">JUMPSTART — ANDROID GOD MODE</div>
+          <div class="js-sub">Bootstrap: Termux → pkg → pip → Ollama termux build → companions.</div></div>
+      </div>
+      <div class="js-actions">
+        <button class="js-btn js-arm" onclick="armJS('android')">⚡ ARM ALL</button>
+        <button class="js-btn js-disarm" onclick="disarmJS('android')">✕ DISARM</button>
+      </div>
+    </div>
+    <div class="js-divider"></div>
+    <div class="js-items" id="js-items-android"></div>
+  </div>
+  <div class="controls">
+    <button class="btn active" onclick="filterCat('android','all')">ALL</button>
+    <button class="btn" onclick="filterCat('android','pending')">PENDING</button>
+    <button class="btn" onclick="filterCat('android','done')">DONE</button>
+    <button class="btn danger" onclick="clearOS('android')">CLEAR</button>
+    <input class="search" type="text" placeholder="search..." oninput="searchCat('android',this.value)">
+  </div>
+  <div class="grid" id="grid-android"></div>
+  <button class="generate-btn" onclick="generateScript('android')">⚡ GENERATE ANDROID/TERMUX BASH SCRIPT (.sh)</button>
+  <div class="output-panel" id="out-android">
+    <div class="output-label">// ANDROID/TERMUX BOOTSTRAP SCRIPT — save as install.sh → run: bash install.sh in Termux</div>
+    <pre class="output-code" id="code-android"></pre>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="copy-btn" onclick="copyScript('android')">[ COPY TO CLIPBOARD ]</button>
+      <button class="copy-btn" onclick="downloadScript('android')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ALL BUTTON -->
+<div style="text-align:center;margin:16px 0;">
+  <button class="generate-btn" style="width:auto;padding:10px 30px;font-size:12px;" onclick="addAll()">
+    ☑️ ADD ALL — TAG EVERY OPTION ACROSS ALL OS TABS
+  </button>
+</div>
+
+
+<script src="tauri-bridge.js"></script>
+<script src="app.js"></script>
+<script>
+// GAP-FILL COMPANION — generalized to whichever OS actually has one wired
+// in (each OS's panel/frame use a "-<os>" suffixed id set, e.g.
+// gapfillPanel-fedora / gapfillFrame-fedora / gapfillChevron-fedora).
+function toggleGapfill(os) {
+  const panel = document.getElementById('gapfillPanel-' + os);
+  if (!panel) return;
+  const open = panel.classList.toggle('open');
+  if (open) {
+    const frame = document.getElementById('gapfillFrame-' + os);
+    if (frame && !frame.src) frame.src = frame.dataset.src;
+  }
+}
+</script>
+</body>
+</html>
