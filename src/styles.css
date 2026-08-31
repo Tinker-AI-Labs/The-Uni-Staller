@@ -151,7 +151,7 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .js-disarm:hover{background:rgba(255,68,68,0.08);}
 .js-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,0.3),transparent);margin:0 18px;}
 .js-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));padding:8px 0 12px;}
-.js-item{display:flex;align-items:flex-start;gap:9px;padding:5px 18px;cursor:pointer;transition:background .1s;}
+.js-item{display:flex;align-items:flex-start;gap:9px;padding:5px 18px;cursor:pointer;transition:background .1s;min-width:0;}
 .js-item:hover{background:rgba(0,255,136,0.03);}
 .js-check{width:13px;height:13px;border:1px solid rgba(0,255,136,0.25);border-radius:2px;flex-shrink:0;
   margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .15s;}
@@ -160,7 +160,10 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .js-name{color:#e0e0e0;font-size:12px;line-height:1.4;}
 .js-item.checked .js-name{color:var(--dim);text-decoration:line-through;}
 .js-desc{color:var(--dim);font-size:10px;margin-top:1px;}
-.js-cmd-preview{font-size:9px;color:var(--green);opacity:.5;margin-top:2px;word-break:break-all;}
+/* Commands can be one long unbreakable token (URLs, export lines) — without
+   overflow-wrap:anywhere one of them widens its grid column and squeezes the
+   rest of the row down to a single character per line. */
+.js-cmd-preview{font-size:9px;color:var(--green);opacity:.5;margin-top:2px;overflow-wrap:anywhere;word-break:break-word;}
 .js-tier{font-size:9px;padding:1px 5px;border-radius:8px;border:1px solid;margin-left:5px;vertical-align:middle;}
 .js-tier-core{border-color:var(--green);color:var(--green);}
 .js-tier-ai{border-color:var(--purple);color:var(--purple);}
@@ -201,7 +204,7 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--copper),var(--green));transition:width .3s;}
 .items{padding:4px 0;}
 .category.collapsed .items{display:none;}
-.item{display:flex;align-items:flex-start;gap:9px;padding:5px 14px;cursor:pointer;transition:background .1s;}
+.item{display:flex;align-items:flex-start;gap:9px;padding:5px 14px;cursor:pointer;transition:background .1s;min-width:0;}
 .item:hover{background:rgba(255,255,255,0.02);}
 .item.hidden{display:none;}
 .item.unavailable{opacity:.4;cursor:default;}
@@ -213,7 +216,7 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .item-name{color:var(--text);line-height:1.4;}
 .item.checked .item-name{color:var(--dim);text-decoration:line-through;}
 .item-desc{color:var(--dim);font-size:10px;margin-top:1px;line-height:1.3;}
-.item-cmd{font-size:10px;color:var(--amber);margin-top:2px;word-break:break-all;opacity:.6;}
+.item-cmd{font-size:10px;color:var(--amber);margin-top:2px;overflow-wrap:anywhere;word-break:break-word;opacity:.6;}
 .tag{display:inline-block;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;vertical-align:middle;border:1px solid;}
 .tag-winget{border-color:#0078d4;color:#0078d4;} .tag-choco{border-color:#87cefa;color:#87cefa;}
 .tag-ps{border-color:#6a0dad;color:#a855f7;} .tag-pacman{border-color:var(--cachy);color:var(--cachy);}

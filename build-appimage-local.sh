@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build Uni-Staller as a Linux AppImage on Kubuntu/Ubuntu
-# Run from inside the Uni-staller--main project folder.
+# Run from inside the Uni-staller project folder.
 set -euo pipefail
 
 echo "==> Installing system build dependencies..."

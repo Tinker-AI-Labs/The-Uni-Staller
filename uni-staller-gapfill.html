@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNI-STALLER // GAP-FILL — FEDORA by Tinker-Labs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:#0e0e0e; --panel:#1a1a1a; --border:#2a2a2a;
+  --copper:#b87333; --green:#00ff88; --amber:#ffaa00;
+  --red:#ff4444; --blue:#4a9eff; --purple:#a855f7; --cyan:#00e5ff;
+  --fedora:#3c6eb4;
+  --text:#c8c8c8; --dim:#555;
+  --mono:'Share Tech Mono',monospace; --display:'Orbitron',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh;padding:20px;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,#181818 39px,#181818 40px),
+  repeating-linear-gradient(90deg,transparent,transparent 39px,#181818 39px,#181818 40px);}
+
+header{border:1px solid var(--fedora);border-radius:4px 16px 4px 4px;padding:16px 24px;margin-bottom:16px;
+  background:var(--panel);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--fedora),var(--green),var(--fedora));}
+.logo{font-family:var(--display);font-size:18px;font-weight:900;color:var(--copper);letter-spacing:3px;}
+.logo span{color:var(--green);}
+.header-sub{font-size:10px;color:var(--dim);letter-spacing:2px;margin-top:4px;}
+.os-badge{display:inline-block;padding:3px 12px;border-radius:10px;font-size:10px;letter-spacing:1px;border:1px solid var(--fedora);color:var(--fedora);}
+.stats{font-family:var(--display);font-size:11px;color:var(--dim);letter-spacing:2px;text-align:right;}
+.stats .count{color:var(--amber);font-size:20px;font-weight:700;display:block;}
+
+.gap-banner{border-radius:4px;padding:12px 16px;margin-bottom:14px;font-size:11px;line-height:1.7;
+  border:1px solid rgba(60,110,180,0.4);background:rgba(60,110,180,0.06);color:#6a9fd8;}
+.gap-banner strong{color:var(--fedora);}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.btn{font-family:var(--mono);font-size:11px;padding:6px 14px;border:1px solid var(--border);
+  background:var(--panel);color:var(--dim);cursor:pointer;border-radius:3px 10px 3px 3px;transition:all .15s;letter-spacing:1px;}
+.btn:hover{border-color:var(--fedora);color:var(--fedora);}
+.btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,0.05);}
+.btn.danger:hover{border-color:var(--red);color:var(--red);}
+.btn.selectall{border-color:var(--purple);color:var(--purple);margin-left:auto;}
+.btn.selectall:hover{background:rgba(168,85,247,0.1);}
+.search{font-family:var(--mono);font-size:11px;padding:6px 10px;background:var(--panel);
+  border:1px solid var(--border);color:var(--text);border-radius:3px;outline:none;width:180px;
+  transition:border-color .15s;}
+.search:focus{border-color:var(--fedora);}
+.search::placeholder{color:var(--dim);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;}
+.category{background:#161616;border:1px solid var(--border);border-radius:4px 12px 4px 4px;overflow:hidden;transition:border-color .2s;}
+.category:hover{border-color:#333;}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+  border-bottom:1px solid var(--border);cursor:pointer;user-select:none;gap:8px;}
+.cat-header:hover{background:rgba(60,110,180,0.05);}
+.cat-icon{font-size:14px;}
+.cat-title{font-family:var(--display);font-size:9px;font-weight:700;color:var(--copper);letter-spacing:2px;flex:1;}
+.cat-badge{font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--dim);}
+.cat-badge.done{border-color:var(--green);color:var(--green);}
+.cat-toggle{color:var(--dim);font-size:10px;transition:transform .2s;}
+.category.collapsed .cat-toggle{transform:rotate(-90deg);}
+.progress-bar{height:2px;background:var(--border);margin:0 14px 6px;border-radius:1px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--fedora),var(--green));transition:width .3s;}
+.items{padding:4px 0;}
+.category.collapsed .items{display:none;}
+.item{display:flex;align-items:flex-start;gap:9px;padding:5px 14px;cursor:pointer;transition:background .1s;}
+.item:hover{background:rgba(255,255,255,0.02);}
+.item.hidden{display:none;}
+.check-box{width:13px;height:13px;border:1px solid var(--border);border-radius:2px;flex-shrink:0;
+  margin-top:1px;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:8px;}
+.item.checked .check-box{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);}
+.item-info{flex:1;min-width:0;}
+.item-name{color:var(--text);line-height:1.4;}
+.item.checked .item-name{color:var(--dim);text-decoration:line-through;}
+.item-desc{color:var(--dim);font-size:10px;margin-top:1px;line-height:1.3;}
+.item-cmd{font-size:10px;color:var(--amber);margin-top:2px;word-break:break-all;opacity:.6;}
+.tag{display:inline-block;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;vertical-align:middle;border:1px solid;}
+.tag-dnf{border-color:var(--fedora);color:#6a9fd8;}
+.tag-flatpak{border-color:var(--purple);color:var(--purple);}
+.tag-pip{border-color:var(--amber);color:var(--amber);}
+.tag-manual{border-color:var(--red);color:var(--red);}
+
+.generate-btn{display:block;width:100%;margin-top:20px;padding:13px;font-family:var(--display);
+  font-size:11px;font-weight:700;letter-spacing:3px;background:transparent;border:1px solid var(--fedora);
+  color:var(--fedora);cursor:pointer;border-radius:4px 16px 4px 4px;transition:all .2s;position:relative;overflow:hidden;}
+.generate-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(60,110,180,0.12),transparent);
+  transform:translateX(-100%);transition:transform .3s;}
+.generate-btn:hover::before{transform:translateX(0);}
+.generate-btn:hover{box-shadow:0 0 20px rgba(60,110,180,0.25);}
+.output-panel{margin-top:14px;background:#090909;border:1px solid var(--border);border-radius:4px;padding:14px;display:none;}
+.output-panel.visible{display:block;}
+.output-label{font-family:var(--display);font-size:9px;color:var(--copper);letter-spacing:2px;margin-bottom:8px;}
+.output-code{color:var(--green);font-size:10px;line-height:1.8;white-space:pre-wrap;word-break:break-all;}
+.output-actions{display:flex;gap:8px;margin-top:10px;}
+.copy-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
+  border:1px solid var(--green);color:var(--green);cursor:pointer;border-radius:3px;transition:all .15s;}
+.copy-btn:hover{background:rgba(0,255,136,0.08);}
+.dl-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
+  border:1px solid var(--fedora);color:var(--fedora);cursor:pointer;border-radius:3px;transition:all .15s;}
+.dl-btn:hover{background:rgba(60,110,180,0.1);}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">UNI<span>-</span>STALLER <span style="font-size:12px;">// GAP-FILL</span></div>
+    <div class="header-sub">BY TINKER-LABS // FEDORA // GENERAL DESKTOP APPS NOT IN CATS.fedora</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span class="os-badge">🎩 FEDORA</span>
+    <div class="stats"><span class="count" id="totalCount">0</span>SELECTED</div>
+  </div>
+</header>
+
+<div class="gap-banner">
+  <strong>WHY THIS EXISTS</strong> — the core Uni-Staller's <strong>CATS.fedora</strong> only ships a targeted subset
+  (bootstrap, CLI AI, sovereign stack, dev, companions, robotics). Everything below is the everyday-desktop layer it
+  doesn't touch: browsers, office, graphics, media, gaming, general dev tooling, and system utilities. Check what you
+  want, generate a script, run it standalone or fold selected lines into <strong>tinker_fedora.sh</strong>.
+</div>
+
+<div class="controls">
+  <button class="btn active" id="filter-all" onclick="filterMode('all')">ALL</button>
+  <button class="btn" id="filter-pending" onclick="filterMode('pending')">PENDING</button>
+  <button class="btn" id="filter-done" onclick="filterMode('done')">DONE</button>
+  <button class="btn danger" onclick="clearAll()">CLEAR</button>
+  <input class="search" type="text" placeholder="search..." oninput="searchItems(this.value)">
+  <button class="btn selectall" onclick="selectAll()">⊕ SELECT ALL</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<button class="generate-btn" onclick="generateScript()">⚡ GENERATE FEDORA GAP-FILL SCRIPT (.sh)</button>
+<div class="output-panel" id="out">
+  <div class="output-label">// GAP-FILL SCRIPT — SAVE AS tinker_fedora_gapfill.sh → bash tinker_fedora_gapfill.sh</div>
+  <pre class="output-code" id="outCode"></pre>
+  <div class="output-actions">
+    <button class="copy-btn" onclick="copyScript()">[ COPY ]</button>
+    <button class="dl-btn" onclick="downloadScript()">[ DOWNLOAD tinker_fedora_gapfill.sh ]</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA — Fedora apps NOT covered by CATS.fedora in the core Uni-Staller
+// Each item: name, desc, cmd, type ('dnf'|'flatpak'|'pip'|'manual')
+// ═══════════════════════════════════════════════════════════════
+const CATS = [
+  { id:'gf-web', icon:'🌐', title:'WEB BROWSERS & INTERNET',
+    items:[
+      {name:'Google Chrome', desc:'Google browser', cmd:'flatpak install -y flathub com.google.Chrome', type:'flatpak'},
+      {name:'Brave Browser', desc:'Privacy-focused Chromium fork', cmd:'flatpak install -y flathub com.brave.Browser', type:'flatpak'},
+      {name:'Chromium', desc:'Open-source base of Chrome', cmd:'sudo dnf install -y chromium', type:'dnf'},
+      {name:'Vivaldi', desc:'Highly customizable browser', cmd:'flatpak install -y flathub com.vivaldi.Vivaldi', type:'flatpak'},
+      {name:'Tor Browser', desc:'Anonymized browsing', cmd:'flatpak install -y flathub org.torproject.torbrowser-launcher', type:'flatpak'},
+      {name:'Epiphany (GNOME Web)', desc:'Default GNOME browser', cmd:'sudo dnf install -y epiphany', type:'dnf'},
+      {name:'Thunderbird', desc:'Email client', cmd:'sudo dnf install -y thunderbird', type:'dnf'},
+      {name:'Evolution', desc:'GNOME mail/calendar client', cmd:'sudo dnf install -y evolution', type:'dnf'},
+      {name:'Geary', desc:'Lightweight email client', cmd:'sudo dnf install -y geary', type:'dnf'},
+      {name:'Nextcloud Desktop Client', desc:'Sync client for Nextcloud', cmd:'sudo dnf install -y nextcloud-client', type:'dnf'},
+      {name:'FileZilla', desc:'FTP/SFTP client', cmd:'sudo dnf install -y filezilla', type:'dnf'},
+      {name:'qBittorrent', desc:'BitTorrent client', cmd:'sudo dnf install -y qbittorrent', type:'dnf'},
+      {name:'Telegram Desktop', desc:'Telegram messenger', cmd:'flatpak install -y flathub org.telegram.desktop', type:'flatpak'},
+      {name:'Discord', desc:'Chat/voice for communities', cmd:'flatpak install -y flathub com.discordapp.Discord', type:'flatpak'},
+      {name:'Element', desc:'Matrix protocol client', cmd:'flatpak install -y flathub im.riot.Riot', type:'flatpak'},
+      {name:'Signal Desktop', desc:'Encrypted messenger', cmd:'flatpak install -y flathub org.signal.Signal', type:'flatpak'},
+    ]},
+  { id:'gf-office', icon:'📋', title:'OFFICE, PRODUCTIVITY & ORGANIZATION',
+    items:[
+      {name:'LibreOffice', desc:'Full office suite', cmd:'sudo dnf install -y libreoffice', type:'dnf'},
+      {name:'OnlyOffice Desktop Editors', desc:'MS Office-compatible suite', cmd:'flatpak install -y flathub org.onlyoffice.desktopeditors', type:'flatpak'},
+      {name:'Obsidian', desc:'Markdown knowledge base', cmd:'flatpak install -y flathub md.obsidian.Obsidian', type:'flatpak'},
+      {name:'Joplin', desc:'Encrypted note-taking', cmd:'flatpak install -y flathub net.cozic.joplin_desktop', type:'flatpak'},
+      {name:'AppFlowy', desc:'Open-source Notion alternative', cmd:'flatpak install -y flathub io.appflowy.AppFlowy', type:'flatpak'},
+      {name:'Calibre', desc:'Ebook management', cmd:'sudo dnf install -y calibre', type:'dnf'},
+      {name:'PDF Arranger', desc:'Merge/reorder/split PDF pages', cmd:'flatpak install -y flathub com.github.jeromerobert.PdfArranger', type:'flatpak'},
+      {name:'Okular', desc:'KDE document viewer', cmd:'sudo dnf install -y okular', type:'dnf'},
+      {name:'Planner (Planify)', desc:'Task/todo manager — renamed Planify', cmd:'flatpak install -y flathub io.github.alainm23.planify', type:'flatpak'},
+      {name:'Standard Notes', desc:'Encrypted note-taking', cmd:'flatpak install -y flathub org.standardnotes.standardnotes', type:'flatpak'},
+      {name:'FreeMind / Freeplane', desc:'Mind mapping — FreeMind unpackaged, Freeplane is its maintained successor', cmd:'sudo dnf install -y freeplane', type:'dnf'},
+      {name:'Gaupol', desc:'Subtitle editor', cmd:'sudo dnf install -y gaupol', type:'dnf'},
+    ]},
+  { id:'gf-graphics', icon:'🎨', title:'GRAPHICS, DESIGN & PHOTOGRAPHY',
+    items:[
+      {name:'GIMP', desc:'Raster image editor', cmd:'sudo dnf install -y gimp', type:'dnf'},
+      {name:'Inkscape', desc:'Vector graphics editor', cmd:'sudo dnf install -y inkscape', type:'dnf'},
+      {name:'Krita', desc:'Digital painting', cmd:'sudo dnf install -y krita', type:'dnf'},
+      {name:'Blender', desc:'3D modeling/animation', cmd:'flatpak install -y flathub org.blender.Blender', type:'flatpak'},
+      {name:'Darktable', desc:'RAW photo workflow', cmd:'sudo dnf install -y darktable', type:'dnf'},
+      {name:'RawTherapee', desc:'RAW photo processor', cmd:'sudo dnf install -y rawtherapee', type:'dnf'},
+      {name:'Flameshot', desc:'Screenshot tool with annotation', cmd:'sudo dnf install -y flameshot', type:'dnf'},
+      {name:'Shotwell', desc:'Photo manager/organizer', cmd:'sudo dnf install -y shotwell', type:'dnf'},
+      {name:'DigiKam', desc:'Pro photo management', cmd:'sudo dnf install -y digikam', type:'dnf'},
+      {name:'Pinta', desc:'Simple Paint.NET-style editor', cmd:'flatpak install -y flathub com.github.PintaProject.Pinta', type:'flatpak'},
+      {name:'FontForge', desc:'Font editor', cmd:'sudo dnf install -y fontforge', type:'dnf'},
+    ]},
+  { id:'gf-media', icon:'🎬', title:'AUDIO, VIDEO & MEDIA',
+    items:[
+      {name:'VLC', desc:'Universal media player — needs RPM Fusion', cmd:'sudo dnf install -y vlc', type:'dnf'},
+      {name:'Kdenlive', desc:'Video editor', cmd:'sudo dnf install -y kdenlive', type:'dnf'},
+      {name:'OBS Studio', desc:'Streaming/recording — needs RPM Fusion', cmd:'sudo dnf install -y obs-studio', type:'dnf'},
+      {name:'Audacity', desc:'Audio editor', cmd:'sudo dnf install -y audacity', type:'dnf'},
+      {name:'HandBrake', desc:'Video transcoder — needs RPM Fusion', cmd:'sudo dnf install -y HandBrake-gui', type:'dnf'},
+      {name:'Spotify', desc:'Music streaming', cmd:'flatpak install -y flathub com.spotify.Client', type:'flatpak'},
+      {name:'Lollypop', desc:'GNOME music player', cmd:'flatpak install -y flathub org.gnome.Lollypop', type:'flatpak'},
+      {name:'Audacious', desc:'Lightweight audio player', cmd:'sudo dnf install -y audacious', type:'dnf'},
+      {name:'LMMS', desc:'Beat/music production', cmd:'sudo dnf install -y lmms', type:'dnf'},
+      {name:'Rhythmbox', desc:'GNOME music library player', cmd:'sudo dnf install -y rhythmbox', type:'dnf'},
+      {name:'Clapper', desc:'GNOME-native GStreamer video player', cmd:'sudo dnf install -y clapper', type:'dnf'},
+      {name:'SoundConverter', desc:'Batch audio format converter', cmd:'sudo dnf install -y soundconverter', type:'dnf'},
+    ]},
+  { id:'gf-gaming', icon:'🎮', title:'GAMING & EMULATION',
+    items:[
+      {name:'Steam', desc:'PC gaming platform — needs RPM Fusion nonfree', cmd:'sudo dnf install -y steam', type:'dnf'},
+      {name:'Lutris', desc:'Game launcher/manager', cmd:'sudo dnf install -y lutris', type:'dnf'},
+      {name:'RetroArch', desc:'Multi-system emulator frontend', cmd:'flatpak install -y flathub org.libretro.RetroArch', type:'flatpak'},
+      {name:'Heroic Games Launcher', desc:'Epic/GOG/Amazon launcher', cmd:'flatpak install -y flathub com.heroicgameslauncher.hgl', type:'flatpak'},
+      {name:'Prism Launcher', desc:'Minecraft instance launcher', cmd:'flatpak install -y flathub org.prismlauncher.PrismLauncher', type:'flatpak'},
+      {name:'DuckStation', desc:'PlayStation 1 emulator', cmd:'flatpak install -y flathub org.duckstation.DuckStation', type:'flatpak'},
+      {name:'Dolphin Emulator', desc:'GameCube/Wii emulator', cmd:'flatpak install -y flathub org.DolphinEmu.dolphin-emu', type:'flatpak'},
+      {name:'PCSX2', desc:'PlayStation 2 emulator', cmd:'flatpak install -y flathub net.pcsx2.PCSX2', type:'flatpak'},
+      {name:'Mangohud', desc:'Gaming performance overlay', cmd:'sudo dnf install -y mangohud', type:'dnf'},
+    ]},
+  { id:'gf-dev', icon:'💻', title:'SOFTWARE DEVELOPMENT & CONTAINERS (SUBSET)',
+    items:[
+      {name:'Neovim', desc:'Hyperextensible Vim', cmd:'sudo dnf install -y neovim', type:'dnf'},
+      {name:'Git', desc:'Version control', cmd:'sudo dnf install -y git', type:'dnf'},
+      {name:'Podman', desc:'Daemonless container engine', cmd:'sudo dnf install -y podman', type:'dnf'},
+      {name:'Distrobox', desc:'Containerized dev environments', cmd:'sudo dnf install -y distrobox', type:'dnf'},
+      {name:'Postman', desc:'API client', cmd:'flatpak install -y flathub com.getpostman.Postman', type:'flatpak'},
+      {name:'DBeaver Community', desc:'Universal DB client', cmd:'flatpak install -y flathub io.dbeaver.DBeaverCommunity', type:'flatpak'},
+      {name:'IntelliJ IDEA Community', desc:'JVM IDE', cmd:'flatpak install -y flathub com.jetbrains.IntelliJ-IDEA-Community', type:'flatpak'},
+      {name:'PyCharm Community', desc:'Python IDE', cmd:'flatpak install -y flathub com.jetbrains.PyCharm-Community', type:'flatpak'},
+      {name:'Godot Engine', desc:'Open-source game engine', cmd:'flatpak install -y flathub org.godotengine.Godot', type:'flatpak'},
+      {name:'Zellij', desc:'Terminal multiplexer/workspace', cmd:'sudo dnf install -y zellij', type:'dnf'},
+      {name:'Alacritty / Kitty', desc:'GPU-accelerated terminal emulators', cmd:'sudo dnf install -y alacritty kitty', type:'dnf'},
+    ]},
+  { id:'gf-sys', icon:'🛠️', title:'SYSTEM UTILITIES, TWEAKS & MANAGEMENT',
+    items:[
+      {name:'GNOME Tweaks', desc:'Deep GNOME customization', cmd:'sudo dnf install -y gnome-tweaks', type:'dnf'},
+      {name:'Extension Manager', desc:'Install/manage GNOME Shell extensions', cmd:'flatpak install -y flathub com.mattjakeman.ExtensionManager', type:'flatpak'},
+      {name:'Flatseal', desc:'Manage flatpak permissions', cmd:'flatpak install -y flathub com.github.tchx84.Flatseal', type:'flatpak'},
+      {name:'Bottles', desc:'Wine prefix manager', cmd:'flatpak install -y flathub com.usebottles.bottles', type:'flatpak'},
+      {name:'Timeshift', desc:'System snapshot/restore', cmd:'sudo dnf install -y timeshift', type:'dnf'},
+      {name:'Bitwarden', desc:'Password manager', cmd:'flatpak install -y flathub com.bitwarden.desktop', type:'flatpak'},
+      {name:'GParted', desc:'Partition editor', cmd:'sudo dnf install -y gparted', type:'dnf'},
+      {name:'Stacer', desc:'System optimizer/monitor GUI', cmd:'flatpak install -y flathub com.oguzhaninan.Stacer', type:'flatpak'},
+      {name:'BleachBit', desc:'Disk space cleaner', cmd:'sudo dnf install -y bleachbit', type:'dnf'},
+      {name:'Fedora Media Writer', desc:'Write Fedora ISOs to USB', cmd:'sudo dnf install -y mediawriter', type:'dnf'},
+      {name:'Baobab (Disk Usage Analyzer)', desc:'Visual disk usage', cmd:'sudo dnf install -y baobab', type:'dnf'},
+      {name:'Syncthing', desc:'P2P continuous file sync', cmd:'sudo dnf install -y syncthing', type:'dnf'},
+      {name:'LocalSend', desc:'Sovereign LAN file transfer', cmd:'flatpak install -y flathub org.localsend.localsend_app', type:'flatpak'},
+      {name:'VSCodium', desc:'VS Code without MS telemetry/branding', cmd:'flatpak install -y flathub com.vscodium.codium', type:'flatpak'},
+      {name:'Bambu Studio / OrcaSlicer', desc:'3D print slicers', cmd:'flatpak install -y flathub com.bambulab.BambuStudio && flatpak install -y flathub io.github.softfever.OrcaSlicer', type:'flatpak'},
+      {name:'Gear Lever', desc:'Manage AppImages as desktop apps', cmd:'flatpak install -y flathub it.mijorus.gearlever', type:'flatpak'},
+      {name:'TextSnatcher', desc:'Screen OCR to clipboard', cmd:'pipx install textsnatcher', type:'pip'},
+      {name:'Stremio', desc:'Media center / streaming hub', cmd:'flatpak install -y flathub com.stremio.Stremio', type:'flatpak'},
+      {name:'Czkawka', desc:'Duplicate file finder', cmd:'flatpak install -y flathub com.github.qarmin.czkawka', type:'flatpak'},
+      {name:'KeePassXC', desc:'Offline password manager', cmd:'sudo dnf install -y keepassxc', type:'dnf'},
+      {name:'Htop / Btop', desc:'Terminal process monitors', cmd:'sudo dnf install -y htop btop', type:'dnf'},
+      {name:'Gnome-Firmware', desc:'Firmware update manager (fwupd GUI)', cmd:'sudo dnf install -y gnome-firmware', type:'dnf'},
+      {name:'Guake', desc:'Drop-down terminal', cmd:'sudo dnf install -y guake', type:'dnf'},
+      {name:'Waydroid', desc:'Android container — run "sudo waydroid init" after install', cmd:'sudo dnf install -y waydroid', type:'manual'},
+      {name:'Celluloid', desc:'GNOME mpv front-end', cmd:'sudo dnf install -y celluloid', type:'dnf'},
+      {name:'Boxes (GNOME Boxes)', desc:'VM manager', cmd:'sudo dnf install -y gnome-boxes', type:'dnf'},
+    ]},
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const state = {};
+CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = false; }));
+let filter = 'all';
+let search = '';
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  CATS.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'category'; el.id = `cat-${cat.id}`;
+    const total = cat.items.length;
+    const done = cat.items.filter((_,i) => state[`${cat.id}_${i}`]).length;
+    const pct = total ? (done/total*100) : 0;
+    el.innerHTML = `
+      <div class="cat-header" onclick="toggleCat('${cat.id}')">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-title">${cat.title}</span>
+        <span class="cat-badge ${done===total?'done':''}" id="badge-${cat.id}">${done}/${total}</span>
+        <span class="cat-toggle">▼</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-${cat.id}" style="width:${pct}%"></div></div>
+      <div class="items" id="items-${cat.id}">
+        ${cat.items.map((it,i) => {
+          const key=`${cat.id}_${i}`, checked=state[key];
+          return `<label class="item ${checked?'checked':''}" id="item-${key}" onclick="toggleItem('${key}','${cat.id}')">
+            <div class="check-box">${checked?'✓':''}</div>
+            <div class="item-info">
+              <div class="item-name">${it.name}<span class="tag tag-${it.type}">${it.type}</span></div>
+              <div class="item-desc">${it.desc}</div>
+              <div class="item-cmd">${it.cmd}</div>
+            </div>
+          </label>`;
+        }).join('')}
+      </div>`;
+    grid.appendChild(el);
+  });
+  applyFilter();
+}
+
+function toggleCat(catId) { document.getElementById(`cat-${catId}`).classList.toggle('collapsed'); }
+
+function toggleItem(key, catId) {
+  state[key] = !state[key];
+  const el = document.getElementById(`item-${key}`);
+  el.classList.toggle('checked', state[key]);
+  el.querySelector('.check-box').textContent = state[key] ? '✓' : '';
+  updateBadge(catId);
+  updateCount();
+}
+
+function updateBadge(catId) {
+  const cat = CATS.find(c=>c.id===catId);
+  const total=cat.items.length, done=cat.items.filter((_,i)=>state[`${catId}_${i}`]).length;
+  const pct=total?(done/total*100):0;
+  document.getElementById(`badge-${catId}`).textContent=`${done}/${total}`;
+  document.getElementById(`badge-${catId}`).className=`cat-badge ${done===total?'done':''}`;
+  document.getElementById(`prog-${catId}`).style.width=pct+'%';
+}
+
+function filterMode(mode) {
+  filter = mode;
+  ['all','pending','done'].forEach(m => document.getElementById(`filter-${m}`).classList.toggle('active', m===mode));
+  applyFilter();
+}
+function searchItems(val) { search = val.toLowerCase(); applyFilter(); }
+
+function applyFilter() {
+  CATS.forEach(cat => {
+    let visCount = 0;
+    cat.items.forEach((it,i) => {
+      const key=`${cat.id}_${i}`;
+      const el = document.getElementById(`item-${key}`);
+      if (!el) return;
+      const matchesSearch = !search || it.name.toLowerCase().includes(search) || it.desc.toLowerCase().includes(search);
+      const matchesFilter = filter==='all' || (filter==='done' && state[key]) || (filter==='pending' && !state[key]);
+      const show = matchesSearch && matchesFilter;
+      el.classList.toggle('hidden', !show);
+      if (show) visCount++;
+    });
+    document.getElementById(`cat-${cat.id}`).style.display = visCount ? '' : 'none';
+  });
+}
+
+function selectAll() {
+  CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = true; }));
+  buildGrid();
+  updateCount();
+}
+
+function clearAll() {
+  CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = false; }));
+  buildGrid();
+  updateCount();
+}
+
+function updateCount() {
+  let n = 0;
+  CATS.forEach(cat => cat.items.forEach((_,i) => { if (state[`${cat.id}_${i}`]) n++; }));
+  document.getElementById('totalCount').textContent = n;
+}
+
+function collectSelected() {
+  const out = [];
+  CATS.forEach(cat => cat.items.forEach((it,i) => { if (state[`${cat.id}_${i}`]) out.push({...it, cat: cat.title}); }));
+  return out;
+}
+
+function generateScript() {
+  const items = collectSelected();
+  const panel = document.getElementById('out');
+  if (!items.length) {
+    document.getElementById('outCode').textContent = '# No apps selected — check some boxes above first.';
+    panel.classList.add('visible');
+    return;
+  }
+  const needsFlatpak = items.some(it => it.type==='flatpak');
+  const needsPip = items.some(it => it.type==='pip');
+  const rpmFusionApps = ['VLC','OBS Studio','HandBrake','Steam'];
+  const needsRpmFusion = items.some(it => rpmFusionApps.includes(it.name));
+
+  let byCat = {};
+  items.forEach(it => { (byCat[it.cat] = byCat[it.cat] || []).push(it); });
+
+  let script = `#!/usr/bin/env bash
+# ══════════════════════════════════════════════════════════════
+# UNI-STALLER GAP-FILL by Tinker-Labs // FEDORA — GENERAL DESKTOP APPS
+# Companion to tinker_fedora.sh — covers what CATS.fedora doesn't
+# bash tinker_fedora_gapfill.sh
+# ══════════════════════════════════════════════════════════════
+set -euo pipefail
+GREEN="\\033[0;32m"; BLUE="\\033[0;34m"; AMBER="\\033[0;33m"; RESET="\\033[0m"
+ok() { echo -e "\${GREEN}[OK]\${RESET} $*"; }
+warn() { echo -e "\${AMBER}[WARN]\${RESET} $*"; }
+step() { echo -e "\${BLUE}══ $* \${RESET}"; }
+echo -e "🎩 \${GREEN}UNI-STALLER GAP-FILL // FEDORA DEPLOYMENT\${RESET}"
+`;
+
+  if (needsRpmFusion) {
+    script += `
+step "0 — RPM Fusion (required for VLC/OBS/HandBrake/Steam)"
+sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-\$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-\$(rpm -E %fedora).noarch.rpm || warn "RPM Fusion may already be enabled"
+ok "RPM Fusion ready"
+`;
+  }
+  if (needsFlatpak) {
+    script += `
+step "0b — Flathub remote"
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+ok "Flathub ready"
+`;
+  }
+  if (needsPip) {
+    script += `
+step "0c — pipx (for pip-installed tools)"
+sudo dnf install -y pipx || true
+pipx ensurepath || true
+ok "pipx ready"
+`;
+  }
+
+  let n = 1;
+  Object.keys(byCat).forEach(catTitle => {
+    script += `\nstep "${n} — ${catTitle}"\n`;
+    byCat[catTitle].forEach(it => {
+      script += `echo "  → ${it.name}"\n${it.cmd} || warn "${it.name} failed — check manually"\n`;
+    });
+    n++;
+  });
+
+  script += `
+echo ""
+echo -e "🎩 \${GREEN}GAP-FILL DEPLOYMENT COMPLETE\${RESET}"
+echo -e "  \${AMBER}→ Waydroid (if installed): run 'sudo waydroid init' then 'waydroid session start'\${RESET}"`;
+
+  document.getElementById('outCode').textContent = script;
+  panel.classList.add('visible');
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function copyScript() {
+  const code = document.getElementById('outCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '[ COPIED ✓ ]';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function downloadScript() {
+  const code = document.getElementById('outCode').textContent;
+  const blob = new Blob([code], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tinker_fedora_gapfill.sh';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+buildGrid();
+updateCount();
+</script>
+</body>
+</html>

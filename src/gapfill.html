@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNI-STALLER // GAP-FILL COMPANION</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:#0e0e0e; --panel:#1a1a1a; --border:#2a2a2a;
+  --copper:#b87333; --green:#00ff88; --amber:#ffaa00;
+  --red:#ff4444; --blue:#4a9eff; --purple:#a855f7; --cyan:#00e5ff;
+  --os:#3c6eb4;
+  --text:#c8c8c8; --dim:#555;
+  --mono:'Share Tech Mono',monospace; --display:'Orbitron',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh;padding:20px;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,#181818 39px,#181818 40px),
+  repeating-linear-gradient(90deg,transparent,transparent 39px,#181818 39px,#181818 40px);}
+
+header{border:1px solid var(--os);border-radius:4px 16px 4px 4px;padding:16px 24px;margin-bottom:16px;
+  background:var(--panel);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--os),var(--green),var(--os));}
+.logo{font-family:var(--display);font-size:18px;font-weight:900;color:var(--copper);letter-spacing:3px;}
+.logo span{color:var(--green);}
+.header-sub{font-size:10px;color:var(--dim);letter-spacing:2px;margin-top:4px;}
+.os-badge{display:inline-block;padding:3px 12px;border-radius:10px;font-size:10px;letter-spacing:1px;border:1px solid var(--os);color:var(--os);}
+.stats{font-family:var(--display);font-size:11px;color:var(--dim);letter-spacing:2px;text-align:right;}
+.stats .count{color:var(--amber);font-size:20px;font-weight:700;display:block;}
+
+.gap-banner{border-radius:4px;padding:12px 16px;margin-bottom:14px;font-size:11px;line-height:1.7;
+  border:1px solid var(--os);background:rgba(255,255,255,0.03);color:var(--text);}
+.gap-banner strong{color:var(--os);}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.btn{font-family:var(--mono);font-size:11px;padding:6px 14px;border:1px solid var(--border);
+  background:var(--panel);color:var(--dim);cursor:pointer;border-radius:3px 10px 3px 3px;transition:all .15s;letter-spacing:1px;}
+.btn:hover{border-color:var(--os);color:var(--os);}
+.btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,0.05);}
+.btn.danger:hover{border-color:var(--red);color:var(--red);}
+.btn.selectall{border-color:var(--green);color:var(--green);}
+.search{font-family:var(--mono);font-size:11px;padding:6px 10px;background:var(--panel);
+  border:1px solid var(--border);color:var(--text);border-radius:3px;outline:none;width:180px;
+  margin-left:auto;transition:border-color .15s;}
+.search:focus{border-color:var(--copper);}
+.search::placeholder{color:var(--dim);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;}
+.category{background:#161616;border:1px solid var(--border);border-radius:4px 12px 4px 4px;overflow:hidden;}
+.category:hover{border-color:#333;}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+  border-bottom:1px solid var(--border);cursor:pointer;user-select:none;gap:8px;}
+.cat-header:hover{background:rgba(184,115,51,0.04);}
+.cat-icon{font-size:14px;}
+.cat-title{font-family:var(--display);font-size:9px;font-weight:700;color:var(--copper);letter-spacing:2px;flex:1;}
+.cat-badge{font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--dim);}
+.cat-badge.done{border-color:var(--green);color:var(--green);}
+.cat-toggle{color:var(--dim);font-size:10px;transition:transform .2s;}
+.category.collapsed .cat-toggle{transform:rotate(-90deg);}
+.progress-bar{height:2px;background:var(--border);margin:0 14px 6px;border-radius:1px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--copper),var(--green));transition:width .3s;}
+.items{padding:4px 0;}
+.category.collapsed .items{display:none;}
+.item{display:flex;align-items:flex-start;gap:9px;padding:5px 14px;cursor:pointer;transition:background .1s;}
+.item:hover{background:rgba(255,255,255,0.02);}
+.item.hidden{display:none;}
+.check-box{width:13px;height:13px;border:1px solid var(--border);border-radius:2px;flex-shrink:0;
+  margin-top:1px;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:8px;}
+.item.checked .check-box{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);}
+.item-info{flex:1;min-width:0;}
+.item-name{color:var(--text);line-height:1.4;}
+.item.checked .item-name{color:var(--dim);text-decoration:line-through;}
+.item-desc{color:var(--dim);font-size:10px;margin-top:1px;line-height:1.3;}
+.item-cmd{font-size:10px;color:var(--amber);margin-top:2px;word-break:break-all;opacity:.6;}
+.tag{display:inline-block;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;vertical-align:middle;border:1px solid;}
+.tag-pacman{border-color:#6bc5f8;color:#6bc5f8;} .tag-aur{border-color:#ff9900;color:#ff9900;}
+.tag-flatpak{border-color:var(--purple);color:var(--purple);} .tag-ostree{border-color:#6a5acd;color:#a08fff;}
+.tag-toolbox{border-color:#9b59b6;color:#c39bd3;} .tag-brew{border-color:#A2AAAD;color:#A2AAAD;}
+.tag-termux{border-color:#3DDC84;color:#3DDC84;} .tag-pip{border-color:var(--amber);color:var(--amber);}
+.tag-npm{border-color:var(--cyan);color:var(--cyan);} .tag-manual{border-color:var(--red);color:var(--red);}
+.tag-na{border-color:#333;color:#555;}
+
+.generate-btn{display:block;width:100%;margin-top:20px;padding:13px;font-family:var(--display);
+  font-size:11px;font-weight:700;letter-spacing:3px;background:transparent;border:1px solid var(--copper);
+  color:var(--copper);cursor:pointer;border-radius:4px 16px 4px 4px;transition:all .2s;}
+.generate-btn:hover{box-shadow:0 0 20px rgba(184,115,51,0.2);}
+.output-panel{margin-top:14px;background:#090909;border:1px solid var(--border);border-radius:4px;padding:14px;display:none;}
+.output-panel.visible{display:block;}
+.output-label{font-family:var(--display);font-size:9px;color:var(--copper);letter-spacing:2px;margin-bottom:8px;}
+.output-code{color:var(--green);font-size:10px;line-height:1.8;white-space:pre-wrap;word-break:break-all;}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.copy-btn,.dl-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
+  border:1px solid var(--green);color:var(--green);cursor:pointer;border-radius:3px;transition:all .15s;}
+.copy-btn:hover,.dl-btn:hover{background:rgba(0,255,136,0.08);}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo">GAP<span>-</span>FILL COMPANION</div>
+    <div class="header-sub" id="headerSub">GENERAL DESKTOP APPS THE CORE LIBRARY DOESN'T COVER</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span class="os-badge" id="osBadge">—</span>
+    <div class="stats"><span class="count" id="count">0</span>SELECTED</div>
+  </div>
+</header>
+
+<div class="gap-banner" id="banner"></div>
+
+<div class="controls">
+  <button class="btn active" id="filter-all" onclick="filterMode('all')">ALL</button>
+  <button class="btn" id="filter-pending" onclick="filterMode('pending')">PENDING</button>
+  <button class="btn" id="filter-done" onclick="filterMode('done')">DONE</button>
+  <button class="btn danger" onclick="clearAll()">CLEAR</button>
+  <input class="search" type="text" placeholder="search..." oninput="searchItems(this.value)">
+  <button class="btn selectall" onclick="selectAll()">⊕ SELECT ALL</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<button class="generate-btn" id="genBtn" onclick="generateScript()">⚡ GENERATE GAP-FILL SCRIPT</button>
+<div class="output-panel" id="out">
+  <div class="output-label" id="outLabel"></div>
+  <pre class="output-code" id="outCode"></pre>
+  <div class="output-actions">
+    <button class="copy-btn" onclick="copyScript()">[ COPY ]</button>
+    <button class="dl-btn" id="dlBtn" onclick="downloadScript()">[ DOWNLOAD ]</button>
+  </div>
+</div>
+
+<script src="gapfill-data.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// One page, six catalogs — the OS comes from ?os= on the iframe src.
+// ═══════════════════════════════════════════════════════════════
+const OS = new URLSearchParams(location.search).get('os');
+const CFG = GAPFILL[OS];
+const CATS = CFG ? CFG.cats : [];
+const state = {};
+let filter = 'all', search = '';
+
+// Batchable install prefixes: when every selected command of a type
+// shares one, they collapse into a single install line.
+const BATCH_PREFIX = {
+  pacman:'sudo pacman -S --needed --noconfirm ',
+  aur:'yay -S --needed --noconfirm ',
+  flatpak:'flatpak install -y flathub ',
+  termux:'pkg install -y ',
+  ostree:'rpm-ostree install ',
+};
+
+function init() {
+  if (!CFG) {
+    document.getElementById('banner').innerHTML =
+      'No gap-fill catalog for <strong>' + (OS || '(no os given)') + '</strong>. ' +
+      'Open this page as <strong>gapfill.html?os=cachy</strong> (or bazzite / arch / macos / ipados / android).';
+    document.getElementById('genBtn').style.display = 'none';
+    return;
+  }
+  document.documentElement.style.setProperty('--os', CFG.color);
+  document.title = 'UNI-STALLER // GAP-FILL — ' + CFG.label;
+  document.getElementById('osBadge').textContent = CFG.label;
+  document.getElementById('banner').innerHTML = CFG.intro;
+  document.getElementById('genBtn').textContent =
+    CFG.kind === 'text' ? '⚡ GENERATE ' + CFG.label + ' CHECKLIST' : '⚡ GENERATE ' + CFG.label + ' GAP-FILL SCRIPT (.sh)';
+  document.getElementById('outLabel').textContent = '// GAP-FILL OUTPUT — ' + CFG.file;
+  document.getElementById('dlBtn').textContent = '[ DOWNLOAD ' + CFG.file + ' ]';
+  CATS.forEach(cat => cat.items.forEach((_, i) => { state[cat.id + '_' + i] = false; }));
+  buildGrid();
+  updateCount();
+}
+
+// Commands contain angle brackets (smb://<lan-ip>) — unescaped they parse
+// as tags and eat the items that follow.
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  CATS.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'category';
+    el.id = 'cat-' + cat.id;
+    const total = cat.items.length;
+    const done = cat.items.filter((_, i) => state[cat.id + '_' + i]).length;
+    el.innerHTML = `
+      <div class="cat-header" onclick="toggleCat('${cat.id}')">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-title">${cat.title}</span>
+        <span class="cat-badge ${done === total ? 'done' : ''}" id="badge-${cat.id}">${done}/${total}</span>
+        <span class="cat-toggle">▼</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-${cat.id}" style="width:${total ? done / total * 100 : 0}%"></div></div>
+      <div class="items">
+        ${cat.items.map((it, i) => {
+          const key = cat.id + '_' + i, checked = state[key];
+          return `<label class="item ${checked ? 'checked' : ''}" id="item-${key}" onclick="toggleItem('${key}','${cat.id}')">
+            <div class="check-box">${checked ? '✓' : ''}</div>
+            <div class="item-info">
+              <div class="item-name">${esc(it.name)}<span class="tag tag-${it.type}">${it.type}</span></div>
+              <div class="item-desc">${esc(it.desc)}</div>
+              <div class="item-cmd">${esc(it.cmd)}</div>
+            </div>
+          </label>`;
+        }).join('')}
+      </div>`;
+    grid.appendChild(el);
+  });
+}
+
+function toggleCat(catId) { document.getElementById('cat-' + catId).classList.toggle('collapsed'); }
+
+function toggleItem(key, catId) {
+  state[key] = !state[key];
+  const el = document.getElementById('item-' + key);
+  el.classList.toggle('checked', state[key]);
+  el.querySelector('.check-box').textContent = state[key] ? '✓' : '';
+  updateBadge(catId);
+  updateCount();
+}
+
+function updateBadge(catId) {
+  const cat = CATS.find(c => c.id === catId);
+  const total = cat.items.length, done = cat.items.filter((_, i) => state[catId + '_' + i]).length;
+  const badge = document.getElementById('badge-' + catId);
+  badge.textContent = done + '/' + total;
+  badge.className = 'cat-badge ' + (done === total ? 'done' : '');
+  document.getElementById('prog-' + catId).style.width = (total ? done / total * 100 : 0) + '%';
+}
+
+function filterMode(mode) {
+  filter = mode;
+  ['all','pending','done'].forEach(m => document.getElementById('filter-' + m).classList.toggle('active', m === mode));
+  applyFilter();
+}
+function searchItems(val) { search = val.toLowerCase(); applyFilter(); }
+
+function applyFilter() {
+  CATS.forEach(cat => {
+    let visible = false;
+    cat.items.forEach((it, i) => {
+      const key = cat.id + '_' + i;
+      const el = document.getElementById('item-' + key);
+      if (!el) return;
+      const matchesSearch = !search || it.name.toLowerCase().includes(search) || it.desc.toLowerCase().includes(search);
+      const matchesFilter = filter === 'all' || (filter === 'done' && state[key]) || (filter === 'pending' && !state[key]);
+      const show = matchesSearch && matchesFilter;
+      el.classList.toggle('hidden', !show);
+      if (show) visible = true;
+    });
+    const cel = document.getElementById('cat-' + cat.id);
+    if (cel) cel.style.display = visible ? '' : 'none';
+  });
+}
+
+function selectAll() {
+  CATS.forEach(cat => cat.items.forEach((_, i) => { state[cat.id + '_' + i] = true; }));
+  buildGrid(); applyFilter(); updateCount();
+}
+function clearAll() {
+  Object.keys(state).forEach(k => state[k] = false);
+  buildGrid(); applyFilter(); updateCount();
+}
+function updateCount() {
+  document.getElementById('count').textContent = Object.values(state).filter(Boolean).length;
+}
+
+function collectSelected() {
+  const out = [];
+  CATS.forEach(cat => cat.items.forEach((it, i) => { if (state[cat.id + '_' + i]) out.push(it); }));
+  return out;
+}
+
+function generateScript() {
+  const items = collectSelected();
+  const panel = document.getElementById('out');
+  const code = CFG.kind === 'text' ? buildChecklist(items) : buildScript(items);
+  document.getElementById('outCode').textContent = code;
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function buildScript(items) {
+  if (!items.length) {
+    return '# Nothing selected yet — tick some apps above, then generate again.';
+  }
+  const uniq = a => [...new Set(a)];
+  const byType = {};
+  items.forEach(it => { (byType[it.type] = byType[it.type] || []).push(it); });
+
+  const blocks = [];
+  Object.keys(byType).forEach(type => {
+    const list = byType[type];
+    if (type === 'manual' || type === 'na') return;
+    const prefix = BATCH_PREFIX[type];
+    const batchable = prefix && list.every(it => it.cmd.startsWith(prefix) && !/[&|;]/.test(it.cmd));
+    if (batchable) {
+      const pkgs = uniq(list.map(it => it.cmd.slice(prefix.length).trim()));
+      blocks.push(`# ── ${type.toUpperCase()} (${pkgs.length}) ──────────────────────────────────\n` +
+        `step "${type} packages"\n${prefix}\\\n  ${pkgs.join(' \\\n  ')} || warn "some ${type} packages failed"`);
+    } else {
+      blocks.push(`# ── ${type.toUpperCase()} (${list.length}) ──────────────────────────────────\n` +
+        `step "${type} packages"\n` +
+        uniq(list.map(it => it.cmd)).map(c => `${c} || warn "failed: ${c}"`).join('\n'));
+    }
+  });
+
+  const notes = items.filter(it => it.type === 'manual' || it.type === 'na')
+    .map(it => `# ${it.type === 'na' ? 'NOT AVAILABLE' : 'MANUAL'}: ${it.name} — ${it.desc}\n#   ${it.cmd.replace(/^#\s*/, '')}`);
+
+  return `#!/usr/bin/env bash
+# ══════════════════════════════════════════════════════════════
+# T1NK3R-VER53 // ${CFG.label} GAP-FILL — ${items.length} app${items.length === 1 ? '' : 's'}
+# Generated by UNI-STALLER // GAP-FILL COMPANION
+# Save as ${CFG.file} → bash ${CFG.file}
+# ══════════════════════════════════════════════════════════════
+set -uo pipefail
+
+GREEN="\\033[0;32m"; AMBER="\\033[0;33m"; RED="\\033[0;31m"; BLUE="\\033[0;34m"; RESET="\\033[0m"
+ok()   { echo -e "\${GREEN}[OK]\${RESET} $*"; }
+warn() { echo -e "\${AMBER}[WARN]\${RESET} $*"; }
+err()  { echo -e "\${RED}[ERR]\${RESET} $*" >&2; }
+step() { echo -e "\${BLUE}══ $* \${RESET}"; }
+
+command -v ${CFG.requires} >/dev/null 2>&1 || { err "${CFG.requiresMsg}"; exit 1; }
+
+${blocks.join('\n\n') || '# Only manual items were selected — see the notes below.'}
+
+${notes.length ? `# ── MANUAL / UNAVAILABLE ──────────────────────────────────────\n${notes.join('\n')}\n` : ''}
+echo ""
+ok "${CFG.label} gap-fill complete — ${items.length} item(s) processed"`;
+}
+
+function buildChecklist(items) {
+  if (!items.length) {
+    return '# Nothing selected yet — tick some apps above, then generate again.';
+  }
+  const store = items.filter(it => it.cmd.trim().startsWith('#'));
+  const shell = items.filter(it => !it.cmd.trim().startsWith('#'));
+  return `# ══════════════════════════════════════════════════════════════
+# T1NK3R-VER53 // ${CFG.label} GAP-FILL CHECKLIST — ${items.length} item${items.length === 1 ? '' : 's'}
+# ${CFG.label} has no package manager: this is a work order, not a script.
+# ══════════════════════════════════════════════════════════════
+
+## TAP TO INSTALL (${store.length})
+${store.length ? store.map((it, n) => `  ${String(n + 1).padStart(2, ' ')}. ${it.name}\n      ${it.desc}\n      ${it.cmd.replace(/^#\s*/, '')}`).join('\n') : '  (none selected)'}
+
+## RUN IN a-Shell / iSH (${shell.length})
+${shell.length ? shell.map(it => `  # ${it.name} — ${it.desc}\n  ${it.cmd}`).join('\n') : '  (none selected)'}`;
+}
+
+function copyScript() {
+  const code = document.getElementById('outCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '[ COPIED! ]';
+    setTimeout(() => btn.textContent = '[ COPY ]', 2000);
+  });
+}
+
+function downloadScript() {
+  const code = document.getElementById('outCode').textContent;
+  const blob = new Blob([code], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = CFG.file;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+init();
+</script>
+</body>
+</html>

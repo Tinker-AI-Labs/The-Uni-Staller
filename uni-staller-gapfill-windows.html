@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNI-STALLER // GAP-FILL — WINDOWS by Tinker-Labs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:#0e0e0e; --panel:#1a1a1a; --border:#2a2a2a;
+  --copper:#b87333; --green:#00ff88; --amber:#ffaa00;
+  --red:#ff4444; --blue:#4a9eff; --purple:#a855f7; --cyan:#00e5ff;
+  --accent:#0078d4;
+  --text:#c8c8c8; --dim:#555;
+  --mono:'Share Tech Mono',monospace; --display:'Orbitron',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh;padding:20px;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,#181818 39px,#181818 40px),
+  repeating-linear-gradient(90deg,transparent,transparent 39px,#181818 39px,#181818 40px);}
+
+header{border:1px solid var(--accent);border-radius:4px 16px 4px 4px;padding:16px 24px;margin-bottom:16px;
+  background:var(--panel);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--green),var(--accent));}
+.logo{font-family:var(--display);font-size:18px;font-weight:900;color:var(--copper);letter-spacing:3px;}
+.logo span{color:var(--green);}
+.header-sub{font-size:10px;color:var(--dim);letter-spacing:2px;margin-top:4px;}
+.os-badge{display:inline-block;padding:3px 12px;border-radius:10px;font-size:10px;letter-spacing:1px;border:1px solid var(--accent);color:var(--accent);}
+.stats{font-family:var(--display);font-size:11px;color:var(--dim);letter-spacing:2px;text-align:right;}
+.stats .count{color:var(--amber);font-size:20px;font-weight:700;display:block;}
+
+.gap-banner{border-radius:4px;padding:12px 16px;margin-bottom:14px;font-size:11px;line-height:1.7;
+  border:1px solid rgba(0,120,212,0.4);background:rgba(0,120,212,0.06);color:#0078d4;}
+.gap-banner strong{color:var(--accent);}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.btn{font-family:var(--mono);font-size:11px;padding:6px 14px;border:1px solid var(--border);
+  background:var(--panel);color:var(--dim);cursor:pointer;border-radius:3px 10px 3px 3px;transition:all .15s;letter-spacing:1px;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,0.05);}
+.btn.danger:hover{border-color:var(--red);color:var(--red);}
+.btn.selectall{border-color:var(--purple);color:var(--purple);margin-left:auto;}
+.btn.selectall:hover{background:rgba(168,85,247,0.1);}
+.search{font-family:var(--mono);font-size:11px;padding:6px 10px;background:var(--panel);
+  border:1px solid var(--border);color:var(--text);border-radius:3px;outline:none;width:180px;
+  transition:border-color .15s;}
+.search:focus{border-color:var(--accent);}
+.search::placeholder{color:var(--dim);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;}
+.category{background:#161616;border:1px solid var(--border);border-radius:4px 12px 4px 4px;overflow:hidden;transition:border-color .2s;}
+.category:hover{border-color:#333;}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+  border-bottom:1px solid var(--border);cursor:pointer;user-select:none;gap:8px;}
+.cat-header:hover{background:rgba(0,120,212,0.05);}
+.cat-icon{font-size:14px;}
+.cat-title{font-family:var(--display);font-size:9px;font-weight:700;color:var(--copper);letter-spacing:2px;flex:1;}
+.cat-badge{font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--dim);}
+.cat-badge.done{border-color:var(--green);color:var(--green);}
+.cat-toggle{color:var(--dim);font-size:10px;transition:transform .2s;}
+.category.collapsed .cat-toggle{transform:rotate(-90deg);}
+.progress-bar{height:2px;background:var(--border);margin:0 14px 6px;border-radius:1px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s;}
+.items{padding:4px 0;}
+.category.collapsed .items{display:none;}
+.item{display:flex;align-items:flex-start;gap:9px;padding:5px 14px;cursor:pointer;transition:background .1s;}
+.item:hover{background:rgba(255,255,255,0.02);}
+.item.hidden{display:none;}
+.check-box{width:13px;height:13px;border:1px solid var(--border);border-radius:2px;flex-shrink:0;
+  margin-top:1px;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:8px;}
+.item.checked .check-box{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);}
+.item-info{flex:1;min-width:0;}
+.item-name{color:var(--text);line-height:1.4;}
+.item.checked .item-name{color:var(--dim);text-decoration:line-through;}
+.item-desc{color:var(--dim);font-size:10px;margin-top:1px;line-height:1.3;}
+.item-cmd{font-size:10px;color:var(--amber);margin-top:2px;word-break:break-all;opacity:.6;}
+.tag{display:inline-block;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;vertical-align:middle;border:1px solid;}
+.tag-winget{border-color:var(--accent);color:#4aa3ff;}
+.tag-manual{border-color:var(--red);color:var(--red);}
+
+.generate-btn{display:block;width:100%;margin-top:20px;padding:13px;font-family:var(--display);
+  font-size:11px;font-weight:700;letter-spacing:3px;background:transparent;border:1px solid var(--accent);
+  color:var(--accent);cursor:pointer;border-radius:4px 16px 4px 4px;transition:all .2s;position:relative;overflow:hidden;}
+.generate-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,120,212,0.12),transparent);
+  transform:translateX(-100%);transition:transform .3s;}
+.generate-btn:hover::before{transform:translateX(0);}
+.generate-btn:hover{box-shadow:0 0 20px rgba(0,120,212,0.25);}
+.output-panel{margin-top:14px;background:#090909;border:1px solid var(--border);border-radius:4px;padding:14px;display:none;}
+.output-panel.visible{display:block;}
+.output-label{font-family:var(--display);font-size:9px;color:var(--copper);letter-spacing:2px;margin-bottom:8px;}
+.output-code{color:var(--green);font-size:10px;line-height:1.8;white-space:pre-wrap;word-break:break-all;}
+.output-actions{display:flex;gap:8px;margin-top:10px;}
+.copy-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
+  border:1px solid var(--green);color:var(--green);cursor:pointer;border-radius:3px;transition:all .15s;}
+.copy-btn:hover{background:rgba(0,255,136,0.08);}
+.dl-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
+  border:1px solid var(--accent);color:var(--accent);cursor:pointer;border-radius:3px;transition:all .15s;}
+.dl-btn:hover{background:rgba(0,120,212,0.1);}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">UNI<span>-</span>STALLER <span style="font-size:12px;">// GAP-FILL</span></div>
+    <div class="header-sub">BY TINKER-LABS // WINDOWS // GENERAL DESKTOP APPS NOT IN CATS.windows</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span class="os-badge">🪟 WINDOWS</span>
+    <div class="stats"><span class="count" id="totalCount">0</span>SELECTED</div>
+  </div>
+</header>
+
+<div class="gap-banner">
+  <strong>WHY THIS EXISTS</strong> - the core Uni-Staller's <strong>CATS.windows</strong> only ships a targeted subset
+  (bootstrap, CLI AI, sovereign stack, dev, companions, robotics). Everything below is the everyday-desktop layer it
+  doesn't touch: browsers, office, graphics, media, gaming, general dev tooling, and system utilities. A few GNOME/Linux-only
+  entries were swapped for their closest Windows equivalent (noted in the description). Check what you want, generate a script,
+  run it standalone or fold selected lines into <strong>tinker_windows.ps1</strong>.
+</div>
+
+<div class="controls">
+  <button class="btn active" id="filter-all" onclick="filterMode('all')">ALL</button>
+  <button class="btn" id="filter-pending" onclick="filterMode('pending')">PENDING</button>
+  <button class="btn" id="filter-done" onclick="filterMode('done')">DONE</button>
+  <button class="btn danger" onclick="clearAll()">CLEAR</button>
+  <input class="search" type="text" placeholder="search..." oninput="searchItems(this.value)">
+  <button class="btn selectall" onclick="selectAll()">⊕ SELECT ALL</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<button class="generate-btn" onclick="generateScript()">⚡ GENERATE WINDOWS GAP-FILL SCRIPT (.ps1)</button>
+<div class="output-panel" id="out">
+  <div class="output-label">// GAP-FILL SCRIPT - SAVE AS tinker_windows_gapfill.ps1 → right-click, Run with PowerShell (as Admin)</div>
+  <pre class="output-code" id="outCode"></pre>
+  <div class="output-actions">
+    <button class="copy-btn" onclick="copyScript()">[ COPY ]</button>
+    <button class="dl-btn" onclick="downloadScript()">[ DOWNLOAD tinker_windows_gapfill.ps1 ]</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA — WINDOWS apps NOT covered by CATS.windows in the core Uni-Staller
+// Each item: name, desc, cmd, type
+// ═══════════════════════════════════════════════════════════════
+const CATS = [
+  {
+    "id": "gf-web",
+    "icon": "\ud83c\udf10",
+    "title": "WEB BROWSERS & INTERNET",
+    "items": [
+      {
+        "name": "Google Chrome",
+        "desc": "Google browser",
+        "cmd": "winget install -e --id Google.Chrome --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Brave Browser",
+        "desc": "Privacy-focused Chromium fork",
+        "cmd": "winget install -e --id Brave.Brave --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Chromium (community build)",
+        "desc": "Open-source base of Chrome",
+        "cmd": "winget install -e --id Hibbiki.Chromium --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Vivaldi",
+        "desc": "Highly customizable browser",
+        "cmd": "winget install -e --id VivaldiTechnologies.Vivaldi --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Tor Browser",
+        "desc": "Anonymized browsing",
+        "cmd": "winget install -e --id TorProject.TorBrowser --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Opera",
+        "desc": "Alternative browser (Epiphany has no Windows build)",
+        "cmd": "winget install -e --id Opera.Opera --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Thunderbird",
+        "desc": "Email client",
+        "cmd": "winget install -e --id Mozilla.Thunderbird --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "eM Client",
+        "desc": "Mail/calendar client (Evolution has no Windows build)",
+        "cmd": "winget install -e --id eMClient.eMClient --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Mailspring",
+        "desc": "Lightweight email client",
+        "cmd": "winget install -e --id Mailspring.Mailspring --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Nextcloud Desktop Client",
+        "desc": "Sync client for Nextcloud",
+        "cmd": "winget install -e --id Nextcloud.NextcloudDesktop --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "FileZilla",
+        "desc": "FTP/SFTP client",
+        "cmd": "winget install -e --id TimKosse.FileZilla.Client --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "qBittorrent",
+        "desc": "BitTorrent client",
+        "cmd": "winget install -e --id qBittorrent.qBittorrent --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Telegram Desktop",
+        "desc": "Telegram messenger",
+        "cmd": "winget install -e --id Telegram.TelegramDesktop --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Discord",
+        "desc": "Chat/voice for communities",
+        "cmd": "winget install -e --id Discord.Discord --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Element",
+        "desc": "Matrix protocol client",
+        "cmd": "winget install -e --id Element.Element --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Signal Desktop",
+        "desc": "Encrypted messenger",
+        "cmd": "winget install -e --id OpenWhisperSystems.Signal --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      }
+    ]
+  },
+  {
+    "id": "gf-office",
+    "icon": "\ud83d\udccb",
+    "title": "OFFICE, PRODUCTIVITY & ORGANIZATION",
+    "items": [
+      {
+        "name": "LibreOffice",
+        "desc": "Full office suite",
+        "cmd": "winget install -e --id TheDocumentFoundation.LibreOffice --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "OnlyOffice Desktop Editors",
+        "desc": "MS Office-compatible suite",
+        "cmd": "winget install -e --id ONLYOFFICE.DesktopEditors --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Obsidian",
+        "desc": "Markdown knowledge base",
+        "cmd": "winget install -e --id Obsidian.Obsidian --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Joplin",
+        "desc": "Encrypted note-taking",
+        "cmd": "winget install -e --id Joplin.Joplin --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "AppFlowy",
+        "desc": "Open-source Notion alternative",
+        "cmd": "winget install -e --id AppFlowy-IO.AppFlowy --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Calibre",
+        "desc": "Ebook management",
+        "cmd": "winget install -e --id calibre.calibre --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "PDFsam Basic",
+        "desc": "Merge/reorder/split PDF pages (PDF Arranger equivalent)",
+        "cmd": "winget install -e --id PDFsam.PDFsam --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Okular",
+        "desc": "KDE document viewer",
+        "cmd": "winget install -e --id KDE.Okular --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "TickTick",
+        "desc": "Task/todo manager (Planify equivalent)",
+        "cmd": "winget install -e --id TickTick.TickTick --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Standard Notes",
+        "desc": "Encrypted note-taking",
+        "cmd": "winget install -e --id StandardNotes.StandardNotes --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Freeplane",
+        "desc": "Mind mapping",
+        "cmd": "winget install -e --id Freeplane.Freeplane --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Subtitle Edit",
+        "desc": "Subtitle editor (Gaupol equivalent)",
+        "cmd": "winget install -e --id SubtitleEdit.SubtitleEdit --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      }
+    ]
+  },
+  {
+    "id": "gf-graphics",
+    "icon": "\ud83c\udfa8",
+    "title": "GRAPHICS, DESIGN & PHOTOGRAPHY",
+    "items": [
+      {
+        "name": "GIMP",
+        "desc": "Raster image editor",
+        "cmd": "winget install -e --id GIMP.GIMP --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Inkscape",
+        "desc": "Vector graphics editor",
+        "cmd": "winget install -e --id Inkscape.Inkscape --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Krita",
+        "desc": "Digital painting",
+        "cmd": "winget install -e --id KDE.Krita --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Blender",
+        "desc": "3D modeling/animation",
+        "cmd": "winget install -e --id BlenderFoundation.Blender --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Darktable",
+        "desc": "RAW photo workflow",
+        "cmd": "winget install -e --id darktable.darktable --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "RawTherapee",
+        "desc": "RAW photo processor",
+        "cmd": "winget install -e --id RawTherapee.RawTherapee --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Flameshot",
+        "desc": "Screenshot tool with annotation",
+        "cmd": "winget install -e --id Flameshot.Flameshot --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "FastStone Image Viewer",
+        "desc": "Photo viewer/organizer (Shotwell equivalent)",
+        "cmd": "winget install -e --id FastStone.FastStoneImageViewer --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "digiKam",
+        "desc": "Pro photo management",
+        "cmd": "winget install -e --id KDE.digikam --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Pinta",
+        "desc": "Simple Paint.NET-style editor",
+        "cmd": "winget install -e --id Pinta.Pinta --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "FontForge",
+        "desc": "Font editor",
+        "cmd": "winget install -e --id FontForge.FontForge --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      }
+    ]
+  },
+  {
+    "id": "gf-media",
+    "icon": "\ud83c\udfac",
+    "title": "AUDIO, VIDEO & MEDIA",
+    "items": [
+      {
+        "name": "VLC",
+        "desc": "Universal media player",
+        "cmd": "winget install -e --id VideoLAN.VLC --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Kdenlive",
+        "desc": "Video editor",
+        "cmd": "winget install -e --id KDE.Kdenlive --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "OBS Studio",
+        "desc": "Streaming/recording",
+        "cmd": "winget install -e --id OBSProject.OBSStudio --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Audacity",
+        "desc": "Audio editor",
+        "cmd": "winget install -e --id Audacity.Audacity --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "HandBrake",
+        "desc": "Video transcoder",
+        "cmd": "winget install -e --id HandBrake.HandBrake --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Spotify",
+        "desc": "Music streaming",
+        "cmd": "winget install -e --id Spotify.Spotify --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "MusicBee",
+        "desc": "Music player/library manager (Lollypop equivalent)",
+        "cmd": "winget install -e --id MusicBee.MusicBee --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Audacious",
+        "desc": "Lightweight audio player",
+        "cmd": "winget install -e --id Audacious.Audacious --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "LMMS",
+        "desc": "Beat/music production",
+        "cmd": "winget install -e --id LMMS.LMMS --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "foobar2000",
+        "desc": "Music library player (Rhythmbox equivalent)",
+        "cmd": "winget install -e --id PeterPawlowski.foobar2000 --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "mpv.net",
+        "desc": "Lightweight native video player (Clapper equivalent)",
+        "cmd": "winget install -e --id mpvnet.mpvnet --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "fre:ac",
+        "desc": "Batch audio format converter (SoundConverter equivalent)",
+        "cmd": "winget install -e --id freac.freac --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      }
+    ]
+  },
+  {
+    "id": "gf-gaming",
+    "icon": "\ud83c\udfae",
+    "title": "GAMING & EMULATION",
+    "items": [
+      {
+        "name": "Steam",
+        "desc": "PC gaming platform",
+        "cmd": "winget install -e --id Valve.Steam --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Playnite",
+        "desc": "Universal game library/launcher manager (Lutris equivalent)",
+        "cmd": "winget install -e --id Playnite.Playnite --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "RetroArch",
+        "desc": "Multi-system emulator frontend",
+        "cmd": "winget install -e --id Libretro.RetroArch --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Heroic Games Launcher",
+        "desc": "Epic/GOG/Amazon launcher",
+        "cmd": "winget install -e --id HeroicGamesLauncher.HeroicGamesLauncher --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Prism Launcher",
+        "desc": "Minecraft instance launcher",
+        "cmd": "winget install -e --id PrismLauncher.PrismLauncher --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "DuckStation",
+        "desc": "PlayStation 1 emulator",
+        "cmd": "winget install -e --id DuckStation.DuckStation --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Dolphin Emulator",
+        "desc": "GameCube/Wii emulator",
+        "cmd": "winget install -e --id DolphinEmulator.DolphinEmulator --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "PCSX2",
+        "desc": "PlayStation 2 emulator",
+        "cmd": "winget install -e --id PCSX2Team.PCSX2 --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "RTSS (RivaTuner Statistics Server)",
+        "desc": "Performance overlay/monitoring (Mangohud equivalent)",
+        "cmd": "winget install -e --id Guru3D.RTSS --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      }
+    ]
+  },
+  {
+    "id": "gf-dev",
+    "icon": "\ud83d\udcbb",
+    "title": "SOFTWARE DEVELOPMENT & CONTAINERS (SUBSET)",
+    "items": [
+      {
+        "name": "Neovim",
+        "desc": "Hyperextensible Vim",
+        "cmd": "winget install -e --id Neovim.Neovim --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Git",
+        "desc": "Version control",
+        "cmd": "winget install -e --id Git.Git --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Podman",
+        "desc": "Daemonless container engine",
+        "cmd": "winget install -e --id RedHat.Podman --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Docker Desktop",
+        "desc": "Container platform GUI (Distrobox has no Windows build)",
+        "cmd": "winget install -e --id Docker.DockerDesktop --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Postman",
+        "desc": "API client",
+        "cmd": "winget install -e --id Postman.Postman --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "DBeaver Community",
+        "desc": "Universal DB client",
+        "cmd": "winget install -e --id dbeaver.dbeaver --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "IntelliJ IDEA Community",
+        "desc": "JVM IDE",
+        "cmd": "winget install -e --id JetBrains.IntelliJIDEA.Community --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "PyCharm Community",
+        "desc": "Python IDE",
+        "cmd": "winget install -e --id JetBrains.PyCharm.Community --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Godot Engine",
+        "desc": "Open-source game engine",
+        "cmd": "winget install -e --id GodotEngine.GodotEngine --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Cmder",
+        "desc": "Terminal workspace/multiplexer (Zellij equivalent)",
+        "cmd": "winget install -e --id Cmder.Cmder --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Alacritty / WezTerm",
+        "desc": "GPU-accelerated terminal emulators",
+        "cmd": "winget install -e --id Alacritty.Alacritty --silent --accept-package-agreements --accept-source-agreements ; winget install -e --id wez.wezterm --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      }
+    ]
+  },
+  {
+    "id": "gf-sys",
+    "icon": "\ud83d\udee0\ufe0f",
+    "title": "SYSTEM UTILITIES, TWEAKS & MANAGEMENT",
+    "items": [
+      {
+        "name": "PowerToys",
+        "desc": "Windows system customization utilities (GNOME Tweaks equivalent)",
+        "cmd": "winget install -e --id Microsoft.PowerToys --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "UniGetUI",
+        "desc": "GUI for winget/choco/scoop package management (Extension Manager equivalent)",
+        "cmd": "winget install -e --id MartiCliment.UniGetUI --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Autoruns",
+        "desc": "Manage startup apps/permissions (Flatseal equivalent)",
+        "cmd": "winget install -e --id Microsoft.Sysinternals.Autoruns --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Sandboxie-Plus",
+        "desc": "Application sandboxing (Bottles equivalent)",
+        "cmd": "winget install -e --id Sandboxie.Plus --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Duplicati",
+        "desc": "Backup/system snapshot tool (Timeshift equivalent)",
+        "cmd": "winget install -e --id Duplicati.Duplicati --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Bitwarden",
+        "desc": "Password manager",
+        "cmd": "winget install -e --id Bitwarden.Bitwarden --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Disk Management",
+        "desc": "Built-in partition editor (GParted equivalent)",
+        "cmd": "Write-Host \"Use built-in Disk Management (diskmgmt.msc) or diskpart\" -ForegroundColor Yellow",
+        "type": "manual"
+      },
+      {
+        "name": "CCleaner",
+        "desc": "System optimizer/cleaner GUI (Stacer equivalent)",
+        "cmd": "winget install -e --id Piriform.CCleaner --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "BleachBit",
+        "desc": "Disk space cleaner",
+        "cmd": "winget install -e --id BleachBit.BleachBit --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Rufus",
+        "desc": "Write ISOs to USB (Fedora Media Writer equivalent)",
+        "cmd": "winget install -e --id Rufus.Rufus --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "WizTree",
+        "desc": "Visual disk usage analyzer (Baobab equivalent)",
+        "cmd": "winget install -e --id AntibodySoftware.WizTree --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Syncthing",
+        "desc": "P2P continuous file sync",
+        "cmd": "winget install -e --id Syncthing.Syncthing --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "LocalSend",
+        "desc": "Sovereign LAN file transfer",
+        "cmd": "winget install -e --id LocalSend.LocalSend --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "VSCodium",
+        "desc": "VS Code without MS telemetry/branding",
+        "cmd": "winget install -e --id VSCodium.VSCodium --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Bambu Studio / OrcaSlicer",
+        "desc": "3D print slicers",
+        "cmd": "winget install -e --id Bambulab.BambuStudio --silent --accept-package-agreements --accept-source-agreements ; winget install -e --id SoftFever.OrcaSlicer --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "7-Zip",
+        "desc": "Archive utility (Gear Lever has no Windows equivalent)",
+        "cmd": "winget install -e --id 7zip.7zip --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "ShareX",
+        "desc": "Screen capture/OCR/annotation utility (TextSnatcher equivalent)",
+        "cmd": "winget install -e --id ShareX.ShareX --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Stremio",
+        "desc": "Media center/streaming hub",
+        "cmd": "winget install -e --id Stremio.Stremio --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Czkawka",
+        "desc": "Duplicate file finder",
+        "cmd": "winget install -e --id qarmin.Czkawka --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "KeePassXC",
+        "desc": "Offline password manager",
+        "cmd": "winget install -e --id KeePassXCTeam.KeePassXC --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "System Informer",
+        "desc": "Advanced task manager (Htop/Btop equivalent)",
+        "cmd": "winget install -e --id WinsiderSS.SystemInformer --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "Windows Update",
+        "desc": "Built-in firmware/driver update mechanism (Gnome-Firmware equivalent)",
+        "cmd": "Write-Host \"Use Windows Update (Settings > Windows Update) for firmware/driver updates\" -ForegroundColor Yellow",
+        "type": "manual"
+      },
+      {
+        "name": "Hyper",
+        "desc": "Drop-down-capable terminal (Guake equivalent)",
+        "cmd": "winget install -e --id Hyper.Hyper --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "BlueStacks",
+        "desc": "Android emulator (Waydroid equivalent) \u2014 first launch needs extra setup",
+        "cmd": "winget install -e --id BlueStack.BlueStacks --silent --accept-package-agreements --accept-source-agreements",
+        "type": "manual"
+      },
+      {
+        "name": "SMPlayer",
+        "desc": "mpv-based media player front-end (Celluloid equivalent)",
+        "cmd": "winget install -e --id SMPlayer.SMPlayer --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      },
+      {
+        "name": "VirtualBox",
+        "desc": "VM manager (GNOME Boxes equivalent)",
+        "cmd": "winget install -e --id Oracle.VirtualBox --silent --accept-package-agreements --accept-source-agreements",
+        "type": "winget"
+      }
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const state = {};
+CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = false; }));
+let filter = 'all';
+let search = '';
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  CATS.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'category'; el.id = `cat-${cat.id}`;
+    const total = cat.items.length;
+    const done = cat.items.filter((_,i) => state[`${cat.id}_${i}`]).length;
+    const pct = total ? (done/total*100) : 0;
+    el.innerHTML = `
+      <div class="cat-header" onclick="toggleCat('${cat.id}')">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-title">${cat.title}</span>
+        <span class="cat-badge ${done===total?'done':''}" id="badge-${cat.id}">${done}/${total}</span>
+        <span class="cat-toggle">▼</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-${cat.id}" style="width:${pct}%"></div></div>
+      <div class="items" id="items-${cat.id}">
+        ${cat.items.map((it,i) => {
+          const key=`${cat.id}_${i}`, checked=state[key];
+          return `<label class="item ${checked?'checked':''}" id="item-${key}" onclick="toggleItem('${key}','${cat.id}')">
+            <div class="check-box">${checked?'✓':''}</div>
+            <div class="item-info">
+              <div class="item-name">${it.name}<span class="tag tag-${it.type}">${it.type}</span></div>
+              <div class="item-desc">${it.desc}</div>
+              <div class="item-cmd">${it.cmd}</div>
+            </div>
+          </label>`;
+        }).join('')}
+      </div>`;
+    grid.appendChild(el);
+  });
+  applyFilter();
+}
+
+function toggleCat(catId) { document.getElementById(`cat-${catId}`).classList.toggle('collapsed'); }
+
+function toggleItem(key, catId) {
+  state[key] = !state[key];
+  const el = document.getElementById(`item-${key}`);
+  el.classList.toggle('checked', state[key]);
+  el.querySelector('.check-box').textContent = state[key] ? '✓' : '';
+  updateBadge(catId);
+  updateCount();
+}
+
+function updateBadge(catId) {
+  const cat = CATS.find(c=>c.id===catId);
+  const total=cat.items.length, done=cat.items.filter((_,i)=>state[`${catId}_${i}`]).length;
+  const pct=total?(done/total*100):0;
+  document.getElementById(`badge-${catId}`).textContent=`${done}/${total}`;
+  document.getElementById(`badge-${catId}`).className=`cat-badge ${done===total?'done':''}`;
+  document.getElementById(`prog-${catId}`).style.width=pct+'%';
+}
+
+function filterMode(mode) {
+  filter = mode;
+  ['all','pending','done'].forEach(m => document.getElementById(`filter-${m}`).classList.toggle('active', m===mode));
+  applyFilter();
+}
+function searchItems(val) { search = val.toLowerCase(); applyFilter(); }
+
+function applyFilter() {
+  CATS.forEach(cat => {
+    let visCount = 0;
+    cat.items.forEach((it,i) => {
+      const key=`${cat.id}_${i}`;
+      const el = document.getElementById(`item-${key}`);
+      if (!el) return;
+      const matchesSearch = !search || it.name.toLowerCase().includes(search) || it.desc.toLowerCase().includes(search);
+      const matchesFilter = filter==='all' || (filter==='done' && state[key]) || (filter==='pending' && !state[key]);
+      const show = matchesSearch && matchesFilter;
+      el.classList.toggle('hidden', !show);
+      if (show) visCount++;
+    });
+    document.getElementById(`cat-${cat.id}`).style.display = visCount ? '' : 'none';
+  });
+}
+
+function selectAll() {
+  CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = true; }));
+  buildGrid();
+  updateCount();
+}
+
+function clearAll() {
+  CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = false; }));
+  buildGrid();
+  updateCount();
+}
+
+function updateCount() {
+  let n = 0;
+  CATS.forEach(cat => cat.items.forEach((_,i) => { if (state[`${cat.id}_${i}`]) n++; }));
+  document.getElementById('totalCount').textContent = n;
+}
+
+function collectSelected() {
+  const out = [];
+  CATS.forEach(cat => cat.items.forEach((it,i) => { if (state[`${cat.id}_${i}`]) out.push({...it, cat: cat.title}); }));
+  return out;
+}
+
+function generateScript() {
+  const items = collectSelected();
+  const panel = document.getElementById('out');
+  if (!items.length) {
+    document.getElementById('outCode').textContent = '# No apps selected - check some boxes above first.';
+    panel.classList.add('visible');
+    return;
+  }
+  let byCat = {};
+  items.forEach(it => { (byCat[it.cat] = byCat[it.cat] || []).push(it); });
+
+  let script = `# ══════════════════════════════════════════════════════════════
+# UNI-STALLER GAP-FILL by Tinker-Labs // WINDOWS - GENERAL DESKTOP APPS
+# Companion to tinker_windows.ps1 - covers what CATS.windows doesn't
+# Run in an elevated PowerShell: .\\tinker_windows_gapfill.ps1
+# ══════════════════════════════════════════════════════════════
+$ErrorActionPreference = 'Continue'
+function Ok($m)   { Write-Host "[OK] $m" -ForegroundColor Green }
+function Warn($m) { Write-Host "[WARN] $m" -ForegroundColor Yellow }
+function Step($m) { Write-Host "== $m ==" -ForegroundColor Cyan }
+Write-Host "UNI-STALLER GAP-FILL // WINDOWS DEPLOYMENT" -ForegroundColor Green
+
+Step "0 - winget availability"
+if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+  Warn "winget not found - install 'App Installer' from the Microsoft Store, then re-run this script"
+} else {
+  Ok "winget ready"
+}
+`;
+
+  let n = 1;
+  Object.keys(byCat).forEach(catTitle => {
+    script += `\nStep "${n} - ${catTitle}"\n`;
+    byCat[catTitle].forEach(it => {
+      if (it.type === 'manual') {
+        script += `Write-Host "  -> ${it.name} (manual)"\n${it.cmd}\n`;
+      } else {
+        script += `Write-Host "  -> ${it.name}"\n${it.cmd}\nif ($LASTEXITCODE -ne 0) { Warn "${it.name} failed - check manually" } else { Ok "${it.name} installed" }\n`;
+      }
+    });
+    n++;
+  });
+
+  script += `
+Write-Host ""
+Write-Host "UNI-STALLER GAP-FILL // WINDOWS DEPLOYMENT COMPLETE" -ForegroundColor Green`;
+
+  document.getElementById('outCode').textContent = script;
+  panel.classList.add('visible');
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function copyScript() {
+  const code = document.getElementById('outCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '[ COPIED ✓ ]';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function downloadScript() {
+  const code = document.getElementById('outCode').textContent;
+  const blob = new Blob([code], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tinker_windows_gapfill.ps1';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+buildGrid();
+updateCount();
+
+</script>
+</body>
+</html>

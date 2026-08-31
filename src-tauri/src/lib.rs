@@ -281,8 +281,8 @@ fn run_install(
             } else {
                 match item.cmd_type.as_str() {
                     "winget" | "choco" | "pacman" | "aur" | "flatpak" | "apt" | "dnf"
-                    | "brew" | "pkg" | "npm" | "pip" | "cargo" | "sh" | "ps" | "ollama"
-                    | "toolbox" | "ostree" => {
+                    | "brew" | "pkg" | "termux" | "snap" | "npm" | "pip" | "cargo" | "sh"
+                    | "ps" | "ollama" | "toolbox" | "ostree" => {
                         let shell = if os == "win" { "powershell" } else { "bash" };
                         let arg = if os == "win" { "-Command" } else { "-c" };
 

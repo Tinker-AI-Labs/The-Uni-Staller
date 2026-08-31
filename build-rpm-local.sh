@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 # Build Uni-Staller as a Linux RPM on Fedora/RHEL/CentOS
-# Run from inside the Uni-staller--main project folder.
+# Run from inside the Uni-staller project folder.
 set -euo pipefail
 
 echo "==> Installing system build dependencies..."
-sudo dnf groupinstall -y "Development Tools"
+# Install the compilers explicitly rather than via the "Development Tools" group:
+# dnf5 dropped the `groupinstall` alias, and the group itself does not resolve at
+# all on hosts without comps metadata (verified: it fails inside fedora:latest).
+# gcc/gcc-c++/make are all the group actually provided that this build needs.
 sudo dnf install -y \
+  gcc \
+  gcc-c++ \
+  make \
   webkit2gtk4.1-devel \
   gtk3-devel \
   libappindicator-gtk3-devel \
   librsvg2-devel \
   patchelf \
+  rpm-build \
   curl \
   wget \
   file \

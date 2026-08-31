@@ -1,0 +1,55 @@
+name: build-flatpak
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-46
+      options: --privileged
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate cargo sources for offline build
+        run: |
+          curl -sL -o flatpak-cargo-generator.py \
+            https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/master/cargo/flatpak-cargo-generator.py
+          pip3 install aiohttp toml
+          python3 flatpak-cargo-generator.py src-tauri/Cargo.lock -o generated-sources.json
+
+      - name: Generate npm sources for offline build
+        run: |
+          curl -sL -o flatpak-node-generator.py \
+            https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/master/node/flatpak-node-generator.py
+          pip3 install requests
+          python3 flatpak-node-generator.py npm package-lock.json -o generated-sources-npm.json
+
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: uni-staller.flatpak
+          manifest-path: com.tinkerverse.uni-staller.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+
+      - name: Upload Flatpak as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: uni-staller-flatpak
+          path: uni-staller.flatpak
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: uni-staller.flatpak
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

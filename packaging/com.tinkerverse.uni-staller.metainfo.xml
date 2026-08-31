@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.tinkerverse.uni-staller</id>
+  <name>Uni-Staller</name>
+  <summary>Universal software installer for sovereign stacks</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <developer id="com.tinkerverse">
+    <name>Tinker AI Labs</name>
+  </developer>
+
+  <launchable type="desktop-id">com.tinkerverse.uni-staller.desktop</launchable>
+
+  <description>
+    <p>
+      Uni-Staller generates ready-to-run bootstrap scripts for any operating
+      system from a single interface — no cloud, no telemetry. Pick what you
+      want from a curated catalog and it emits a deduped, correctly ordered
+      shell or PowerShell script you can inspect before running.
+    </p>
+    <p>Covers nine targets:</p>
+    <ul>
+      <li>Windows (Tiny11), CachyOS, Bazzite, Fedora, Ubuntu/Debian, Arch</li>
+      <li>macOS, iPadOS (checklist only — nothing on iPadOS runs an installer), Android/Termux</li>
+    </ul>
+    <p>
+      Each target carries a JUMPSTART block (base tools, runtimes, Ollama,
+      companion models) plus a full category library — development, CLI AI
+      tooling, gaming, audio and DAW, game engines and 3D, 3D printing, SDR
+      and radio — and a Gap-Fill Companion catalog of general desktop apps
+      the curated stack does not cover.
+    </p>
+  </description>
+
+  <categories>
+    <category>Development</category>
+    <category>Utility</category>
+  </categories>
+
+  <url type="homepage">https://github.com/Tinker-AI-Labs/The-Uni-Staller</url>
+  <url type="bugtracker">https://github.com/Tinker-AI-Labs/The-Uni-Staller/issues</url>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="1.0.0" date="2026-08-31">
+      <description>
+        <p>All nine OS tabs complete, each with its own script generator and Gap-Fill catalog.</p>
+      </description>
+    </release>
+  </releases>
+</component>

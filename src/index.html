@@ -34,8 +34,8 @@
   </div>
   <div class="or-body" id="orBody">
     <div class="or-note">
-      Key is written to the correct path per OS. <strong>Tiny11</strong> → PowerShell profile + %APPDATA%\tinker-verse\openrouter.env.
-      <strong>CachyOS/Bazzite</strong> → ~/.bashrc + ~/.config/tinker-verse/openrouter.env.<br>
+      Key is written to a local env file only — <strong>Tiny11</strong> → %APPDATA%\tinker-verse\openrouter.env (plus a user-scope env var).
+      <strong>CachyOS/Bazzite/Fedora/Ubuntu/Arch</strong> → ~/.config/tinker-verse/openrouter.env (source it yourself in your current shell; new shells won't auto-load it).<br>
       <strong>Companions are NEVER routed through OpenRouter — local Ollama only.</strong>
       Tier 1: Qwen/DeepSeek (fast) | Tier 2: Kimi K2 / Gemini Flash (codegen) | Tier 3: Claude Sonnet (architecture).
     </div>
@@ -50,21 +50,21 @@
       <div class="or-target"><div class="ot-os" style="color:var(--win)">TINY11 / WINDOWS</div>
         <div class="ot-path">$env:APPDATA\tinker-verse\openrouter.env<br>$PROFILE (PowerShell)</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--cachy)">CACHYOS / LINUX</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:#a08fff">BAZZITE / LINUX</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--fedora)">FEDORA / LINUX</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--ubuntu)">UBUNTU / DEBIAN</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--arch)">ARCH / LINUX</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--macos)">MACOS</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.zshrc</div></div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--ipados)">IPADOS</div>
-        <div class="ot-path">a-Shell: ~/.config/tinker-verse/openrouter.env<br>iSH: ~/.profile</div></div>
+        <div class="ot-path">a-Shell / iSH: ~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--android)">ANDROID / TERMUX</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env<br>~/.bashrc</div></div>
+        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
     </div>
     <div class="or-script-out" id="orOut">
       <div class="or-script-label" id="orLabel">// GENERATED SETUP SCRIPT</div>
@@ -202,6 +202,20 @@
       <button class="copy-btn" onclick="downloadScript('cachy')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
     </div>
   </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-cachy">
+    <div class="gapfill-head" onclick="toggleGapfill('cachy')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:var(--cachy)">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
+        <div class="gapfill-sub">Browsers, office, graphics, media, gaming, dev & system utilities not covered by CATS.cachy above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-cachy">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-cachy">
+      <iframe class="gapfill-frame" id="gapfillFrame-cachy" data-src="gapfill.html?os=cachy" title="Uni-Staller Gap-Fill Companion — CachyOS"></iframe>
+    </div>
+  </div>
 </div>
 
 <!-- BAZZITE TAB -->
@@ -239,6 +253,20 @@
     <div style="display:flex;gap:8px;margin-top:10px;">
       <button class="copy-btn" onclick="copyScript('bazzite')">[ COPY RUN COMMAND ]</button>
       <button class="copy-btn" onclick="downloadScript('bazzite')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-bazzite">
+    <div class="gapfill-head" onclick="toggleGapfill('bazzite')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:#a08fff">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
+        <div class="gapfill-sub">Flatpak-first desktop apps, toolbox CLI tools and rpm-ostree layers not covered by CATS.bazzite above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-bazzite">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-bazzite">
+      <iframe class="gapfill-frame" id="gapfillFrame-bazzite" data-src="gapfill.html?os=bazzite" title="Uni-Staller Gap-Fill Companion — Bazzite"></iframe>
     </div>
   </div>
 </div>
@@ -386,6 +414,20 @@
       <button class="copy-btn" onclick="downloadScript('arch')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
     </div>
   </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-arch">
+    <div class="gapfill-head" onclick="toggleGapfill('arch')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:var(--arch)">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
+        <div class="gapfill-sub">Browsers, office, graphics, media, gaming, dev & system utilities not covered by CATS.arch above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-arch">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-arch">
+      <iframe class="gapfill-frame" id="gapfillFrame-arch" data-src="gapfill.html?os=arch" title="Uni-Staller Gap-Fill Companion — Arch Linux"></iframe>
+    </div>
+  </div>
 </div>
 
 <!-- MACOS TAB -->
@@ -423,6 +465,20 @@
     <div style="display:flex;gap:8px;margin-top:10px;">
       <button class="copy-btn" onclick="copyScript('macos')">[ COPY RUN COMMAND ]</button>
       <button class="copy-btn" onclick="downloadScript('macos')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-macos">
+    <div class="gapfill-head" onclick="toggleGapfill('macos')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:var(--macos)">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
+        <div class="gapfill-sub">Homebrew formulae and casks — browsers, office, graphics, media, gaming and utilities not covered by CATS.macos above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-macos">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-macos">
+      <iframe class="gapfill-frame" id="gapfillFrame-macos" data-src="gapfill.html?os=macos" title="Uni-Staller Gap-Fill Companion — macOS"></iframe>
     </div>
   </div>
 </div>
@@ -463,6 +519,20 @@
       <button class="copy-btn" onclick="copyScript('ipados')">[ COPY TO CLIPBOARD ]</button>
     </div>
   </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-ipados">
+    <div class="gapfill-head" onclick="toggleGapfill('ipados')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:var(--ipados)">GAP-FILL COMPANION — GENERAL IPAD APPS</div>
+        <div class="gapfill-sub">App Store apps and a-Shell/iSH commands not covered by CATS.ipados above. Generates a checklist — iPadOS runs no installer.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-ipados">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-ipados">
+      <iframe class="gapfill-frame" id="gapfillFrame-ipados" data-src="gapfill.html?os=ipados" title="Uni-Staller Gap-Fill Companion — iPadOS"></iframe>
+    </div>
+  </div>
 </div>
 
 <!-- ANDROID TAB -->
@@ -498,8 +568,22 @@
     <div class="output-label">// ANDROID/TERMUX BOOTSTRAP SCRIPT — save as install.sh → run: bash install.sh in Termux</div>
     <pre class="output-code" id="code-android"></pre>
     <div style="display:flex;gap:8px;margin-top:10px;">
-      <button class="copy-btn" onclick="copyScript('android')">[ COPY TO CLIPBOARD ]</button>
+      <button class="copy-btn" onclick="copyScript('android')">[ COPY RUN COMMAND ]</button>
       <button class="copy-btn" onclick="downloadScript('android')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
+    </div>
+  </div>
+
+  <div class="gapfill-panel" id="gapfillPanel-android">
+    <div class="gapfill-head" onclick="toggleGapfill('android')">
+      <span style="font-size:20px">🧩</span>
+      <div>
+        <div class="gapfill-title" style="color:var(--android)">GAP-FILL COMPANION — GENERAL ANDROID APPS</div>
+        <div class="gapfill-sub">Termux packages plus F-Droid / Play Store apps not covered by CATS.android above.</div>
+      </div>
+      <span class="gapfill-chevron" id="gapfillChevron-android">▼</span>
+    </div>
+    <div class="gapfill-body" id="gapfillBody-android">
+      <iframe class="gapfill-frame" id="gapfillFrame-android" data-src="gapfill.html?os=android" title="Uni-Staller Gap-Fill Companion — Android/Termux"></iframe>
     </div>
   </div>
 </div>
@@ -513,10 +597,29 @@
 
 
 <script src="tauri-bridge.js"></script>
+<script src="jumpstart-engine.js"></script>
 <script src="app.js"></script>
 <script>
-// GAP-FILL COMPANION — generalized to whichever OS actually has one wired
-// in (each OS's panel/frame use a "-<os>" suffixed id set, e.g.
+// Run OS/arch detection now that both script files and the DOM are ready.
+// (Previously defined but never called anywhere — this was the actual
+// cause of "Detecting OS..." never resolving.)
+if (typeof window.detectOS === 'function') {
+  window.detectOS();
+} else if (typeof switchTab === 'function') {
+  switchTab('win');
+}
+
+// URL anchor support — #win #cachy #bazzite #fedora #ubuntu #arch
+// #macos #ipados #android open that tab instead of the detected one.
+function tabFromHash() {
+  const id = (location.hash || '').replace('#', '');
+  if (id && typeof allTabs !== 'undefined' && allTabs.includes(id)) switchTab(id);
+}
+tabFromHash();
+window.addEventListener('hashchange', tabFromHash);
+
+// GAP-FILL COMPANION — generalized to any OS that has one wired in
+// (each OS's panel/frame use a "-<os>" suffixed id set, e.g.
 // gapfillPanel-fedora / gapfillFrame-fedora / gapfillChevron-fedora).
 function toggleGapfill(os) {
   const panel = document.getElementById('gapfillPanel-' + os);

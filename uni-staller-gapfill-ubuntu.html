@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNI-STALLER // GAP-FILL — UBUNTU by Tinker-Labs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+:root {
+  --bg:#0e0e0e; --panel:#1a1a1a; --border:#2a2a2a;
+  --copper:#b87333; --green:#00ff88; --amber:#ffaa00;
+  --red:#ff4444; --blue:#4a9eff; --purple:#a855f7; --cyan:#00e5ff;
+  --accent:#E95420;
+  --text:#c8c8c8; --dim:#555;
+  --mono:'Share Tech Mono',monospace; --display:'Orbitron',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh;padding:20px;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,#181818 39px,#181818 40px),
+  repeating-linear-gradient(90deg,transparent,transparent 39px,#181818 39px,#181818 40px);}
+
+header{border:1px solid var(--accent);border-radius:4px 16px 4px 4px;padding:16px 24px;margin-bottom:16px;
+  background:var(--panel);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--green),var(--accent));}
+.logo{font-family:var(--display);font-size:18px;font-weight:900;color:var(--copper);letter-spacing:3px;}
+.logo span{color:var(--green);}
+.header-sub{font-size:10px;color:var(--dim);letter-spacing:2px;margin-top:4px;}
+.os-badge{display:inline-block;padding:3px 12px;border-radius:10px;font-size:10px;letter-spacing:1px;border:1px solid var(--accent);color:var(--accent);}
+.stats{font-family:var(--display);font-size:11px;color:var(--dim);letter-spacing:2px;text-align:right;}
+.stats .count{color:var(--amber);font-size:20px;font-weight:700;display:block;}
+
+.gap-banner{border-radius:4px;padding:12px 16px;margin-bottom:14px;font-size:11px;line-height:1.7;
+  border:1px solid rgba(233,84,32,0.4);background:rgba(233,84,32,0.06);color:#E95420;}
+.gap-banner strong{color:var(--accent);}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.btn{font-family:var(--mono);font-size:11px;padding:6px 14px;border:1px solid var(--border);
+  background:var(--panel);color:var(--dim);cursor:pointer;border-radius:3px 10px 3px 3px;transition:all .15s;letter-spacing:1px;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,0.05);}
+.btn.danger:hover{border-color:var(--red);color:var(--red);}
+.btn.selectall{border-color:var(--purple);color:var(--purple);margin-left:auto;}
+.btn.selectall:hover{background:rgba(168,85,247,0.1);}
+.search{font-family:var(--mono);font-size:11px;padding:6px 10px;background:var(--panel);
+  border:1px solid var(--border);color:var(--text);border-radius:3px;outline:none;width:180px;
+  transition:border-color .15s;}
+.search:focus{border-color:var(--accent);}
+.search::placeholder{color:var(--dim);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;}
+.category{background:#161616;border:1px solid var(--border);border-radius:4px 12px 4px 4px;overflow:hidden;transition:border-color .2s;}
+.category:hover{border-color:#333;}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+  border-bottom:1px solid var(--border);cursor:pointer;user-select:none;gap:8px;}
+.cat-header:hover{background:rgba(233,84,32,0.05);}
+.cat-icon{font-size:14px;}
+.cat-title{font-family:var(--display);font-size:9px;font-weight:700;color:var(--copper);letter-spacing:2px;flex:1;}
+.cat-badge{font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--dim);}
+.cat-badge.done{border-color:var(--green);color:var(--green);}
+.cat-toggle{color:var(--dim);font-size:10px;transition:transform .2s;}
+.category.collapsed .cat-toggle{transform:rotate(-90deg);}
+.progress-bar{height:2px;background:var(--border);margin:0 14px 6px;border-radius:1px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s;}
+.items{padding:4px 0;}
+.category.collapsed .items{display:none;}
+.item{display:flex;align-items:flex-start;gap:9px;padding:5px 14px;cursor:pointer;transition:background .1s;}
+.item:hover{background:rgba(255,255,255,0.02);}
+.item.hidden{display:none;}
+.check-box{width:13px;height:13px;border:1px solid var(--border);border-radius:2px;flex-shrink:0;
+  margin-top:1px;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:8px;}
+.item.checked .check-box{border-color:var(--green);background:rgba(0,255,136,0.12);color:var(--green);}
+.item-info{flex:1;min-width:0;}
+.item-name{color:var(--text);line-height:1.4;}
+.item.checked .item-name{color:var(--dim);text-decoration:line-through;}
+.item-desc{color:var(--dim);font-size:10px;margin-top:1px;line-height:1.3;}
+.item-cmd{font-size:10px;color:var(--amber);margin-top:2px;word-break:break-all;opacity:.6;}
+.tag{display:inline-block;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;vertical-align:middle;border:1px solid;}
+.tag-apt{border-color:var(--accent);color:#f47a4a;}
+.tag-snap{border-color:var(--purple);color:var(--purple);}
+.tag-pip{border-color:var(--amber);color:var(--amber);}
+.tag-manual{border-color:var(--red);color:var(--red);}
+
+.generate-btn{display:block;width:100%;margin-top:20px;padding:13px;font-family:var(--display);
+  font-size:11px;font-weight:700;letter-spacing:3px;background:transparent;border:1px solid var(--accent);
+  color:var(--accent);cursor:pointer;border-radius:4px 16px 4px 4px;transition:all .2s;position:relative;overflow:hidden;}
+.generate-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(233,84,32,0.12),transparent);
+  transform:translateX(-100%);transition:transform .3s;}
+.generate-btn:hover::before{transform:translateX(0);}
+.generate-btn:hover{box-shadow:0 0 20px rgba(233,84,32,0.25);}
+.output-panel{margin-top:14px;background:#090909;border:1px solid var(--border);border-radius:4px;padding:14px;display:none;}
+.output-panel.visible{display:block;}
+.output-label{font-family:var(--display);font-size:9px;color:var(--copper);letter-spacing:2px;margin-bottom:8px;}
+.output-code{color:var(--green);font-size:10px;line-height:1.8;white-space:pre-wrap;word-break:break-all;}
+.output-actions{display:flex;gap:8px;margin-top:10px;}
+.copy-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
+  border:1px solid var(--green);color:var(--green);cursor:pointer;border-radius:3px;transition:all .15s;}
+.copy-btn:hover{background:rgba(0,255,136,0.08);}
+.dl-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
+  border:1px solid var(--accent);color:var(--accent);cursor:pointer;border-radius:3px;transition:all .15s;}
+.dl-btn:hover{background:rgba(233,84,32,0.1);}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">UNI<span>-</span>STALLER <span style="font-size:12px;">// GAP-FILL</span></div>
+    <div class="header-sub">BY TINKER-LABS // UBUNTU // GENERAL DESKTOP APPS NOT IN CATS.ubuntu</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span class="os-badge">🧡 UBUNTU</span>
+    <div class="stats"><span class="count" id="totalCount">0</span>SELECTED</div>
+  </div>
+</header>
+
+<div class="gap-banner">
+  <strong>WHY THIS EXISTS</strong> — the core Uni-Staller's <strong>CATS.ubuntu</strong> only ships a targeted subset
+  (bootstrap, CLI AI, sovereign stack, dev, companions, robotics). Everything below is the everyday-desktop layer it
+  doesn't touch: browsers, office, graphics, media, gaming, general dev tooling, and system utilities. Check what you
+  want, generate a script, run it standalone or fold selected lines into <strong>tinker_ubuntu.sh</strong>.
+</div>
+
+<div class="controls">
+  <button class="btn active" id="filter-all" onclick="filterMode('all')">ALL</button>
+  <button class="btn" id="filter-pending" onclick="filterMode('pending')">PENDING</button>
+  <button class="btn" id="filter-done" onclick="filterMode('done')">DONE</button>
+  <button class="btn danger" onclick="clearAll()">CLEAR</button>
+  <input class="search" type="text" placeholder="search..." oninput="searchItems(this.value)">
+  <button class="btn selectall" onclick="selectAll()">⊕ SELECT ALL</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<button class="generate-btn" onclick="generateScript()">⚡ GENERATE UBUNTU GAP-FILL SCRIPT (.sh)</button>
+<div class="output-panel" id="out">
+  <div class="output-label">// GAP-FILL SCRIPT — SAVE AS tinker_ubuntu_gapfill.sh → bash tinker_ubuntu_gapfill.sh</div>
+  <pre class="output-code" id="outCode"></pre>
+  <div class="output-actions">
+    <button class="copy-btn" onclick="copyScript()">[ COPY ]</button>
+    <button class="dl-btn" onclick="downloadScript()">[ DOWNLOAD tinker_ubuntu_gapfill.sh ]</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA — UBUNTU apps NOT covered by CATS.ubuntu in the core Uni-Staller
+// Each item: name, desc, cmd, type
+// ═══════════════════════════════════════════════════════════════
+const CATS = [
+  {
+    "id": "gf-web",
+    "icon": "\ud83c\udf10",
+    "title": "WEB BROWSERS & INTERNET",
+    "items": [
+      {
+        "name": "Google Chrome",
+        "desc": "Google browser",
+        "cmd": "wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && sudo apt install -y /tmp/chrome.deb",
+        "type": "manual"
+      },
+      {
+        "name": "Brave Browser",
+        "desc": "Privacy-focused Chromium fork",
+        "cmd": "curl -fsS https://dl.brave.com/install.sh | sh",
+        "type": "manual"
+      },
+      {
+        "name": "Chromium",
+        "desc": "Open-source base of Chrome (snap-only on Ubuntu)",
+        "cmd": "sudo snap install chromium",
+        "type": "snap"
+      },
+      {
+        "name": "Vivaldi",
+        "desc": "Highly customizable browser",
+        "cmd": "wget -q -O /tmp/vivaldi.deb https://downloads.vivaldi.com/stable/vivaldi-stable_amd64.deb && sudo apt install -y /tmp/vivaldi.deb",
+        "type": "manual"
+      },
+      {
+        "name": "Tor Browser",
+        "desc": "Anonymized browsing",
+        "cmd": "sudo snap install tor-browser",
+        "type": "snap"
+      },
+      {
+        "name": "Epiphany (GNOME Web)",
+        "desc": "Default GNOME browser",
+        "cmd": "sudo apt install -y epiphany-browser",
+        "type": "apt"
+      },
+      {
+        "name": "Thunderbird",
+        "desc": "Email client",
+        "cmd": "sudo apt install -y thunderbird",
+        "type": "apt"
+      },
+      {
+        "name": "Evolution",
+        "desc": "GNOME mail/calendar client",
+        "cmd": "sudo apt install -y evolution",
+        "type": "apt"
+      },
+      {
+        "name": "Geary",
+        "desc": "Lightweight email client",
+        "cmd": "sudo apt install -y geary",
+        "type": "apt"
+      },
+      {
+        "name": "Nextcloud Desktop Client",
+        "desc": "Sync client for Nextcloud",
+        "cmd": "sudo apt install -y nextcloud-desktop",
+        "type": "apt"
+      },
+      {
+        "name": "FileZilla",
+        "desc": "FTP/SFTP client",
+        "cmd": "sudo apt install -y filezilla",
+        "type": "apt"
+      },
+      {
+        "name": "qBittorrent",
+        "desc": "BitTorrent client",
+        "cmd": "sudo apt install -y qbittorrent",
+        "type": "apt"
+      },
+      {
+        "name": "Telegram Desktop",
+        "desc": "Telegram messenger",
+        "cmd": "sudo snap install telegram-desktop",
+        "type": "snap"
+      },
+      {
+        "name": "Discord",
+        "desc": "Chat/voice for communities",
+        "cmd": "sudo snap install discord",
+        "type": "snap"
+      },
+      {
+        "name": "Element",
+        "desc": "Matrix protocol client",
+        "cmd": "sudo snap install element-desktop",
+        "type": "snap"
+      },
+      {
+        "name": "Signal Desktop",
+        "desc": "Encrypted messenger",
+        "cmd": "sudo snap install signal-desktop",
+        "type": "snap"
+      }
+    ]
+  },
+  {
+    "id": "gf-office",
+    "icon": "\ud83d\udccb",
+    "title": "OFFICE, PRODUCTIVITY & ORGANIZATION",
+    "items": [
+      {
+        "name": "LibreOffice",
+        "desc": "Full office suite",
+        "cmd": "sudo apt install -y libreoffice",
+        "type": "apt"
+      },
+      {
+        "name": "OnlyOffice Desktop Editors",
+        "desc": "MS Office-compatible suite",
+        "cmd": "sudo snap install onlyoffice-desktopeditors",
+        "type": "snap"
+      },
+      {
+        "name": "Obsidian",
+        "desc": "Markdown knowledge base",
+        "cmd": "sudo snap install obsidian --classic",
+        "type": "snap"
+      },
+      {
+        "name": "Joplin",
+        "desc": "Encrypted note-taking",
+        "cmd": "sudo snap install joplin-desktop",
+        "type": "snap"
+      },
+      {
+        "name": "AppFlowy",
+        "desc": "Open-source Notion alternative",
+        "cmd": "sudo snap install appflowy",
+        "type": "snap"
+      },
+      {
+        "name": "Calibre",
+        "desc": "Ebook management",
+        "cmd": "sudo apt install -y calibre",
+        "type": "apt"
+      },
+      {
+        "name": "PDF Arranger",
+        "desc": "Merge/reorder/split PDF pages",
+        "cmd": "sudo apt install -y pdfarranger",
+        "type": "apt"
+      },
+      {
+        "name": "Okular",
+        "desc": "KDE document viewer",
+        "cmd": "sudo apt install -y okular",
+        "type": "apt"
+      },
+      {
+        "name": "Planner (Planify)",
+        "desc": "Task/todo manager \u2014 renamed Planify",
+        "cmd": "sudo snap install planify",
+        "type": "snap"
+      },
+      {
+        "name": "Standard Notes",
+        "desc": "Encrypted note-taking",
+        "cmd": "sudo snap install standard-notes",
+        "type": "snap"
+      },
+      {
+        "name": "FreeMind / Freeplane",
+        "desc": "Mind mapping \u2014 FreeMind unpackaged, Freeplane is its maintained successor",
+        "cmd": "sudo apt install -y freeplane",
+        "type": "apt"
+      },
+      {
+        "name": "Gaupol",
+        "desc": "Subtitle editor",
+        "cmd": "sudo apt install -y gaupol",
+        "type": "apt"
+      }
+    ]
+  },
+  {
+    "id": "gf-graphics",
+    "icon": "\ud83c\udfa8",
+    "title": "GRAPHICS, DESIGN & PHOTOGRAPHY",
+    "items": [
+      {
+        "name": "GIMP",
+        "desc": "Raster image editor",
+        "cmd": "sudo apt install -y gimp",
+        "type": "apt"
+      },
+      {
+        "name": "Inkscape",
+        "desc": "Vector graphics editor",
+        "cmd": "sudo apt install -y inkscape",
+        "type": "apt"
+      },
+      {
+        "name": "Krita",
+        "desc": "Digital painting",
+        "cmd": "sudo apt install -y krita",
+        "type": "apt"
+      },
+      {
+        "name": "Blender",
+        "desc": "3D modeling/animation",
+        "cmd": "sudo snap install blender --classic",
+        "type": "snap"
+      },
+      {
+        "name": "Darktable",
+        "desc": "RAW photo workflow",
+        "cmd": "sudo apt install -y darktable",
+        "type": "apt"
+      },
+      {
+        "name": "RawTherapee",
+        "desc": "RAW photo processor",
+        "cmd": "sudo apt install -y rawtherapee",
+        "type": "apt"
+      },
+      {
+        "name": "Flameshot",
+        "desc": "Screenshot tool with annotation",
+        "cmd": "sudo apt install -y flameshot",
+        "type": "apt"
+      },
+      {
+        "name": "Shotwell",
+        "desc": "Photo manager/organizer",
+        "cmd": "sudo apt install -y shotwell",
+        "type": "apt"
+      },
+      {
+        "name": "DigiKam",
+        "desc": "Pro photo management",
+        "cmd": "sudo apt install -y digikam",
+        "type": "apt"
+      },
+      {
+        "name": "Pinta",
+        "desc": "Simple Paint.NET-style editor",
+        "cmd": "sudo snap install pinta",
+        "type": "snap"
+      },
+      {
+        "name": "FontForge",
+        "desc": "Font editor",
+        "cmd": "sudo apt install -y fontforge",
+        "type": "apt"
+      }
+    ]
+  },
+  {
+    "id": "gf-media",
+    "icon": "\ud83c\udfac",
+    "title": "AUDIO, VIDEO & MEDIA",
+    "items": [
+      {
+        "name": "VLC",
+        "desc": "Universal media player",
+        "cmd": "sudo apt install -y vlc",
+        "type": "apt"
+      },
+      {
+        "name": "Kdenlive",
+        "desc": "Video editor",
+        "cmd": "sudo apt install -y kdenlive",
+        "type": "apt"
+      },
+      {
+        "name": "OBS Studio",
+        "desc": "Streaming/recording",
+        "cmd": "sudo apt install -y obs-studio",
+        "type": "apt"
+      },
+      {
+        "name": "Audacity",
+        "desc": "Audio editor",
+        "cmd": "sudo apt install -y audacity",
+        "type": "apt"
+      },
+      {
+        "name": "HandBrake",
+        "desc": "Video transcoder",
+        "cmd": "sudo apt install -y handbrake",
+        "type": "apt"
+      },
+      {
+        "name": "Spotify",
+        "desc": "Music streaming",
+        "cmd": "curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/spotify.gpg && echo \"deb http://repository.spotify.com stable non-free\" | sudo tee /etc/apt/sources.list.d/spotify.list && sudo apt update && sudo apt install -y spotify-client",
+        "type": "manual"
+      },
+      {
+        "name": "Lollypop",
+        "desc": "GNOME music player",
+        "cmd": "sudo apt install -y lollypop",
+        "type": "apt"
+      },
+      {
+        "name": "Audacious",
+        "desc": "Lightweight audio player",
+        "cmd": "sudo apt install -y audacious",
+        "type": "apt"
+      },
+      {
+        "name": "LMMS",
+        "desc": "Beat/music production",
+        "cmd": "sudo apt install -y lmms",
+        "type": "apt"
+      },
+      {
+        "name": "Rhythmbox",
+        "desc": "GNOME music library player",
+        "cmd": "sudo apt install -y rhythmbox",
+        "type": "apt"
+      },
+      {
+        "name": "Clapper",
+        "desc": "GNOME-native GStreamer video player",
+        "cmd": "sudo snap install clapper",
+        "type": "snap"
+      },
+      {
+        "name": "SoundConverter",
+        "desc": "Batch audio format converter",
+        "cmd": "sudo apt install -y soundconverter",
+        "type": "apt"
+      }
+    ]
+  },
+  {
+    "id": "gf-gaming",
+    "icon": "\ud83c\udfae",
+    "title": "GAMING & EMULATION",
+    "items": [
+      {
+        "name": "Steam",
+        "desc": "PC gaming platform",
+        "cmd": "sudo apt install -y steam-installer",
+        "type": "apt"
+      },
+      {
+        "name": "Lutris",
+        "desc": "Game launcher/manager",
+        "cmd": "sudo apt install -y lutris",
+        "type": "apt"
+      },
+      {
+        "name": "RetroArch",
+        "desc": "Multi-system emulator frontend",
+        "cmd": "sudo snap install retroarch",
+        "type": "snap"
+      },
+      {
+        "name": "Heroic Games Launcher",
+        "desc": "Epic/GOG/Amazon launcher",
+        "cmd": "sudo snap install heroic",
+        "type": "snap"
+      },
+      {
+        "name": "Prism Launcher",
+        "desc": "Minecraft instance launcher",
+        "cmd": "sudo snap install prismlauncher",
+        "type": "snap"
+      },
+      {
+        "name": "DuckStation",
+        "desc": "PlayStation 1 emulator",
+        "cmd": "sudo snap install duckstation",
+        "type": "snap"
+      },
+      {
+        "name": "Dolphin Emulator",
+        "desc": "GameCube/Wii emulator",
+        "cmd": "sudo snap install dolphin-emulator",
+        "type": "snap"
+      },
+      {
+        "name": "PCSX2",
+        "desc": "PlayStation 2 emulator",
+        "cmd": "sudo snap install pcsx2",
+        "type": "snap"
+      },
+      {
+        "name": "Mangohud",
+        "desc": "Gaming performance overlay",
+        "cmd": "sudo apt install -y mangohud",
+        "type": "apt"
+      }
+    ]
+  },
+  {
+    "id": "gf-dev",
+    "icon": "\ud83d\udcbb",
+    "title": "SOFTWARE DEVELOPMENT & CONTAINERS (SUBSET)",
+    "items": [
+      {
+        "name": "Neovim",
+        "desc": "Hyperextensible Vim",
+        "cmd": "sudo apt install -y neovim",
+        "type": "apt"
+      },
+      {
+        "name": "Git",
+        "desc": "Version control",
+        "cmd": "sudo apt install -y git",
+        "type": "apt"
+      },
+      {
+        "name": "Podman",
+        "desc": "Daemonless container engine",
+        "cmd": "sudo apt install -y podman",
+        "type": "apt"
+      },
+      {
+        "name": "Distrobox",
+        "desc": "Containerized dev environments",
+        "cmd": "sudo apt install -y distrobox",
+        "type": "apt"
+      },
+      {
+        "name": "Postman",
+        "desc": "API client",
+        "cmd": "sudo snap install postman",
+        "type": "snap"
+      },
+      {
+        "name": "DBeaver Community",
+        "desc": "Universal DB client",
+        "cmd": "sudo snap install dbeaver-ce",
+        "type": "snap"
+      },
+      {
+        "name": "IntelliJ IDEA Community",
+        "desc": "JVM IDE",
+        "cmd": "sudo snap install intellij-idea-community --classic",
+        "type": "snap"
+      },
+      {
+        "name": "PyCharm Community",
+        "desc": "Python IDE",
+        "cmd": "sudo snap install pycharm-community --classic",
+        "type": "snap"
+      },
+      {
+        "name": "Godot Engine",
+        "desc": "Open-source game engine",
+        "cmd": "sudo snap install godot-4",
+        "type": "snap"
+      },
+      {
+        "name": "Zellij",
+        "desc": "Terminal multiplexer/workspace",
+        "cmd": "curl -L https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz | tar xz -C /usr/local/bin",
+        "type": "manual"
+      },
+      {
+        "name": "Alacritty / Kitty",
+        "desc": "GPU-accelerated terminal emulators",
+        "cmd": "sudo apt install -y alacritty kitty",
+        "type": "apt"
+      }
+    ]
+  },
+  {
+    "id": "gf-sys",
+    "icon": "\ud83d\udee0\ufe0f",
+    "title": "SYSTEM UTILITIES, TWEAKS & MANAGEMENT",
+    "items": [
+      {
+        "name": "GNOME Tweaks",
+        "desc": "Deep GNOME customization",
+        "cmd": "sudo apt install -y gnome-tweaks",
+        "type": "apt"
+      },
+      {
+        "name": "Extension Manager",
+        "desc": "Install/manage GNOME Shell extensions",
+        "cmd": "sudo apt install -y gnome-shell-extension-manager",
+        "type": "apt"
+      },
+      {
+        "name": "Flatseal",
+        "desc": "Manage flatpak permissions (installs flatpak support first)",
+        "cmd": "sudo apt install -y flatpak && sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && flatpak install -y flathub com.github.tchx84.Flatseal",
+        "type": "manual"
+      },
+      {
+        "name": "Bottles",
+        "desc": "Wine prefix manager",
+        "cmd": "sudo snap install bottles",
+        "type": "snap"
+      },
+      {
+        "name": "Timeshift",
+        "desc": "System snapshot/restore",
+        "cmd": "sudo apt install -y timeshift",
+        "type": "apt"
+      },
+      {
+        "name": "Bitwarden",
+        "desc": "Password manager",
+        "cmd": "sudo snap install bitwarden",
+        "type": "snap"
+      },
+      {
+        "name": "GParted",
+        "desc": "Partition editor",
+        "cmd": "sudo apt install -y gparted",
+        "type": "apt"
+      },
+      {
+        "name": "Stacer",
+        "desc": "System optimizer/monitor GUI",
+        "cmd": "sudo snap install stacer",
+        "type": "snap"
+      },
+      {
+        "name": "BleachBit",
+        "desc": "Disk space cleaner",
+        "cmd": "sudo apt install -y bleachbit",
+        "type": "apt"
+      },
+      {
+        "name": "balenaEtcher",
+        "desc": "Write ISOs to USB (Fedora Media Writer equivalent)",
+        "cmd": "sudo snap install balena-etcher",
+        "type": "snap"
+      },
+      {
+        "name": "Baobab (Disk Usage Analyzer)",
+        "desc": "Visual disk usage",
+        "cmd": "sudo apt install -y baobab",
+        "type": "apt"
+      },
+      {
+        "name": "Syncthing",
+        "desc": "P2P continuous file sync",
+        "cmd": "sudo apt install -y syncthing",
+        "type": "apt"
+      },
+      {
+        "name": "LocalSend",
+        "desc": "Sovereign LAN file transfer",
+        "cmd": "sudo snap install localsend",
+        "type": "snap"
+      },
+      {
+        "name": "VSCodium",
+        "desc": "VS Code without MS telemetry/branding",
+        "cmd": "sudo snap install codium --classic",
+        "type": "snap"
+      },
+      {
+        "name": "Bambu Studio / OrcaSlicer",
+        "desc": "3D print slicers \u2014 download AppImages from each project's GitHub Releases",
+        "cmd": "echo \"Download Bambu Studio and OrcaSlicer .AppImage files from their GitHub Releases pages, then chmod +x and run\"",
+        "type": "manual"
+      },
+      {
+        "name": "AppImageLauncher",
+        "desc": "Manage AppImages as desktop apps (Gear Lever equivalent)",
+        "cmd": "sudo add-apt-repository -y ppa:appimagelauncher-team/stable && sudo apt update && sudo apt install -y appimagelauncher",
+        "type": "manual"
+      },
+      {
+        "name": "TextSnatcher",
+        "desc": "Screen OCR to clipboard",
+        "cmd": "pipx install textsnatcher",
+        "type": "pip"
+      },
+      {
+        "name": "Stremio",
+        "desc": "Media center / streaming hub",
+        "cmd": "sudo snap install stremio",
+        "type": "snap"
+      },
+      {
+        "name": "Czkawka",
+        "desc": "Duplicate file finder",
+        "cmd": "sudo snap install czkawka",
+        "type": "snap"
+      },
+      {
+        "name": "KeePassXC",
+        "desc": "Offline password manager",
+        "cmd": "sudo apt install -y keepassxc",
+        "type": "apt"
+      },
+      {
+        "name": "Htop / Btop",
+        "desc": "Terminal process monitors",
+        "cmd": "sudo apt install -y htop btop",
+        "type": "apt"
+      },
+      {
+        "name": "Gnome-Firmware",
+        "desc": "Firmware update manager (fwupd GUI)",
+        "cmd": "sudo apt install -y gnome-firmware",
+        "type": "apt"
+      },
+      {
+        "name": "Guake",
+        "desc": "Drop-down terminal",
+        "cmd": "sudo apt install -y guake",
+        "type": "apt"
+      },
+      {
+        "name": "Waydroid",
+        "desc": "Android container \u2014 run \"sudo waydroid session start\" after install",
+        "cmd": "curl https://raw.githubusercontent.com/waydroid/waydroid/main/tools/setup.sh | sudo bash -s init",
+        "type": "manual"
+      },
+      {
+        "name": "Celluloid",
+        "desc": "GNOME mpv front-end",
+        "cmd": "sudo apt install -y celluloid",
+        "type": "apt"
+      },
+      {
+        "name": "Boxes (GNOME Boxes)",
+        "desc": "VM manager",
+        "cmd": "sudo apt install -y gnome-boxes",
+        "type": "apt"
+      }
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const state = {};
+CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = false; }));
+let filter = 'all';
+let search = '';
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  CATS.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'category'; el.id = `cat-${cat.id}`;
+    const total = cat.items.length;
+    const done = cat.items.filter((_,i) => state[`${cat.id}_${i}`]).length;
+    const pct = total ? (done/total*100) : 0;
+    el.innerHTML = `
+      <div class="cat-header" onclick="toggleCat('${cat.id}')">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-title">${cat.title}</span>
+        <span class="cat-badge ${done===total?'done':''}" id="badge-${cat.id}">${done}/${total}</span>
+        <span class="cat-toggle">▼</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-${cat.id}" style="width:${pct}%"></div></div>
+      <div class="items" id="items-${cat.id}">
+        ${cat.items.map((it,i) => {
+          const key=`${cat.id}_${i}`, checked=state[key];
+          return `<label class="item ${checked?'checked':''}" id="item-${key}" onclick="toggleItem('${key}','${cat.id}')">
+            <div class="check-box">${checked?'✓':''}</div>
+            <div class="item-info">
+              <div class="item-name">${it.name}<span class="tag tag-${it.type}">${it.type}</span></div>
+              <div class="item-desc">${it.desc}</div>
+              <div class="item-cmd">${it.cmd}</div>
+            </div>
+          </label>`;
+        }).join('')}
+      </div>`;
+    grid.appendChild(el);
+  });
+  applyFilter();
+}
+
+function toggleCat(catId) { document.getElementById(`cat-${catId}`).classList.toggle('collapsed'); }
+
+function toggleItem(key, catId) {
+  state[key] = !state[key];
+  const el = document.getElementById(`item-${key}`);
+  el.classList.toggle('checked', state[key]);
+  el.querySelector('.check-box').textContent = state[key] ? '✓' : '';
+  updateBadge(catId);
+  updateCount();
+}
+
+function updateBadge(catId) {
+  const cat = CATS.find(c=>c.id===catId);
+  const total=cat.items.length, done=cat.items.filter((_,i)=>state[`${catId}_${i}`]).length;
+  const pct=total?(done/total*100):0;
+  document.getElementById(`badge-${catId}`).textContent=`${done}/${total}`;
+  document.getElementById(`badge-${catId}`).className=`cat-badge ${done===total?'done':''}`;
+  document.getElementById(`prog-${catId}`).style.width=pct+'%';
+}
+
+function filterMode(mode) {
+  filter = mode;
+  ['all','pending','done'].forEach(m => document.getElementById(`filter-${m}`).classList.toggle('active', m===mode));
+  applyFilter();
+}
+function searchItems(val) { search = val.toLowerCase(); applyFilter(); }
+
+function applyFilter() {
+  CATS.forEach(cat => {
+    let visCount = 0;
+    cat.items.forEach((it,i) => {
+      const key=`${cat.id}_${i}`;
+      const el = document.getElementById(`item-${key}`);
+      if (!el) return;
+      const matchesSearch = !search || it.name.toLowerCase().includes(search) || it.desc.toLowerCase().includes(search);
+      const matchesFilter = filter==='all' || (filter==='done' && state[key]) || (filter==='pending' && !state[key]);
+      const show = matchesSearch && matchesFilter;
+      el.classList.toggle('hidden', !show);
+      if (show) visCount++;
+    });
+    document.getElementById(`cat-${cat.id}`).style.display = visCount ? '' : 'none';
+  });
+}
+
+function selectAll() {
+  CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = true; }));
+  buildGrid();
+  updateCount();
+}
+
+function clearAll() {
+  CATS.forEach(cat => cat.items.forEach((_,i) => { state[`${cat.id}_${i}`] = false; }));
+  buildGrid();
+  updateCount();
+}
+
+function updateCount() {
+  let n = 0;
+  CATS.forEach(cat => cat.items.forEach((_,i) => { if (state[`${cat.id}_${i}`]) n++; }));
+  document.getElementById('totalCount').textContent = n;
+}
+
+function collectSelected() {
+  const out = [];
+  CATS.forEach(cat => cat.items.forEach((it,i) => { if (state[`${cat.id}_${i}`]) out.push({...it, cat: cat.title}); }));
+  return out;
+}
+
+function generateScript() {
+  const items = collectSelected();
+  const panel = document.getElementById('out');
+  if (!items.length) {
+    document.getElementById('outCode').textContent = '# No apps selected — check some boxes above first.';
+    panel.classList.add('visible');
+    return;
+  }
+  const needsSnap = items.some(it => it.type==='snap');
+  const needsPip = items.some(it => it.type==='pip');
+
+  let byCat = {};
+  items.forEach(it => { (byCat[it.cat] = byCat[it.cat] || []).push(it); });
+
+  let script = `#!/usr/bin/env bash
+# ══════════════════════════════════════════════════════════════
+# UNI-STALLER GAP-FILL by Tinker-Labs // UBUNTU — GENERAL DESKTOP APPS
+# Companion to tinker_ubuntu.sh — covers what CATS.ubuntu doesn't
+# bash tinker_ubuntu_gapfill.sh
+# ══════════════════════════════════════════════════════════════
+set -euo pipefail
+GREEN="\\033[0;32m"; BLUE="\\033[0;34m"; AMBER="\\033[0;33m"; RESET="\\033[0m"
+ok() { echo -e "\${GREEN}[OK]\${RESET} $*"; }
+warn() { echo -e "\${AMBER}[WARN]\${RESET} $*"; }
+step() { echo -e "\${BLUE}══ $* \${RESET}"; }
+echo -e "\U1F9E1 \${GREEN}UNI-STALLER GAP-FILL // UBUNTU DEPLOYMENT\${RESET}"
+
+step "0 — apt update"
+sudo apt update || warn "apt update failed — continuing anyway"
+ok "apt index refreshed"
+`;
+
+  if (needsSnap) {
+    script += `
+step "0b — snapd"
+sudo apt install -y snapd || warn "snapd may already be installed"
+ok "snapd ready"
+`;
+  }
+  if (needsPip) {
+    script += `
+step "0c — pipx (for pip-installed tools)"
+sudo apt install -y pipx || true
+pipx ensurepath || true
+ok "pipx ready"
+`;
+  }
+
+  let n = 1;
+  Object.keys(byCat).forEach(catTitle => {
+    script += `\nstep "${n} — ${catTitle}"\n`;
+    byCat[catTitle].forEach(it => {
+      script += `echo "  → ${it.name}"\n${it.cmd} || warn "${it.name} failed — check manually"\n`;
+    });
+    n++;
+  });
+
+  script += `
+echo ""
+echo -e "\U1F9E1 \${GREEN}GAP-FILL DEPLOYMENT COMPLETE\${RESET}"
+echo -e "  \${AMBER}→ Waydroid (if installed): run 'waydroid session start'\${RESET}"`;
+
+  document.getElementById('outCode').textContent = script;
+  panel.classList.add('visible');
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function copyScript() {
+  const code = document.getElementById('outCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '[ COPIED ✓ ]';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function downloadScript() {
+  const code = document.getElementById('outCode').textContent;
+  const blob = new Blob([code], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tinker_ubuntu_gapfill.sh';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+buildGrid();
+updateCount();
+
+</script>
+</body>
+</html>

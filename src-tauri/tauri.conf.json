@@ -37,6 +37,9 @@
     ],
     "category": "DeveloperTool",
     "shortDescription": "Universal software installer for sovereign stacks",
-    "longDescription": "Cross-platform installer generator and executor for Windows, Linux, macOS, and mobile targets. Part of the T1NK3R-V3R53 ecosystem."
+    "longDescription": "Cross-platform installer generator and executor for Windows, Linux, macOS, and mobile targets. Part of the T1NK3R-V3R53 ecosystem.",
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://github.com/Tinker-AI-Labs/The-Uni-Staller",
+    "publisher": "Tinker AI Labs"
   }
 }

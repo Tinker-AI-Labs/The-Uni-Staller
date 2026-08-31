@@ -1,0 +1,42 @@
+# Maintainer: Tinker AI Labs <https://github.com/Tinker-AI-Labs>
+#
+# Tauri v2 has no pacman bundle target (`tauri build --bundles` offers only
+# deb, rpm and appimage on Linux), so Arch packaging wraps the already-built
+# release binary instead of building inside makepkg. Run ../../build-arch-local.sh
+# rather than calling makepkg directly — it does the tauri build first.
+
+pkgname=uni-staller
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Universal software installer for sovereign stacks — T1NK3R-V3R53"
+arch=('x86_64' 'aarch64')
+url="https://github.com/Tinker-AI-Labs/The-Uni-Staller"
+license=('GPL-3.0-or-later')
+depends=('webkit2gtk-4.1' 'gtk3' 'libayatana-appindicator' 'librsvg' 'openssl')
+optdepends=('ollama: local companion models pulled by the generated scripts')
+options=('!strip' '!debug')
+
+# No source=() — the binary is built from the working tree beforehand.
+# $startdir is packaging/arch, so the project root is two levels up.
+
+package() {
+  local root
+  root="$(realpath "$startdir/../..")"
+
+  local bin="$root/src-tauri/target/release/uni-staller"
+  if [ ! -x "$bin" ]; then
+    echo "error: $bin not found. Run build-arch-local.sh, not makepkg directly." >&2
+    return 1
+  fi
+
+  install -Dm755 "$bin" "$pkgdir/usr/bin/uni-staller"
+  install -Dm644 "$root/packaging/com.tinkerverse.uni-staller.desktop" \
+    "$pkgdir/usr/share/applications/com.tinkerverse.uni-staller.desktop"
+  install -Dm644 "$root/packaging/com.tinkerverse.uni-staller.metainfo.xml" \
+    "$pkgdir/usr/share/metainfo/com.tinkerverse.uni-staller.metainfo.xml"
+
+  for size in 32 128; do
+    install -Dm644 "$root/src-tauri/icons/${size}x${size}.png" \
+      "$pkgdir/usr/share/icons/hicolor/${size}x${size}/apps/com.tinkerverse.uni-staller.png"
+  done
+}

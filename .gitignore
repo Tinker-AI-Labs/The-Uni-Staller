@@ -1,9 +1,26 @@
 /src-tauri/target/
 /node_modules/
 /src-tauri/gen/
+.DS_Store
+
+# Build outputs, one per packaging target
 *.rpm
 *.deb
 *.AppImage
 *.msi
 *.exe
-.DS_Store
+*.pkg.tar.zst
+*.flatpak
+
+# makepkg work dirs
+/packaging/arch/pkg/
+/packaging/arch/src/
+
+# flatpak-builder scratch + the offline source manifests it generates
+/.flatpak-builder/
+/.flatpak-tools/
+/build-dir/
+/repo/
+/.flatpak-local-manifest.yml
+generated-sources.json
+generated-sources-npm.json

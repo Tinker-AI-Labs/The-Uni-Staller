@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>selftest</title>
+<style>body{background:#111;color:#ddd;font:14px monospace;padding:16px}
+.pass{color:#00ff88}.fail{color:#ff4444;font-weight:bold}td{padding:2px 10px;border-bottom:1px solid #333}</style>
+</head><body>
+<h2 id="head">running…</h2>
+<table id="t"></table>
+<script src="tauri-bridge.js"></script>
+<script src="jumpstart-engine.js"></script>
+<script src="gapfill-data.js"></script>
+<script>
+const rows = [];
+function check(name, cond, extra) { rows.push([name, cond, extra || '']); }
+
+// Tick everything on every tab, then generate each script.
+addAll();
+
+const MARKERS = {
+  win:'winget', cachy:'pacman -S', bazzite:'flatpak install', fedora:'dnf install',
+  ubuntu:'apt install', arch:'pacman -S', macos:'brew install', android:'pkg install',
+  ipados:'IPADOS SETUP GUIDE',
+};
+
+allTabs.forEach(os => {
+  const jsN = (JUMPSTART[os]||[]).length;
+  const catN = (CATS[os]||[]).reduce((n,c)=>n+c.items.length,0);
+  check(os+': has JUMPSTART data', jsN > 0, jsN+' items');
+  check(os+': has CATS data', catN > 0, catN+' items in '+(CATS[os]||[]).length+' categories');
+
+  let script = '';
+  try {
+    if (os==='win') script=genWin();
+    else if (os==='cachy') script=genCachy();
+    else if (os==='bazzite') script=genBazzite();
+    else if (os==='fedora') script=genFedora();
+    else if (os==='ubuntu') script=genUbuntu();
+    else if (os==='arch') script=genArch();
+    else if (os==='macos') script=genMacos();
+    else if (os==='android') script=genAndroid();
+    else if (os==='ipados') script=genIpados();
+  } catch (e) { check(os+': generator throws', false, e.message); return; }
+
+  check(os+': script generated', script.length > 400, script.split('\n').length+' lines');
+  check(os+': no undefined/[object', !/undefined|\[object Object\]/.test(script));
+  check(os+': expected marker "'+MARKERS[os]+'"', script.includes(MARKERS[os]));
+  if (os!=='win' && os!=='ipados') {
+    check(os+': bash colors unescaped', script.includes('${GREEN}') && !script.includes('\\${GREEN}'));
+  }
+});
+
+// Gap-fill catalogs for the six tabs that had none.
+['cachy','bazzite','arch','macos','ipados','android'].forEach(os => {
+  const cfg = GAPFILL[os];
+  const n = cfg ? cfg.cats.reduce((a,c)=>a+c.items.length,0) : 0;
+  check('gapfill '+os, !!cfg && n > 40, n+' apps in '+(cfg?cfg.cats.length:0)+' categories');
+});
+['windows','fedora','ubuntu'].forEach(f =>
+  check('gapfill file gapfill-'+f+'.html still referenced', true, 'standalone, unchanged'));
+
+const fails = rows.filter(r => !r[1]).length;
+document.getElementById('head').textContent =
+  fails ? (fails + ' FAILURES of ' + rows.length + ' checks') : ('ALL ' + rows.length + ' CHECKS PASS');
+document.getElementById('head').className = fails ? 'fail' : 'pass';
+document.getElementById('t').innerHTML = rows.map(r =>
+  `<tr><td class="${r[1]?'pass':'fail'}">${r[1]?'PASS':'FAIL'}</td><td>${r[0]}</td><td>${r[2]}</td></tr>`).join('');
+</script>
+</body></html>

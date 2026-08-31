@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Uni-Staller
+GenericName=Installer Generator
+Comment=Universal software installer for sovereign stacks
+Exec=uni-staller
+Icon=com.tinkerverse.uni-staller
+Terminal=false
+Categories=Development;
+Keywords=install;installer;bootstrap;package;setup;tinkerverse;
+StartupWMClass=Uni-Staller

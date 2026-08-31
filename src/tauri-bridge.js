@@ -8,6 +8,41 @@ const EVENT = IS_TAURI ? window.__TAURI__.event : null;
 let tauriPlatform = null;
 let tauriPkgManagers = [];
 
+// Shared state read by app.js (e.g. applyOR()) — must exist before any
+// script tries to read them, and before detection has actually run.
+let detectedOS = 'win';
+let detectedArch = 'unknown';
+
+// The 9 OS tabs that actually exist in index.html (content-<id> / tab-<id>).
+const allTabs = ['win','cachy','bazzite','fedora','ubuntu','arch','macos','ipados','android'];
+
+// ═══════════════════════════════════════════════════════════════
+// TAB SWITCHING — pure UI, matches styles.css's .tab.active /
+// .tab-content.active convention exactly (verified against styles.css).
+// ═══════════════════════════════════════════════════════════════
+function switchTab(os) {
+  if (!allTabs.includes(os)) os = 'win';
+  if (typeof activeTab !== 'undefined') activeTab = os;
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+  const tabEl = document.getElementById('tab-' + os);
+  const contentEl = document.getElementById('content-' + os);
+  if (tabEl) tabEl.classList.add('active');
+  if (contentEl) contentEl.classList.add('active');
+
+  // Cross-OS banner: only show on the tab you're viewing, only when it
+  // isn't the detected OS. (xbanner-<os> elements already exist in HTML.)
+  allTabs.forEach(t => {
+    const banner = document.getElementById('xbanner-' + t);
+    if (banner) banner.style.display = (t === os && os !== detectedOS) ? '' : 'none';
+  });
+
+  if (typeof updateCount === 'function') updateCount();
+}
+window.switchTab = switchTab;
+
 // Override detectOS when inside Tauri — use Rust's native detection
 if (IS_TAURI) {
   console.log('[Uni-Staller] Tauri v2 native bridge active');
@@ -20,26 +55,35 @@ if (IS_TAURI) {
 
       let newOS = tauriPlatform.os_id;
       if (newOS === 'linux') newOS = 'cachy';
+      if (!allTabs.includes(newOS)) newOS = 'win';
       detectedOS = newOS;
     } catch(e) {
-      console.error('Tauri detect_platform failed:', e);
-      detectOS(); // real browser-based fallback in app.js (was: nonexistent detectOS_legacy)
-      return;
+      console.error('[Uni-Staller] detect_platform failed, defaulting to win:', e);
+      detectedOS = 'win';
+      detectedArch = 'unknown';
     }
-    renderDetect();
-    renderArchBadge();
 
-    if (detectedOS === 'linux') switchTab('cachy');
-    else if (allTabs.includes(detectedOS)) switchTab(detectedOS);
-    else switchTab('win');
+    const osBadge = document.getElementById('osBadge');
+    const archBadge = document.getElementById('archBadge');
+    const banner = document.getElementById('detectBanner');
 
-    const available = tauriPkgManagers.filter(p => p.available).map(p => p.name);
-    if (available.length > 0) {
-      const banner = document.getElementById('detectBanner');
-      if (banner) {
-        banner.innerHTML += `<br><span style="color:var(--green)">Available: ${available.join(', ')}</span>`;
-      }
+    if (osBadge) {
+      osBadge.className = 'os-badge ' + detectedOS;
+      osBadge.textContent = detectedOS.toUpperCase();
     }
+    if (archBadge) {
+      const archClass = detectedArch === 'aarch64' ? 'aarch64' : detectedOS;
+      archBadge.className = 'os-badge ' + archClass;
+      archBadge.textContent = String(detectedArch).toUpperCase();
+    }
+    if (banner) {
+      banner.className = 'detect-banner ' + detectedOS;
+      const available = (tauriPkgManagers || []).filter(p => p.available).map(p => p.name);
+      banner.textContent = 'Detected: ' + detectedOS.toUpperCase() +
+        (available.length ? ' — package managers: ' + available.join(', ') : '');
+    }
+
+    switchTab(detectedOS);
   }
 
   window.detectOS = detectOS_tauri;
@@ -49,6 +93,45 @@ if (IS_TAURI) {
     const { step, status, output } = event.payload;
     appendToTerminal(step, status, output);
   });
+}
+
+// Plain-browser fallback: no Rust backend, so read the user agent.
+// Linux can't be narrowed past "some Linux" here — cachy is the tab
+// that opens, and every other tab still works in cross-OS mode.
+if (!IS_TAURI) {
+  window.detectOS = function detectOS_browser() {
+    const ua = navigator.userAgent || '';
+    const uaData = navigator.userAgentData || null;
+    const plat = (uaData && uaData.platform) || ua;
+
+    if (/Android/i.test(ua)) detectedOS = 'android';
+    else if (/iPad|iPhone|iPod/i.test(ua) || (/Mac/i.test(plat) && navigator.maxTouchPoints > 1)) detectedOS = 'ipados';
+    else if (/Win/i.test(plat)) detectedOS = 'win';
+    else if (/Mac/i.test(plat)) detectedOS = 'macos';
+    else if (/Ubuntu/i.test(ua)) detectedOS = 'ubuntu';
+    else if (/Fedora/i.test(ua)) detectedOS = 'fedora';
+    else if (/Linux|X11/i.test(plat)) detectedOS = 'cachy';
+    else detectedOS = 'win';
+
+    detectedArch = /aarch64|arm64/i.test(ua) ? 'aarch64'
+                 : /x86_64|Win64|x64/i.test(ua) ? 'x86_64'
+                 : 'unknown';
+
+    const osBadge = document.getElementById('osBadge');
+    const archBadge = document.getElementById('archBadge');
+    const banner = document.getElementById('detectBanner');
+    if (osBadge) { osBadge.className = 'os-badge ' + detectedOS; osBadge.textContent = detectedOS.toUpperCase(); }
+    if (archBadge) {
+      archBadge.className = 'os-badge ' + (detectedArch === 'aarch64' ? 'aarch64' : detectedOS);
+      archBadge.textContent = detectedArch.toUpperCase();
+    }
+    if (banner) {
+      banner.className = 'detect-banner ' + detectedOS;
+      banner.textContent = 'Detected from browser: ' + detectedOS.toUpperCase() +
+        ' — package managers are not probed outside the Tauri app. Switch tabs freely.';
+    }
+    switchTab(detectedOS);
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════
