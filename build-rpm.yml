@@ -1,0 +1,144 @@
+name: build-rpm
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build-x86_64:
+    runs-on: ubuntu-24.04
+    container:
+      image: fedora:latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Fedora build dependencies
+        run: |
+          sudo dnf install -y \
+            gcc \
+            gcc-c++ \
+            make \
+            webkit2gtk4.1-devel \
+            gtk3-devel \
+            libappindicator-gtk3-devel \
+            librsvg2-devel \
+            patchelf \
+            rpm-build \
+            curl \
+            wget \
+            file \
+            openssl-devel \
+            pkg-config
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install JS deps
+        run: npm install
+
+      - name: Build RPM (x86_64)
+        run: npx tauri build --bundles rpm
+
+      - name: Upload RPM as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: uni-staller-rpm-x86_64
+          path: |
+            src-tauri/target/release/bundle/rpm/*.rpm
+
+      - name: Create Release (x86_64)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            src-tauri/target/release/bundle/rpm/*.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-aarch64:
+    # Native GitHub-hosted ARM64 runner. fedora:latest is a multi-arch
+    # image, so Docker pulls the aarch64 variant automatically here —
+    # no cross-compiler needed (and Fedora's cross-gcc packages only
+    # officially support building kernels, not full userspace/GUI apps,
+    # so a real cross-compile path for this app doesn't exist on Fedora).
+    runs-on: ubuntu-24.04-arm
+    container:
+      image: fedora:latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Fedora build dependencies
+        run: |
+          sudo dnf install -y \
+            gcc \
+            gcc-c++ \
+            make \
+            webkit2gtk4.1-devel \
+            gtk3-devel \
+            libappindicator-gtk3-devel \
+            librsvg2-devel \
+            patchelf \
+            rpm-build \
+            curl \
+            wget \
+            file \
+            openssl-devel \
+            pkg-config
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install JS deps
+        run: npm install
+
+      - name: Build RPM (aarch64)
+        run: npx tauri build --bundles rpm
+
+      - name: Rename artifacts for aarch64
+        run: |
+          cd src-tauri/target/release/bundle/rpm
+          for f in *.rpm; do [ -f "$f" ] && mv "$f" "${f%.rpm}-aarch64.rpm"; done
+
+      - name: Upload RPM as artifact (aarch64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: uni-staller-rpm-aarch64
+          path: |
+            src-tauri/target/release/bundle/rpm/*-aarch64.rpm
+
+      - name: Create Release (aarch64)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            src-tauri/target/release/bundle/rpm/*-aarch64.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
