@@ -2595,7 +2595,7 @@ echo -e "⚡ \${GREEN}T1NK3R-VER53 // ${label} DEPLOYMENT INITIATED\${RESET}"`;
 
 // Shared tail: CLI AI tools → Ollama companions → manual notes.
 function unixTail(b, opts) {
-  const { ollamaInstall, services, closing } = opts;
+  const { ollamaInstall, services, servicesReportOwnStatus, closing } = opts;
   return `
 # ── CLI AI TOOLS ──────────────────────────────────────────────
 step "CLI AI tools"
@@ -2614,7 +2614,7 @@ ok "Companions pulled"
 ${services ? `# ── SERVICES + GROUPS ─────────────────────────────────────────
 step "Services + user groups"
 ${services}
-ok "Services configured"
+${servicesReportOwnStatus ? '' : 'ok "Services configured"'}
 ` : ''}
 ${b.manual.length ? `# ── MANUAL STEPS (not automated on purpose) ───────────────────
 ${b.manual.join('\n')}
@@ -2766,12 +2766,21 @@ function genArch() {
   // Only touch the Docker daemon (and the docker group) when a Docker package
   // was actually selected; nothing else is enabled or started here.
   const hasDocker = pacman.some(n => n.split(/\s+/).includes('docker'));
+  // Runtimes are only installed for the item types that need them.
+  const needPipx = b.pip.length > 0, needRust = b.cargo.length > 0, needNode = b.npm.length > 0;
+  // base-devel + git: makepkg needs both for AUR builds; cargo install compiles
+  // crates and needs a C compiler/linker (gcc, make) from base-devel.
+  const needBuild = aur.length > 0 || needRust;
+  // realtime-privileges only when an audio or DAW category item is selected.
+  const needRealtime = CATS.arch.some(c => (c.id === 'a-daw' || c.id === 'a-audio') &&
+    c.items.some((_, i) => catState.arch && catState.arch[`${c.id}_${i}`]));
+  const groups = ['realtime', 'audio', 'video', 'input', 'storage'].concat(hasDocker ? ['docker'] : []);
   return `${unixHeader('ARCH LINUX', 'pacman', 'pacman not found — is this Arch?')}
 
-# ── STEP 1: BASE-DEVEL + MIRRORS ──────────────────────────────
+${needBuild ? `# ── STEP 1: BASE-DEVEL + GIT ──────────────────────────────────
 step "1/6 — base-devel + git"
 sudo pacman -S --needed --noconfirm base-devel git || warn "base-devel issue"
-
+` : '# ── STEP 1: base-devel + git not needed (no AUR or cargo items selected)\n'}
 ${aur.length ? `# ── STEP 2: AUR HELPER ────────────────────────────────────────
 step "2/6 — AUR helper (yay)"
 AUR_HELPER=""
@@ -2788,15 +2797,26 @@ else ok "AUR helper: $AUR_HELPER"; fi
 ` : '# ── STEP 2: No AUR packages selected — yay not installed\n'}
 # ── STEP 3: FLATPAK + RUNTIMES ────────────────────────────────
 step "3/6 — Flatpak + language runtimes"
-sudo pacman -S --needed --noconfirm flatpak fuse2 python-pipx rustup || true
+sudo pacman -S --needed --noconfirm flatpak fuse2 || warn "flatpak/fuse2 install issue"
 sudo flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || warn "could not add the Flathub remote"
-rustup default stable 2>/dev/null || true
-pipx ensurepath || true
-if [[ ! -d "$HOME/.nvm" ]]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-  export NVM_DIR="$HOME/.nvm"; source "$NVM_DIR/nvm.sh"; nvm install --lts
+${needPipx || needRust || needNode ? `# pipx ensurepath and the nvm installer append to the shell rc files; record
+# them first so the script can say exactly which ones changed.
+RC_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile" "$HOME/.zshrc" "$HOME/.zprofile")
+rc_hash() { if [[ -e "$1" ]]; then sha256sum "$1" | cut -d' ' -f1; else echo absent; fi; }
+declare -A RC_BEFORE
+for f in "\${RC_FILES[@]}"; do RC_BEFORE[$f]=$(rc_hash "$f"); done
+` : ''}${needRust ? `sudo pacman -S --needed --noconfirm rustup || warn "rustup install issue"
+rustup default stable || warn "rustup default stable failed"
+` : ''}${needPipx ? `sudo pacman -S --needed --noconfirm python-pipx || warn "pipx install issue"
+pipx ensurepath || warn "pipx ensurepath failed"
+` : ''}${needNode ? `if [[ ! -d "$HOME/.nvm" ]]; then
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash || warn "nvm install failed"
+  export NVM_DIR="$HOME/.nvm"; source "$NVM_DIR/nvm.sh" && nvm install --lts || warn "Node LTS install failed"
 fi
-ok "Runtimes ready"
+` : ''}${needPipx || needRust || needNode ? `RC_EDITED=()
+for f in "\${RC_FILES[@]}"; do [[ "\${RC_BEFORE[$f]}" == "$(rc_hash "$f")" ]] || RC_EDITED+=("$f"); done
+if (( \${#RC_EDITED[@]} )); then ok "Shell rc files edited: \${RC_EDITED[*]}"; else ok "No shell rc files were edited"; fi
+` : '# No pipx/rustup/nvm items selected — runtimes and shell rc files left alone\n'}ok "Flatpak and runtimes step done"
 
 ${pacman.length ? `# ── STEP 4: PACMAN PACKAGES ───────────────────────────────────
 step "4/6 — pacman packages"
@@ -2827,7 +2847,20 @@ ${unixTail(b, {
   sudo pacman -S --needed --noconfirm ollama || curl -fsSL https://ollama.com/install.sh | sh
 fi
 sudo systemctl enable --now ollama 2>/dev/null || true`,
-  services: `sudo usermod -aG ${hasDocker ? 'docker,' : ''}realtime,audio,video,input,storage "$USER" 2>/dev/null || true${hasDocker ? '\nsudo systemctl enable --now docker 2>/dev/null || true' : ''}`,
+  servicesReportOwnStatus: true,
+  services: `${needRealtime ? `sudo pacman -S --needed --noconfirm realtime-privileges || warn "realtime-privileges install failed"
+` : ''}GROUPS_ADDED=(); GROUPS_SKIPPED=(); GROUPS_FAILED=()
+for g in ${groups.join(' ')}; do
+  if ! getent group "$g" >/dev/null; then GROUPS_SKIPPED+=("$g")
+  elif sudo usermod -aG "$g" "$USER"; then GROUPS_ADDED+=("$g")
+  else GROUPS_FAILED+=("$g"); fi
+done
+echo "  groups added:   \${GROUPS_ADDED[*]:-none}"
+echo "  groups skipped (do not exist on this system): \${GROUPS_SKIPPED[*]:-none}"
+SERVICE_FAIL=0
+${hasDocker ? `sudo systemctl enable --now docker || { warn "could not enable docker.service"; SERVICE_FAIL=1; }
+` : ''}if (( \${#GROUPS_FAILED[@]} )); then warn "usermod failed for: \${GROUPS_FAILED[*]}"; SERVICE_FAIL=1; fi
+if (( SERVICE_FAIL )); then warn "Services/groups step finished with failures"; else ok "Services configured"; fi`,
   closing: [
     '⚡ ${GREEN}T1NK3R-VER53 // ARCH DEPLOYMENT COMPLETE${RESET}',
     '  ${AMBER}→ Never partial-upgrade: use pacman -Syu, not -Sy pkg${RESET}',
