@@ -1421,7 +1421,7 @@ const CATS = {
         {name:'reflector mirror sort', desc:'Fast mirrors first — everything after depends on it', cmd:'sudo pacman -S --needed --noconfirm reflector', type:'pacman'},
         {name:'yay AUR helper', desc:'Auto-installed if missing', cmd:'# Auto-detected in script', type:'aur'},
         {name:'multilib repo', desc:'Required for Steam and 32-bit libs', cmd:'sudo sed -i "/^#\\[multilib\\]/,+1s/^#//" /etc/pacman.conf && sudo pacman -Sy', type:'manual'},
-        {name:'Flatpak + Flathub', desc:'App runtime', cmd:'sudo pacman -S --needed --noconfirm flatpak', type:'pacman'},
+        {name:'Flatpak + Flathub + FUSE', desc:'Flatpak runtime, FUSE for AppImages and the Flathub remote — needed before any Flatpak app', cmd:'sudo pacman -S --needed --noconfirm flatpak fuse2 && flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo', type:'pacman'},
         {name:'pipx', desc:'Isolated Python tool runner', cmd:'sudo pacman -S --needed --noconfirm python-pipx', type:'pacman'},
         {name:'nvm → Node LTS', desc:'Required for CLI AI tools', cmd:'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts', type:'manual'},
         {name:'rustup', desc:'Rust toolchain manager', cmd:'sudo pacman -S --needed --noconfirm rustup', type:'pacman'},
@@ -1490,15 +1490,12 @@ const CATS = {
         {name:'Blender', desc:'3D modeling and animation', cmd:'sudo pacman -S --needed --noconfirm blender', type:'pacman', license:'GPL-3.0-or-later', help:'https://fund.blender.org/', helpType:'help'},
         {name:'Bevy (Rust engine)', desc:'ECS game engine — cargo template', cmd:'cargo install cargo-generate', type:'cargo'},
         {name:'LÖVE 2D', desc:'Lua game framework', cmd:'sudo pacman -S --needed --noconfirm love', type:'pacman'},
-        {name:'FreeCAD', desc:'Parametric CAD', cmd:'sudo pacman -S --needed --noconfirm freecad', type:'pacman'},
-        {name:'OpenSCAD', desc:'Script-driven CAD', cmd:'sudo pacman -S --needed --noconfirm openscad', type:'pacman'},
       ]},
     { id:'a-daw', icon:'🎚️', title:'DAWs',
       items:[
         {name:'Ardour', desc:'Full recording studio', cmd:'sudo pacman -S --needed --noconfirm ardour', type:'pacman', license:'GPL-2.0-or-later', help:'https://ardour.org/', helpType:'site'},
         {name:'Qtractor', desc:'Lighter audio and MIDI sequencer', cmd:'sudo pacman -S --needed --noconfirm qtractor', type:'pacman', license:'GPL-2.0-or-later', help:'https://qtractor.sourceforge.io/', helpType:'site'},
         {name:'LMMS', desc:'Beat-making for beginners. Stable build is 1.2.2; 1.3 is in testing', cmd:'sudo pacman -S --needed --noconfirm lmms', type:'pacman', license:'GPL-2.0-or-later', help:'https://lmms.io/get-involved/', helpType:'help'},
-        {name:'Audacity', desc:'Audio editor & recorder', cmd:'sudo pacman -S --needed --noconfirm audacity', type:'pacman'},
         {name:'Zrythm', desc:'Modern modular DAW', cmd:'yay -S --needed --noconfirm zrythm', type:'aur'},
         {name:'Mixxx', desc:'DJ software — T1NK3R.FM', cmd:'sudo pacman -S --needed --noconfirm mixxx', type:'pacman'},
       ]},
@@ -1526,7 +1523,6 @@ const CATS = {
         {name:'HandBrake', desc:'Video converter', cmd:'sudo pacman -S --needed --noconfirm handbrake', type:'pacman', license:'GPL-2.0-only', help:'https://handbrake.fr/', helpType:'site'},
         {name:'FFmpeg', desc:'Command-line audio/video converter', cmd:'sudo pacman -S --needed --noconfirm ffmpeg', type:'pacman', license:'GPL-3.0-only', help:'https://ffmpeg.org/donations.html', helpType:'help'},
         {name:'Kodi', desc:'Media center — T1NK3R.TV frontend', cmd:'sudo pacman -S --needed --noconfirm kodi', type:'pacman'},
-        {name:'Jellyfin Server', desc:'Local media streaming server', cmd:'yay -S --needed --noconfirm jellyfin-server jellyfin-web', type:'aur'},
       ]},
     { id:'a-art', icon:'🎨', title:'ART / VIDEO',
       items:[
@@ -1540,7 +1536,6 @@ const CATS = {
         {name:'Darktable', desc:'RAW photo workflow', cmd:'sudo pacman -S --needed --noconfirm darktable', type:'pacman'},
         {name:'OBS Studio', desc:'Streaming & screen recording', cmd:'sudo pacman -S --needed --noconfirm obs-studio', type:'pacman'},
         {name:'Upscayl', desc:'AI image upscaler', cmd:'yay -S --needed --noconfirm upscayl-bin', type:'aur'},
-        {name:'FFmpeg', desc:'CLI multimedia toolkit', cmd:'sudo pacman -S --needed --noconfirm ffmpeg', type:'pacman'},
       ]},
     { id:'a-creai', icon:'🤖', title:'CREATIVE AI / ACE STACK',
       items:[
@@ -1625,7 +1620,7 @@ const CATS = {
         {name:'btop', desc:'Terminal system monitor', cmd:'sudo pacman -S --needed --noconfirm btop', type:'pacman', license:'Apache-2.0'},
         {name:'htop', desc:'Classic terminal monitor', cmd:'sudo pacman -S --needed --noconfirm htop', type:'pacman', license:'GPL'},
         {name:'nvtop', desc:'GPU monitor', cmd:'sudo pacman -S --needed --noconfirm nvtop', type:'pacman', license:'GPL-3.0-or-later'},
-        {name:'Gear Lever (AppImages)', desc:'Drag-and-drop AppImage manager', cmd:'sudo pacman -S --needed --noconfirm flatpak fuse2 && flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && flatpak install -y flathub it.mijorus.gearlever', type:'manual', help:'https://github.com/mijorus/gearlever', helpType:'site'},
+        {name:'Gear Lever (AppImages)', desc:'Drag-and-drop AppImage manager', cmd:'flatpak install -y flathub it.mijorus.gearlever', type:'flatpak', help:'https://github.com/mijorus/gearlever', helpType:'site'},
       ]},
     { id:'a-upgrades', icon:'⬆️', title:'UPGRADES / SYSTEM UPDATES',
       items:[
@@ -2777,6 +2772,9 @@ function genArch() {
   const aRe = /^(?:yay|paru) -S --needed --noconfirm ([^&|;]+)$/;
   const pacman = b.names('pacman', pRe), pacExtra = b.stray('pacman', pRe);
   const aur = b.names('aur', aRe);
+  // Only touch the Docker daemon (and the docker group) when a Docker package
+  // was actually selected; nothing else is enabled or started here.
+  const hasDocker = pacman.some(n => n.split(/\s+/).includes('docker'));
   return `${unixHeader('ARCH LINUX', 'pacman', 'pacman not found — is this Arch?')}
 
 # ── STEP 1: BASE-DEVEL + MIRRORS ──────────────────────────────
@@ -2799,8 +2797,8 @@ else ok "AUR helper: $AUR_HELPER"; fi
 
 # ── STEP 3: FLATPAK + RUNTIMES ────────────────────────────────
 step "3/6 — Flatpak + language runtimes"
-sudo pacman -S --needed --noconfirm flatpak python-pipx rustup || true
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
+sudo pacman -S --needed --noconfirm flatpak fuse2 python-pipx rustup || true
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
 rustup default stable 2>/dev/null || true
 pipx ensurepath || true
 if [[ ! -d "$HOME/.nvm" ]]; then
@@ -2834,8 +2832,7 @@ ${unixTail(b, {
   sudo pacman -S --needed --noconfirm ollama || curl -fsSL https://ollama.com/install.sh | sh
 fi
 sudo systemctl enable --now ollama 2>/dev/null || true`,
-  services: `sudo usermod -aG docker,realtime,audio,video,input,storage "$USER" 2>/dev/null || true
-sudo systemctl enable --now docker 2>/dev/null || true`,
+  services: `sudo usermod -aG ${hasDocker ? 'docker,' : ''}realtime,audio,video,input,storage "$USER" 2>/dev/null || true${hasDocker ? '\nsudo systemctl enable --now docker 2>/dev/null || true' : ''}`,
   closing: [
     '⚡ ${GREEN}T1NK3R-VER53 // ARCH DEPLOYMENT COMPLETE${RESET}',
     '  ${AMBER}→ Never partial-upgrade: use pacman -Syu, not -Sy pkg${RESET}',
