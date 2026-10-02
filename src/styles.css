@@ -216,6 +216,8 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .item-name{color:var(--text);line-height:1.4;}
 .item.checked .item-name{color:var(--dim);text-decoration:line-through;}
 .item-desc{color:var(--dim);font-size:10px;margin-top:1px;line-height:1.3;}
+.item-help{display:inline-block;margin-top:2px;font-size:9px;color:var(--dim);text-decoration:none;letter-spacing:.3px;opacity:.75;}
+.item-help:hover,.item-help:focus-visible{color:var(--cyan);opacity:1;text-decoration:underline;}
 .item-cmd{font-size:10px;color:var(--amber);margin-top:2px;overflow-wrap:anywhere;word-break:break-word;opacity:.6;}
 .tag{display:inline-block;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;vertical-align:middle;border:1px solid;}
 .tag-winget{border-color:#0078d4;color:#0078d4;} .tag-choco{border-color:#87cefa;color:#87cefa;}

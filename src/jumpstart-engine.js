@@ -34,8 +34,8 @@ const JUMPSTART = {
      cmd:'npm install -g @google/gemini-cli'},
     {id:'w_rust',    name:'Rust + Cargo', desc:'Systems lang — RTK, Yazi', tier:'dev',
      cmd:'winget install -e --id Rustlang.Rust.GNU --silent'},
-    {id:'w_rtk',     name:'RTK (Token Compression)', desc:'Token savings for Claude Code', tier:'dev',
-     cmd:'cargo install rtk && rtk init -g'},
+    {id:'w_rtk',     name:'RTK (Token Compression)', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
+     cmd:'winget install rtk-ai.rtk', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
     {id:'w_docker',  name:'Docker Desktop', desc:'Container engine', tier:'core',
      cmd:'winget install -e --id Docker.DockerDesktop --silent'},
     {id:'w_ollama',  name:'Ollama 0.17.1+', desc:'Local LLM runner — CVE patched', tier:'core',
@@ -76,8 +76,8 @@ const JUMPSTART = {
      cmd:'npm install -g @anthropic-ai/claude-code'},
     {id:'c_gemini',  name:'Gemini CLI', desc:'Google Gemini CLI — codegen layer', tier:'ai',
      cmd:'npm install -g @google/gemini-cli'},
-    {id:'c_rtk',     name:'RTK', desc:'Token compression for Claude Code', tier:'dev',
-     cmd:'cargo install rtk && rtk init -g'},
+    {id:'c_rtk',     name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
+     cmd:'cargo install --git https://github.com/rtk-ai/rtk', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
     {id:'c_yazi',    name:'Yazi File Manager', desc:'Iron Works themed terminal file manager', tier:'dev',
      cmd:'cargo install yazi-fm'},
     {id:'c_alfred',  name:'Alfred → qwen3:8b', desc:'Primary companion — always warm', tier:'ai',
@@ -112,8 +112,8 @@ const JUMPSTART = {
      cmd:'toolbox run --container tinker bash -c "npm install -g @anthropic-ai/claude-code"'},
     {id:'b_gemini',  name:'Gemini CLI', desc:'In toolbox container', tier:'ai',
      cmd:'toolbox run --container tinker bash -c "npm install -g @google/gemini-cli"'},
-    {id:'b_rtk',     name:'RTK (in toolbox)', desc:'Token compression for Claude Code', tier:'dev',
-     cmd:'toolbox run --container tinker bash -c "cargo install rtk && rtk init -g"'},
+    {id:'b_rtk',     name:'RTK (in toolbox)', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
+     cmd:'toolbox run --container tinker bash -c "cargo install --git https://github.com/rtk-ai/rtk"', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
     {id:'b_alfred',  name:'Alfred → qwen3:8b', desc:'Primary companion — always warm', tier:'ai',
      cmd:'ollama pull qwen3:8b'},
     {id:'b_steward', name:'Steward → deepseek-r1:14b', desc:'Safety watchdog', tier:'ai',
@@ -158,8 +158,8 @@ const JUMPSTART = {
      cmd:'npm install -g @anthropic-ai/claude-code'},
     {id:'f_gemini',  name:'Gemini CLI', desc:'Google Gemini CLI — codegen layer', tier:'ai',
      cmd:'npm install -g @google/gemini-cli'},
-    {id:'f_rtk',     name:'RTK', desc:'Token compression for Claude Code', tier:'dev',
-     cmd:'cargo install rtk && rtk init -g'},
+    {id:'f_rtk',     name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
+     cmd:'cargo install --git https://github.com/rtk-ai/rtk', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
     {id:'f_yazi',    name:'Yazi File Manager', desc:'Iron Works themed terminal file manager', tier:'dev',
      cmd:'sudo dnf install -y yazi'},
     {id:'f_alfred',  name:'Alfred → qwen3:8b', desc:'Primary companion — always warm', tier:'ai',
@@ -202,8 +202,8 @@ const JUMPSTART = {
      cmd:'npm install -g @anthropic-ai/claude-code'},
     {id:'u_gemini',  name:'Gemini CLI', desc:'Google Gemini CLI — codegen layer', tier:'ai',
      cmd:'npm install -g @google/gemini-cli'},
-    {id:'u_rtk',     name:'RTK', desc:'Token compression for Claude Code', tier:'dev',
-     cmd:'cargo install rtk && rtk init -g'},
+    {id:'u_rtk',     name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
+     cmd:'cargo install --git https://github.com/rtk-ai/rtk', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
     {id:'u_yazi',    name:'Yazi File Manager', desc:'Not in apt on LTS — build from cargo', tier:'dev',
      cmd:'cargo install yazi-fm yazi-cli'},
     {id:'u_alfred',  name:'Alfred → qwen3:8b', desc:'Primary companion — always warm', tier:'ai',
@@ -248,8 +248,8 @@ const JUMPSTART = {
      cmd:'npm install -g @anthropic-ai/claude-code'},
     {id:'a_gemini',  name:'Gemini CLI', desc:'Google Gemini CLI — codegen layer', tier:'ai',
      cmd:'npm install -g @google/gemini-cli'},
-    {id:'a_rtk',     name:'RTK', desc:'Token compression for Claude Code', tier:'dev',
-     cmd:'cargo install rtk && rtk init -g'},
+    {id:'a_rtk',     name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
+     cmd:'cargo install --git https://github.com/rtk-ai/rtk', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
     {id:'a_yazi',    name:'Yazi File Manager', desc:'Iron Works themed terminal file manager', tier:'dev',
      cmd:'sudo pacman -S --needed --noconfirm yazi'},
     {id:'a_alfred',  name:'Alfred → qwen3:8b', desc:'Primary companion — always warm', tier:'ai',
@@ -290,8 +290,8 @@ const JUMPSTART = {
      cmd:'npm install -g @anthropic-ai/claude-code'},
     {id:'m_gemini',  name:'Gemini CLI', desc:'Google Gemini CLI — codegen layer', tier:'ai',
      cmd:'npm install -g @google/gemini-cli'},
-    {id:'m_rtk',     name:'RTK', desc:'Token compression for Claude Code', tier:'dev',
-     cmd:'cargo install rtk && rtk init -g'},
+    {id:'m_rtk',     name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
+     cmd:'brew install rtk', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
     {id:'m_yazi',    name:'Yazi File Manager', desc:'Iron Works themed terminal file manager', tier:'dev',
      cmd:'brew install yazi'},
     {id:'m_alfred',  name:'Alfred → qwen3:8b', desc:'Primary companion — always warm', tier:'ai',
@@ -416,7 +416,8 @@ const CATS = {
         {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pip install aider-chat', type:'ps'},
         {name:'Shell-GPT', desc:'LLM in terminal', cmd:'pip install shell-gpt', type:'ps'},
         {name:'LLM (Simon Willison)', desc:'Universal LLM CLI', cmd:'pip install llm', type:'ps'},
-        {name:'RTK', desc:'Token compression for Claude Code', cmd:'cargo install rtk && rtk init -g', type:'ps'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'winget install rtk-ai.rtk', type:'winget', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'ps'},
       ]},
     { id:'w-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
       items:[
@@ -587,7 +588,8 @@ const CATS = {
         {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pipx install aider-chat', type:'pip'},
         {name:'Shell-GPT', desc:'LLM queries in terminal', cmd:'pipx install shell-gpt', type:'pip'},
         {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'pipx install llm', type:'pip'},
-        {name:'RTK', desc:'Token compression for Claude Code', cmd:'cargo install rtk && rtk init -g', type:'cargo'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'cargo install --git https://github.com/rtk-ai/rtk', type:'cargo', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'cargo'},
         {name:'Yazi File Manager', desc:'Iron Works themed Rust terminal FM', cmd:'cargo install yazi-fm', type:'cargo'},
         {name:'claude-mem plugin', desc:'Persistent memory for Claude Code', cmd:'# In Claude Code: /plugin install thedotmack/claude-mem', type:'manual'},
       ]},
@@ -807,7 +809,7 @@ const CATS = {
         {name:'pipx Upgrade All', desc:'Upgrade all pipx-installed tools', cmd:'pipx upgrade-all', type:'manual'},
         {name:'Rust Toolchain Update', desc:'rustup update stable', cmd:'rustup update stable', type:'manual'},
         {name:'Docker Images Pull Latest', desc:'Refresh all running container images', cmd:'docker ps --format "{{.Image}}" | xargs -I{} docker pull {}', type:'manual'},
-        {name:'RTK Update', desc:'Cargo update RTK token compressor', cmd:'cargo install rtk', type:'cargo'},
+        {name:'RTK Update', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'cargo install --git https://github.com/rtk-ai/rtk', type:'cargo', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
         {name:'Yazi Update', desc:'Cargo update Yazi file manager', cmd:'cargo install yazi-fm', type:'cargo'},
       ]},
     { id:'c-crosstech', icon:'🔗', title:'CROSS-TECH EXTENSIONS',
@@ -843,7 +845,8 @@ const CATS = {
         {name:'OpenAI Codex CLI', desc:'In toolbox container', cmd:'toolbox run --container tinker bash -c "npm install -g @openai/codex"', type:'toolbox'},
         {name:'OpenCode', desc:'In toolbox container', cmd:'toolbox run --container tinker bash -c "npm install -g opencode-ai"', type:'toolbox'},
         {name:'Aider', desc:'AI pair programmer', cmd:'toolbox run --container tinker bash -c "pip install aider-chat"', type:'toolbox'},
-        {name:'RTK', desc:'Token compression', cmd:'toolbox run --container tinker bash -c "cargo install rtk && rtk init -g"', type:'toolbox'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'toolbox run --container tinker bash -c "cargo install --git https://github.com/rtk-ai/rtk"', type:'toolbox', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'toolbox run --container tinker bash -c "rtk init -g"', type:'toolbox'},
         {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'toolbox run --container tinker bash -c "pip install llm"', type:'toolbox'},
       ]},
     { id:'b-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
@@ -985,7 +988,8 @@ const CATS = {
         {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pipx install aider-chat', type:'pip'},
         {name:'Shell-GPT', desc:'LLM queries in terminal', cmd:'pipx install shell-gpt', type:'pip'},
         {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'pipx install llm', type:'pip'},
-        {name:'RTK', desc:'Token compression for Claude Code', cmd:'cargo install rtk && rtk init -g', type:'cargo'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'cargo install --git https://github.com/rtk-ai/rtk', type:'cargo', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'cargo'},
         {name:'Yazi File Manager', desc:'Rust terminal file manager', cmd:'sudo dnf install -y yazi', type:'dnf'},
       ]},
     { id:'f-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
@@ -1210,7 +1214,8 @@ const CATS = {
         {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pipx install aider-chat', type:'pip'},
         {name:'Shell-GPT', desc:'LLM queries in terminal', cmd:'pipx install shell-gpt', type:'pip'},
         {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'pipx install llm', type:'pip'},
-        {name:'RTK', desc:'Token compression for Claude Code', cmd:'cargo install rtk && rtk init -g', type:'cargo'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'cargo install --git https://github.com/rtk-ai/rtk', type:'cargo', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'cargo'},
         {name:'Yazi File Manager', desc:'Not packaged on LTS — build via cargo', cmd:'cargo install yazi-fm yazi-cli', type:'cargo'},
       ]},
     { id:'u-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
@@ -1419,9 +1424,7 @@ const CATS = {
       items:[
         {name:'base-devel + git', desc:'Prerequisite for yay / AUR builds', cmd:'sudo pacman -S --needed --noconfirm base-devel git', type:'pacman'},
         {name:'reflector mirror sort', desc:'Fast mirrors first — everything after depends on it', cmd:'sudo pacman -S --needed --noconfirm reflector', type:'pacman'},
-        {name:'yay AUR helper', desc:'Auto-installed if missing', cmd:'# Auto-detected in script', type:'aur'},
-        {name:'multilib repo', desc:'Required for Steam and 32-bit libs', cmd:'sudo sed -i "/^#\\[multilib\\]/,+1s/^#//" /etc/pacman.conf && sudo pacman -Sy', type:'manual'},
-        {name:'Flatpak + Flathub', desc:'App runtime', cmd:'sudo pacman -S --needed --noconfirm flatpak', type:'pacman'},
+        {name:'Flatpak + Flathub + FUSE', desc:'Flatpak runtime, FUSE for AppImages and the Flathub remote — needed before any Flatpak app', cmd:'sudo pacman -S --needed --noconfirm flatpak fuse2 && sudo flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo', type:'pacman'},
         {name:'pipx', desc:'Isolated Python tool runner', cmd:'sudo pacman -S --needed --noconfirm python-pipx', type:'pacman'},
         {name:'nvm → Node LTS', desc:'Required for CLI AI tools', cmd:'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts', type:'manual'},
         {name:'rustup', desc:'Rust toolchain manager', cmd:'sudo pacman -S --needed --noconfirm rustup', type:'pacman'},
@@ -1435,7 +1438,8 @@ const CATS = {
         {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pipx install aider-chat', type:'pip'},
         {name:'Shell-GPT', desc:'LLM queries in terminal', cmd:'pipx install shell-gpt', type:'pip'},
         {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'pipx install llm', type:'pip'},
-        {name:'RTK', desc:'Token compression for Claude Code', cmd:'cargo install rtk && rtk init -g', type:'cargo'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'cargo install --git https://github.com/rtk-ai/rtk', type:'cargo', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'cargo'},
         {name:'Yazi File Manager', desc:'Rust terminal file manager', cmd:'sudo pacman -S --needed --noconfirm yazi', type:'pacman'},
       ]},
     { id:'a-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
@@ -1470,10 +1474,13 @@ const CATS = {
       ]},
     { id:'a-dev', icon:'💻', title:'DEVELOPMENT',
       items:[
+        {name:'Neovim', desc:'Terminal editor', cmd:'sudo pacman -S --needed --noconfirm neovim', type:'pacman', license:'Apache-2.0', help:'https://neovim.io/', helpType:'site'},
+        {name:'Code - OSS', desc:'Open-source build of VS Code', cmd:'sudo pacman -S --needed --noconfirm code', type:'pacman', license:'MIT'},
+        {name:'Podman', desc:'Containers without a root daemon', cmd:'sudo pacman -S --needed --noconfirm podman', type:'pacman', license:'Apache-2.0', help:'https://podman.io/', helpType:'site'},
+        {name:'Docker', desc:'Containers (the docker group is root-equivalent)', cmd:'sudo pacman -S --needed --noconfirm docker', type:'pacman', license:'Apache-2.0'},
+        {name:'lazygit', desc:'Git in the terminal', cmd:'sudo pacman -S --needed --noconfirm lazygit', type:'pacman', license:'MIT', help:'https://github.com/sponsors/jesseduffield', helpType:'help'},
+        {name:'GitHub CLI', desc:'GitHub from the terminal', cmd:'sudo pacman -S --needed --noconfirm github-cli', type:'pacman', license:'MIT'},
         {name:'Git + GitHub CLI', desc:'Version control — kalifurd', cmd:'sudo pacman -S --needed --noconfirm git github-cli', type:'pacman'},
-        {name:'VS Code (OSS)', desc:'Repo build of VS Code', cmd:'sudo pacman -S --needed --noconfirm code', type:'pacman'},
-        {name:'VS Code (Microsoft build)', desc:'AUR — marketplace + telemetry build', cmd:'yay -S --needed --noconfirm visual-studio-code-bin', type:'aur'},
-        {name:'Neovim', desc:'Hyperextensible Vim', cmd:'sudo pacman -S --needed --noconfirm neovim', type:'pacman'},
         {name:'Python + pip', desc:'Python toolchain', cmd:'sudo pacman -S --needed --noconfirm python python-pip', type:'pacman'},
         {name:'Go', desc:'Google systems language', cmd:'sudo pacman -S --needed --noconfirm go', type:'pacman'},
         {name:'Java 21 (OpenJDK)', desc:'JVM runtime + compiler', cmd:'sudo pacman -S --needed --noconfirm jdk21-openjdk', type:'pacman'},
@@ -1481,54 +1488,29 @@ const CATS = {
         {name:'bat + ripgrep + fzf + fd', desc:'Modern CLI search stack', cmd:'sudo pacman -S --needed --noconfirm bat ripgrep fzf fd', type:'pacman'},
         {name:'SQLite + DB Browser', desc:'Local database work', cmd:'sudo pacman -S --needed --noconfirm sqlite sqlitebrowser', type:'pacman'},
       ]},
-    { id:'a-gaming', icon:'🎮', title:'GAMING / EMULATION',
-      items:[
-        {name:'Steam', desc:'Requires multilib enabled', cmd:'sudo pacman -S --needed --noconfirm steam', type:'pacman'},
-        {name:'Lutris', desc:'Wine/Proton game manager', cmd:'sudo pacman -S --needed --noconfirm lutris', type:'pacman'},
-        {name:'Wine + winetricks', desc:'Windows compatibility layer', cmd:'sudo pacman -S --needed --noconfirm wine winetricks', type:'pacman'},
-        {name:'MangoHud + GOverlay', desc:'FPS/thermal overlay + GUI config', cmd:'sudo pacman -S --needed --noconfirm mangohud goverlay', type:'pacman'},
-        {name:'GameMode', desc:'CPU governor switch while gaming', cmd:'sudo pacman -S --needed --noconfirm gamemode lib32-gamemode', type:'pacman'},
-        {name:'Gamescope', desc:'Valve micro-compositor', cmd:'sudo pacman -S --needed --noconfirm gamescope', type:'pacman'},
-        {name:'Heroic Games Launcher', desc:'Epic / GOG / Amazon', cmd:'yay -S --needed --noconfirm heroic-games-launcher-bin', type:'aur'},
-        {name:'ProtonUp-Qt', desc:'Install GE-Proton builds', cmd:'yay -S --needed --noconfirm protonup-qt', type:'aur'},
-        {name:'RetroArch', desc:'Multi-system emulator frontend', cmd:'sudo pacman -S --needed --noconfirm retroarch retroarch-assets-xmb', type:'pacman'},
-        {name:'Dolphin (GC/Wii)', desc:'Nintendo emulator', cmd:'sudo pacman -S --needed --noconfirm dolphin-emu', type:'pacman'},
-        {name:'PCSX2 (PS2)', desc:'PlayStation 2 emulator', cmd:'sudo pacman -S --needed --noconfirm pcsx2', type:'pacman'},
-        {name:'DuckStation (PS1)', desc:'PlayStation 1 emulator', cmd:'yay -S --needed --noconfirm duckstation-git', type:'aur'},
-        {name:'RPCS3 (PS3)', desc:'PlayStation 3 emulator', cmd:'yay -S --needed --noconfirm rpcs3-bin', type:'aur'},
-        {name:'PPSSPP (PSP)', desc:'PSP emulator', cmd:'sudo pacman -S --needed --noconfirm ppsspp', type:'pacman'},
-        {name:'ScummVM', desc:'Classic adventure engine', cmd:'sudo pacman -S --needed --noconfirm scummvm', type:'pacman'},
-      ]},
     { id:'a-engines', icon:'🕹️', title:'GAME ENGINES / 3D',
       items:[
-        {name:'Godot 4', desc:'Open-source engine — T1NK3R Games', cmd:'sudo pacman -S --needed --noconfirm godot', type:'pacman'},
-        {name:'Blender', desc:'3D modeling / VIGA / Modly', cmd:'sudo pacman -S --needed --noconfirm blender', type:'pacman'},
-        {name:'Unity Hub', desc:'Unity engine manager (AUR)', cmd:'yay -S --needed --noconfirm unityhub', type:'aur'},
-        {name:'Unreal Engine 5', desc:'AUR build — very long compile', cmd:'yay -S --needed --noconfirm unreal-engine', type:'aur'},
+        {name:'Godot', desc:'Game engine', cmd:'sudo pacman -S --needed --noconfirm godot', type:'pacman', license:'MIT', help:'https://godotengine.org/donate/', helpType:'help'},
+        {name:'Blender', desc:'3D modeling and animation', cmd:'sudo pacman -S --needed --noconfirm blender', type:'pacman', license:'GPL-3.0-or-later', help:'https://fund.blender.org/', helpType:'help'},
         {name:'Bevy (Rust engine)', desc:'ECS game engine — cargo template', cmd:'cargo install cargo-generate', type:'cargo'},
         {name:'LÖVE 2D', desc:'Lua game framework', cmd:'sudo pacman -S --needed --noconfirm love', type:'pacman'},
-        {name:'FreeCAD', desc:'Parametric CAD', cmd:'sudo pacman -S --needed --noconfirm freecad', type:'pacman'},
-        {name:'OpenSCAD', desc:'Script-driven CAD', cmd:'sudo pacman -S --needed --noconfirm openscad', type:'pacman'},
       ]},
     { id:'a-daw', icon:'🎚️', title:'DAWs',
       items:[
-        {name:'Ardour', desc:'Full pro DAW', cmd:'sudo pacman -S --needed --noconfirm ardour', type:'pacman'},
-        {name:'Reaper', desc:'Lightweight pro DAW (AUR)', cmd:'yay -S --needed --noconfirm reaper-bin', type:'aur'},
-        {name:'LMMS', desc:'FL Studio-style beat production', cmd:'sudo pacman -S --needed --noconfirm lmms', type:'pacman'},
-        {name:'Audacity', desc:'Audio editor & recorder', cmd:'sudo pacman -S --needed --noconfirm audacity', type:'pacman'},
-        {name:'Zrythm', desc:'Modern modular DAW', cmd:'yay -S --needed --noconfirm zrythm', type:'aur'},
+        {name:'Ardour', desc:'Full recording studio', cmd:'sudo pacman -S --needed --noconfirm ardour', type:'pacman', license:'GPL-2.0-or-later', help:'https://ardour.org/', helpType:'site'},
+        {name:'Qtractor', desc:'Lighter audio and MIDI sequencer', cmd:'sudo pacman -S --needed --noconfirm qtractor', type:'pacman', license:'GPL-2.0-or-later', help:'https://qtractor.sourceforge.io/', helpType:'site'},
+        {name:'LMMS', desc:'Beat-making for beginners. Stable build is 1.2.2; 1.3 is in testing', cmd:'sudo pacman -S --needed --noconfirm lmms', type:'pacman', license:'GPL-2.0-or-later', help:'https://lmms.io/get-involved/', helpType:'help'},
         {name:'Mixxx', desc:'DJ software — T1NK3R.FM', cmd:'sudo pacman -S --needed --noconfirm mixxx', type:'pacman'},
-        {name:'Qtractor', desc:'MIDI/audio sequencer', cmd:'sudo pacman -S --needed --noconfirm qtractor', type:'pacman'},
       ]},
     { id:'a-audio', icon:'🔊', title:'AUDIO / SYNTHS / FX',
       items:[
+        {name:'Audacity', desc:'Audio editor', cmd:'sudo pacman -S --needed --noconfirm audacity', type:'pacman', license:'GPL-3.0-or-later', help:'https://www.audacityteam.org/community/', helpType:'help'},
+        {name:'Surge XT', desc:'Synthesizer', cmd:'sudo pacman -S --needed --noconfirm surge-xt', type:'pacman', license:'GPL-3.0-only', help:'https://surge-synthesizer.github.io/', helpType:'site'},
         {name:'PipeWire full stack', desc:'Audio engine — JACK bridge + ALSA compat', cmd:'sudo pacman -S --needed --noconfirm pipewire pipewire-jack pipewire-alsa pipewire-pulse wireplumber', type:'pacman'},
         {name:'qpwgraph', desc:'PipeWire visual patchbay', cmd:'sudo pacman -S --needed --noconfirm qpwgraph', type:'pacman'},
         {name:'Carla Plugin Host', desc:'VST/LV2 host', cmd:'sudo pacman -S --needed --noconfirm carla', type:'pacman'},
         {name:'EasyEffects', desc:'System audio effects — EQ/compression', cmd:'sudo pacman -S --needed --noconfirm easyeffects', type:'pacman'},
         {name:'Calf + LSP + x42 plugins', desc:'Core LV2 plugin suites', cmd:'sudo pacman -S --needed --noconfirm calf lsp-plugins x42-plugins', type:'pacman'},
-        {name:'Surge XT', desc:'Hybrid wavetable synth', cmd:'sudo pacman -S --needed --noconfirm surge-xt', type:'pacman'},
-        {name:'Vital Synth', desc:'Spectral wavetable — AUR wrapper', cmd:'yay -S --needed --noconfirm vital-synth', type:'aur'},
         {name:'Hydrogen Drum Machine', desc:'Drum machine / step sequencer', cmd:'sudo pacman -S --needed --noconfirm hydrogen', type:'pacman'},
         {name:'FluidSynth + soundfont', desc:'General MIDI synth engine', cmd:'sudo pacman -S --needed --noconfirm fluidsynth soundfont-fluid', type:'pacman'},
         {name:'ZynAddSubFX + Yoshimi', desc:'Classic Linux softsynths', cmd:'sudo pacman -S --needed --noconfirm zynaddsubfx yoshimi', type:'pacman'},
@@ -1536,26 +1518,26 @@ const CATS = {
       ]},
     { id:'a-media', icon:'📺', title:'MEDIA / T1NK3R.TV',
       items:[
-        {name:'VLC', desc:'Universal media player', cmd:'sudo pacman -S --needed --noconfirm vlc', type:'pacman'},
-        {name:'mpv', desc:'CLI/GPU media player', cmd:'sudo pacman -S --needed --noconfirm mpv', type:'pacman'},
-        {name:'yt-dlp', desc:'YouTube downloader', cmd:'sudo pacman -S --needed --noconfirm yt-dlp', type:'pacman'},
+        {name:'mpv', desc:'Minimal, fast video player', cmd:'sudo pacman -S --needed --noconfirm mpv', type:'pacman', license:'GPL-2.0-or-later', help:'https://mpv.io/', helpType:'site'},
+        {name:'VLC', desc:'Plays almost anything', cmd:'sudo pacman -S --needed --noconfirm vlc', type:'pacman', license:'GPL-2.0-or-later', help:'https://www.videolan.org/contribute.html', helpType:'help'},
+        {name:'Strawberry', desc:'Music library player', cmd:'sudo pacman -S --needed --noconfirm strawberry', type:'pacman', license:'GPL-3.0-or-later', help:'https://www.strawberrymusicplayer.org/', helpType:'site'},
+        {name:'Calibre', desc:'Ebook library and converter', cmd:'sudo pacman -S --needed --noconfirm calibre', type:'pacman', license:'GPL-3.0-only', help:'https://calibre-ebook.com/donate', helpType:'help'},
+        {name:'HandBrake', desc:'Video converter', cmd:'sudo pacman -S --needed --noconfirm handbrake', type:'pacman', license:'GPL-2.0-only', help:'https://handbrake.fr/', helpType:'site'},
+        {name:'FFmpeg', desc:'Command-line audio/video converter', cmd:'sudo pacman -S --needed --noconfirm ffmpeg', type:'pacman', license:'GPL-3.0-only', help:'https://ffmpeg.org/donations.html', helpType:'help'},
         {name:'Kodi', desc:'Media center — T1NK3R.TV frontend', cmd:'sudo pacman -S --needed --noconfirm kodi', type:'pacman'},
-        {name:'Jellyfin Server', desc:'Local media streaming server', cmd:'yay -S --needed --noconfirm jellyfin-server jellyfin-web', type:'aur'},
-        {name:'Strawberry', desc:'Local music library player', cmd:'sudo pacman -S --needed --noconfirm strawberry', type:'pacman'},
-        {name:'Calibre', desc:'E-book manager', cmd:'sudo pacman -S --needed --noconfirm calibre', type:'pacman'},
-        {name:'HandBrake', desc:'Video transcoder', cmd:'sudo pacman -S --needed --noconfirm handbrake', type:'pacman'},
       ]},
     { id:'a-art', icon:'🎨', title:'ART / VIDEO',
       items:[
-        {name:'GIMP', desc:'GNU image manipulation', cmd:'sudo pacman -S --needed --noconfirm gimp', type:'pacman'},
-        {name:'Krita', desc:'Professional digital painting', cmd:'sudo pacman -S --needed --noconfirm krita', type:'pacman'},
-        {name:'Inkscape', desc:'Vector graphics (SVG)', cmd:'sudo pacman -S --needed --noconfirm inkscape', type:'pacman'},
+        {name:'Krita', desc:'Digital painting and illustration', cmd:'sudo pacman -S --needed --noconfirm krita', type:'pacman', license:'GPL-3.0', help:'https://krita.org/en/support-us/', helpType:'help'},
+        {name:'GIMP', desc:'Photo and image editing', cmd:'sudo pacman -S --needed --noconfirm gimp', type:'pacman', license:'GPL-3.0-or-later', help:'https://www.gimp.org/donating/', helpType:'help'},
+        {name:'Inkscape', desc:'Vector graphics', cmd:'sudo pacman -S --needed --noconfirm inkscape', type:'pacman', license:'GPL-2.0-or-later', help:'https://inkscape.org/support-us/', helpType:'help'},
+        {name:'Kdenlive', desc:'Full video editor', cmd:'sudo pacman -S --needed --noconfirm kdenlive', type:'pacman', license:'GPL-2.0-or-later', help:'https://kdenlive.org/fund/', helpType:'help'},
+        {name:'Shotcut', desc:'Simple video editor', cmd:'sudo pacman -S --needed --noconfirm shotcut', type:'pacman', license:'GPL-3.0', help:'https://www.shotcut.org/', helpType:'site'},
+        {name:'OpenToonz', desc:'Professional 2D animation', cmd:'sudo pacman -S --needed --noconfirm opentoonz', type:'pacman', license:'BSD-3-Clause', help:'https://opentoonz.github.io/e/', helpType:'site'},
+        {name:'Pencil2D', desc:'Simple hand-drawn animation', cmd:'sudo pacman -S --needed --noconfirm pencil2d', type:'pacman', license:'GPL-2.0-only', help:'https://www.pencil2d.org/contribute', helpType:'help'},
         {name:'Darktable', desc:'RAW photo workflow', cmd:'sudo pacman -S --needed --noconfirm darktable', type:'pacman'},
         {name:'OBS Studio', desc:'Streaming & screen recording', cmd:'sudo pacman -S --needed --noconfirm obs-studio', type:'pacman'},
-        {name:'Kdenlive', desc:'KDE video editor', cmd:'sudo pacman -S --needed --noconfirm kdenlive', type:'pacman'},
-        {name:'DaVinci Resolve', desc:'Pro video editor (AUR — needs ROCm)', cmd:'yay -S --needed --noconfirm davinci-resolve', type:'aur'},
-        {name:'Upscayl', desc:'AI image upscaler', cmd:'yay -S --needed --noconfirm upscayl-bin', type:'aur'},
-        {name:'FFmpeg', desc:'CLI multimedia toolkit', cmd:'sudo pacman -S --needed --noconfirm ffmpeg', type:'pacman'},
+        {name:'Upscayl', desc:'AI image upscaler', cmd:'flatpak install -y flathub org.upscayl.Upscayl', type:'flatpak'},
       ]},
     { id:'a-creai', icon:'🤖', title:'CREATIVE AI / ACE STACK',
       items:[
@@ -1578,59 +1560,70 @@ const CATS = {
       ]},
     { id:'a-homelab', icon:'🏠', title:'HOMELAB / SELF-HOSTED',
       items:[
+        {name:'Syncthing', desc:'File sync between your devices (service off)', cmd:'sudo pacman -S --needed --noconfirm syncthing', type:'pacman', license:'MPL-2.0'},
+        {name:'Jellyfin', desc:'Media server (service off)', cmd:'sudo pacman -S --needed --noconfirm jellyfin-server', type:'pacman', license:'GPL-2.0-or-later'},
+        {name:'Cockpit', desc:'Web admin panel (service off)', cmd:'sudo pacman -S --needed --noconfirm cockpit', type:'pacman', license:'LGPL-2.1-or-later'},
+        {name:'Nextcloud', desc:'Personal cloud. Advanced: needs a web server and database (service off)', cmd:'sudo pacman -S --needed --noconfirm nextcloud', type:'pacman', license:'AGPL-3.0-or-later'},
         {name:'Portainer', desc:'Docker web UI', cmd:'docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce', type:'manual'},
-        {name:'Open WebUI', desc:'Ollama chat front-end — port 3000', cmd:'docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main', type:'manual'},
         {name:'Vaultwarden', desc:'Self-hosted Bitwarden', cmd:'docker run -d -p 8222:80 --name vaultwarden --restart unless-stopped -v ~/vaultwarden:/data vaultwarden/server:latest', type:'manual'},
-        {name:'Nextcloud AIO', desc:'Full private cloud', cmd:'docker run -d -p 8080:8080 --name nextcloud-aio-mastercontainer --restart always -v nextcloud_aio_mastercontainer:/mnt/docker-aio-config -v /var/run/docker.sock:/var/run/docker.sock nextcloud/all-in-one:latest', type:'manual'},
         {name:'Uptime Kuma', desc:'Monitoring dashboard', cmd:'docker run -d -p 3002:3001 --name uptime-kuma --restart unless-stopped -v uptime-kuma:/app/data louislam/uptime-kuma:1', type:'manual'},
         {name:'AnythingLLM', desc:'RAG + LLM front-end', cmd:'docker run -d -p 3003:3001 --name anythingllm --restart unless-stopped mintplexlabs/anythingllm', type:'manual'},
-        {name:'Syncthing', desc:'Peer-to-peer file sync', cmd:'sudo pacman -S --needed --noconfirm syncthing', type:'pacman'},
       ]},
     { id:'a-sdr', icon:'📡', title:'SDR / RF / T1NK3R.FM',
       items:[
-        {name:'rtl-sdr tools', desc:'RTL2832U dongle drivers + CLI', cmd:'sudo pacman -S --needed --noconfirm rtl-sdr', type:'pacman'},
-        {name:'GQRX', desc:'SDR receiver GUI', cmd:'sudo pacman -S --needed --noconfirm gqrx', type:'pacman'},
-        {name:'GNU Radio', desc:'DSP flowgraph toolkit', cmd:'sudo pacman -S --needed --noconfirm gnuradio gnuradio-osmosdr', type:'pacman'},
-        {name:'SDR++', desc:'Modern cross-platform SDR receiver', cmd:'yay -S --needed --noconfirm sdrpp-bin', type:'aur'},
-        {name:'CubicSDR', desc:'Wideband SDR waterfall', cmd:'yay -S --needed --noconfirm cubicsdr', type:'aur'},
+        {name:'Gqrx', desc:'Radio receiver', cmd:'sudo pacman -S --needed --noconfirm gqrx', type:'pacman', license:'GPL-3.0-or-later'},
+        {name:'GNU Radio', desc:'Signal processing toolkit', cmd:'sudo pacman -S --needed --noconfirm gnuradio', type:'pacman', license:'GPL-3.0-or-later'},
+        {name:'rtl-sdr', desc:'Drivers and tools for RTL dongles', cmd:'sudo pacman -S --needed --noconfirm rtl-sdr', type:'pacman', license:'GPL-2.0-only'},
         {name:'multimon-ng', desc:'Digital mode decoder (POCSAG, etc.)', cmd:'sudo pacman -S --needed --noconfirm multimon-ng', type:'pacman'},
-        {name:'dump1090', desc:'ADS-B aircraft tracking', cmd:'yay -S --needed --noconfirm dump1090-fa', type:'aur'},
-        {name:'CHIRP', desc:'Radio programming (Baofeng etc.)', cmd:'yay -S --needed --noconfirm chirp-next', type:'aur'},
+        {name:'CHIRP', desc:'Radio programming (Baofeng etc.)', cmd:'flatpak install -y flathub com.chirpmyradio.chirp', type:'flatpak'},
       ]},
     { id:'a-print3d', icon:'🖨️', title:'3D PRINTING (BAMBU P1S)',
       items:[
-        {name:'Bambu Studio', desc:'Official P1S slicer (AUR)', cmd:'yay -S --needed --noconfirm bambustudio-bin', type:'aur'},
-        {name:'OrcaSlicer', desc:'Community fork — better P1S profiles', cmd:'yay -S --needed --noconfirm orca-slicer-bin', type:'aur'},
-        {name:'PrusaSlicer', desc:'Alternative slicer', cmd:'sudo pacman -S --needed --noconfirm prusa-slicer', type:'pacman'},
-        {name:'Cura', desc:'Ultimaker slicer', cmd:'yay -S --needed --noconfirm cura-bin', type:'aur'},
+        {name:'PrusaSlicer', desc:'Slicer, all-rounder', cmd:'sudo pacman -S --needed --noconfirm prusa-slicer', type:'pacman', license:'AGPL-3.0-only'},
+        {name:'OrcaSlicer', desc:'Tuned slicer fork', cmd:'flatpak install -y flathub com.orcaslicer.OrcaSlicer', type:'flatpak'},
+        {name:'UltiMaker Cura', desc:'Beginner-friendly slicer', cmd:'flatpak install -y flathub com.ultimaker.cura', type:'flatpak'},
+        {name:'FreeCAD', desc:'Parametric CAD', cmd:'sudo pacman -S --needed --noconfirm freecad', type:'pacman', license:'LGPL-2.0-only'},
+        {name:'OpenSCAD', desc:'Code-based CAD. 2021.01 is the last formal release', cmd:'sudo pacman -S --needed --noconfirm openscad', type:'pacman', license:'GPL-2.0-or-later'},
+        {name:'MeshLab', desc:'Clean up scanned or broken 3D models', cmd:'flatpak install -y flathub net.meshlab.MeshLab', type:'flatpak'},
+        {name:'Bambu Studio', desc:'Official P1S slicer', cmd:'flatpak install -y flathub com.bambulab.BambuStudio', type:'flatpak'},
         {name:'OctoPrint (container)', desc:'Printer web controller — LAN only', cmd:'docker run -d -p 5000:5000 --name octoprint --restart unless-stopped -v octoprint:/octoprint octoprint/octoprint', type:'manual'},
-        {name:'FreeCAD', desc:'Parametric CAD for printable parts', cmd:'sudo pacman -S --needed --noconfirm freecad', type:'pacman'},
-        {name:'MeshLab', desc:'Mesh cleanup and repair', cmd:'sudo pacman -S --needed --noconfirm meshlab', type:'pacman'},
       ]},
     { id:'a-network', icon:'🌐', title:'NETWORKING / SECURITY',
       items:[
+        {name:'Wireshark', desc:'Network analysis', cmd:'sudo pacman -S --needed --noconfirm wireshark-qt', type:'pacman', license:'GPL-2.0-only'},
+        {name:'KeePassXC', desc:'Offline password manager', cmd:'sudo pacman -S --needed --noconfirm keepassxc', type:'pacman', license:'GPL-3.0-only'},
+        {name:'UFW', desc:'Firewall (installed, not enabled)', cmd:'sudo pacman -S --needed --noconfirm ufw', type:'pacman', license:'GPL-3.0'},
         {name:'Tailscale', desc:'Mesh VPN — cluster access', cmd:'sudo pacman -S --needed --noconfirm tailscale', type:'pacman'},
         {name:'WireGuard tools', desc:'Modern VPN', cmd:'sudo pacman -S --needed --noconfirm wireguard-tools', type:'pacman'},
-        {name:'Wireshark', desc:'Network protocol analyzer', cmd:'sudo pacman -S --needed --noconfirm wireshark-qt', type:'pacman'},
-        {name:'Nmap', desc:'Network scanner', cmd:'sudo pacman -S --needed --noconfirm nmap', type:'pacman'},
         {name:'OpenSSH', desc:'Remote access into this box', cmd:'sudo pacman -S --needed --noconfirm openssh', type:'pacman'},
-        {name:'ufw', desc:'Simple firewall front-end', cmd:'sudo pacman -S --needed --noconfirm ufw', type:'pacman'},
         {name:'croc + magic-wormhole', desc:'One-shot encrypted file transfer', cmd:'sudo pacman -S --needed --noconfirm croc magic-wormhole', type:'pacman'},
       ]},
     { id:'a-writing', icon:'✍️', title:'WRITING / KNOWLEDGE',
       items:[
-        {name:'LibreOffice Fresh', desc:'Full office suite', cmd:'sudo pacman -S --needed --noconfirm libreoffice-fresh', type:'pacman'},
-        {name:'Obsidian', desc:'Markdown PKM — Tinker-Verse vault', cmd:'sudo pacman -S --needed --noconfirm obsidian', type:'pacman'},
-        {name:'Logseq', desc:'Outliner PKM alternative', cmd:'yay -S --needed --noconfirm logseq-desktop-bin', type:'aur'},
-        {name:'Zotero', desc:'Reference manager', cmd:'yay -S --needed --noconfirm zotero-bin', type:'aur'},
-        {name:'Pandoc', desc:'Universal document converter', cmd:'sudo pacman -S --needed --noconfirm pandoc-cli', type:'pacman'},
+        {name:'LibreOffice (stable)', desc:'Office suite, stable branch', cmd:'sudo pacman -S --needed --noconfirm libreoffice-still', type:'pacman', license:'LGPL-3.0-or-later', help:'https://www.libreoffice.org/donate/', helpType:'help'},
+        {name:'Ghostwriter', desc:'Distraction-free Markdown writing', cmd:'sudo pacman -S --needed --noconfirm ghostwriter', type:'pacman', license:'GPL-2.0-or-later', help:'https://kde.org/community/donations/', helpType:'help'},
+        {name:'CherryTree', desc:'Quick hierarchical notes', cmd:'sudo pacman -S --needed --noconfirm cherrytree', type:'pacman', license:'GPL-3.0-or-later'},
+        {name:'Zim', desc:'Desktop notebook / personal wiki', cmd:'sudo pacman -S --needed --noconfirm zim', type:'pacman', license:'GPL-2.0-or-later'},
+        {name:'Joplin', desc:'Markdown notes, optional sync', cmd:'flatpak install -y flathub net.cozic.joplin_desktop', type:'flatpak', license:'AGPL-3.0-or-later', help:'https://joplinapp.org/donate/', helpType:'help'},
+        {name:'Logseq', desc:'Linked notes and outlines', cmd:'flatpak install -y flathub com.logseq.Logseq', type:'flatpak'},
+        {name:'Xournal++', desc:'Handwriting and PDF markup', cmd:'sudo pacman -S --needed --noconfirm xournalpp', type:'pacman', license:'GPL-2.0-or-later'},
+        {name:'Zotero', desc:'Research citations', cmd:'flatpak install -y flathub org.zotero.Zotero', type:'flatpak'},
+        {name:'KBibTeX', desc:'BibTeX editor', cmd:'flatpak install -y flathub org.kde.kbibtex', type:'flatpak'},
+        {name:'Pandoc', desc:'Convert documents between formats', cmd:'sudo pacman -S --needed --noconfirm pandoc-cli', type:'pacman', license:'GPL-2.0-or-later', help:'https://pandoc.org/', helpType:'site'},
         {name:'TeX Live', desc:'LaTeX typesetting', cmd:'sudo pacman -S --needed --noconfirm texlive-basic texlive-latex', type:'pacman'},
+      ]},
+    { id:'a-system', icon:'🧰', title:'SYSTEM TOOLS',
+      items:[
+        {name:'Mission Center', desc:'Task-Manager-style system monitor', cmd:'sudo pacman -S --needed --noconfirm mission-center', type:'pacman', license:'GPL-3.0-or-later'},
+        {name:'btop', desc:'Terminal system monitor', cmd:'sudo pacman -S --needed --noconfirm btop', type:'pacman', license:'Apache-2.0'},
+        {name:'htop', desc:'Classic terminal monitor', cmd:'sudo pacman -S --needed --noconfirm htop', type:'pacman', license:'GPL'},
+        {name:'nvtop', desc:'GPU monitor', cmd:'sudo pacman -S --needed --noconfirm nvtop', type:'pacman', license:'GPL-3.0-or-later'},
+        {name:'Gear Lever (AppImages)', desc:'Drag-and-drop AppImage manager', cmd:'flatpak install -y flathub it.mijorus.gearlever', type:'flatpak', help:'https://github.com/mijorus/gearlever', helpType:'site'},
       ]},
     { id:'a-upgrades', icon:'⬆️', title:'UPGRADES / SYSTEM UPDATES',
       items:[
         {name:'Full system upgrade', desc:'pacman -Syu — never partial-upgrade Arch', cmd:'sudo pacman -Syu --noconfirm', type:'manual'},
-        {name:'AUR upgrade', desc:'Rebuild AUR packages', cmd:'yay -Sua --noconfirm', type:'manual'},
-        {name:'Flatpak update all', desc:'Update every Flatpak', cmd:'flatpak update -y', type:'flatpak'},
+        {name:'Flatpak update all', desc:'Update every Flatpak', cmd:'sudo flatpak update -y', type:'flatpak'},
         {name:'Claude Code upgrade', desc:'Upgrade Hermes CLI', cmd:'npm update -g @anthropic-ai/claude-code', type:'npm'},
         {name:'pipx upgrade all', desc:'Upgrade every pipx tool', cmd:'pipx upgrade-all', type:'pip'},
         {name:'Orphan cleanup', desc:'Remove unneeded dependencies', cmd:'sudo pacman -Rns $(pacman -Qtdq) 2>/dev/null || true', type:'manual'},
@@ -1667,7 +1660,8 @@ const CATS = {
         {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pipx install aider-chat', type:'pip'},
         {name:'Shell-GPT', desc:'LLM queries in terminal', cmd:'pipx install shell-gpt', type:'pip'},
         {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'brew install llm', type:'brew'},
-        {name:'RTK', desc:'Token compression for Claude Code', cmd:'cargo install rtk && rtk init -g', type:'cargo'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'brew install rtk', type:'brew', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'cargo'},
         {name:'Yazi File Manager', desc:'Rust terminal file manager', cmd:'brew install yazi', type:'brew'},
       ]},
     { id:'m-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
@@ -1926,7 +1920,8 @@ const CATS = {
         {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pip install aider-chat', type:'pip'},
         {name:'Shell-GPT', desc:'LLM queries in terminal', cmd:'pip install shell-gpt', type:'pip'},
         {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'pip install llm', type:'pip'},
-        {name:'RTK', desc:'Token compression — builds from cargo', cmd:'cargo install rtk && rtk init -g', type:'cargo'},
+        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'cargo install --git https://github.com/rtk-ai/rtk', type:'cargo', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
+        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'cargo'},
         {name:'Yazi File Manager', desc:'Rust terminal file manager', cmd:'pkg install -y yazi', type:'termux'},
       ]},
     { id:'n-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
@@ -2063,6 +2058,16 @@ function disarmJS(os){ if(!JUMPSTART[os]) return; JUMPSTART[os].forEach(it=>{ js
 // ═══════════════════════════════════════════════════════════════
 // CATEGORIES
 // ═══════════════════════════════════════════════════════════════
+// Optional quiet link on an item: helpType 'help' -> "Help improve",
+// 'site' -> "Project page". Nothing when help/helpType is blank or the URL
+// is not http(s). The click must not toggle the item's checkbox.
+function helpLink(it) {
+  if (!it.help || !/^https?:\/\//i.test(it.help)) return '';
+  const label = it.helpType === 'help' ? 'Help improve' : it.helpType === 'site' ? 'Project page' : '';
+  if (!label) return '';
+  return `<a class="item-help" href="${esc(it.help)}" onclick="event.preventDefault();event.stopPropagation();openExternal(this.getAttribute('href'));">${label}</a>`;
+}
+
 function buildGrid(os) {
   const grid = document.getElementById(`grid-${os}`);
   if (!grid) return;
@@ -2096,6 +2101,7 @@ function buildGrid(os) {
             <div class="item-info">
               <div class="item-name">${esc(it.name)}<span class="tag tag-${it.type}">${it.type}</span></div>
               <div class="item-desc">${esc(it.desc)}</div>
+              ${helpLink(it)}
               <div class="item-cmd">${esc(it.cmd)}</div>
             </div>
           </label>`;
@@ -2597,7 +2603,7 @@ echo -e "⚡ \${GREEN}T1NK3R-VER53 // ${label} DEPLOYMENT INITIATED\${RESET}"`;
 
 // Shared tail: CLI AI tools → Ollama companions → manual notes.
 function unixTail(b, opts) {
-  const { ollamaInstall, services, closing } = opts;
+  const { ollamaInstall, services, servicesReportOwnStatus, closing } = opts;
   return `
 # ── CLI AI TOOLS ──────────────────────────────────────────────
 step "CLI AI tools"
@@ -2616,7 +2622,7 @@ ok "Companions pulled"
 ${services ? `# ── SERVICES + GROUPS ─────────────────────────────────────────
 step "Services + user groups"
 ${services}
-ok "Services configured"
+${servicesReportOwnStatus ? '' : 'ok "Services configured"'}
 ` : ''}
 ${b.manual.length ? `# ── MANUAL STEPS (not automated on purpose) ───────────────────
 ${b.manual.join('\n')}
@@ -2765,13 +2771,25 @@ function genArch() {
   const aRe = /^(?:yay|paru) -S --needed --noconfirm ([^&|;]+)$/;
   const pacman = b.names('pacman', pRe), pacExtra = b.stray('pacman', pRe);
   const aur = b.names('aur', aRe);
+  // Only touch the Docker daemon (and the docker group) when a Docker package
+  // was actually selected; nothing else is enabled or started here.
+  const hasDocker = pacman.some(n => n.split(/\s+/).includes('docker'));
+  // Runtimes are only installed for the item types that need them.
+  const needPipx = b.pip.length > 0, needRust = b.cargo.length > 0, needNode = b.npm.length > 0;
+  // base-devel + git: makepkg needs both for AUR builds; cargo install compiles
+  // crates and needs a C compiler/linker (gcc, make) from base-devel.
+  const needBuild = aur.length > 0 || needRust;
+  // realtime-privileges only when an audio or DAW category item is selected.
+  const needRealtime = CATS.arch.some(c => (c.id === 'a-daw' || c.id === 'a-audio') &&
+    c.items.some((_, i) => catState.arch && catState.arch[`${c.id}_${i}`]));
+  const groups = ['realtime', 'audio', 'video', 'input', 'storage'].concat(hasDocker ? ['docker'] : []);
   return `${unixHeader('ARCH LINUX', 'pacman', 'pacman not found — is this Arch?')}
 
-# ── STEP 1: BASE-DEVEL + MIRRORS ──────────────────────────────
+${needBuild ? `# ── STEP 1: BASE-DEVEL + GIT ──────────────────────────────────
 step "1/6 — base-devel + git"
 sudo pacman -S --needed --noconfirm base-devel git || warn "base-devel issue"
-
-# ── STEP 2: AUR HELPER ────────────────────────────────────────
+` : '# ── STEP 1: base-devel + git not needed (no AUR or cargo items selected)\n'}
+${aur.length ? `# ── STEP 2: AUR HELPER ────────────────────────────────────────
 step "2/6 — AUR helper (yay)"
 AUR_HELPER=""
 for h in yay paru; do command -v "$h" >/dev/null 2>&1 && { AUR_HELPER="$h"; break; }; done
@@ -2784,18 +2802,29 @@ if [[ -z "$AUR_HELPER" ]]; then
   AUR_HELPER="yay"
   ok "yay installed"
 else ok "AUR helper: $AUR_HELPER"; fi
-
+` : '# ── STEP 2: No AUR packages selected — yay not installed\n'}
 # ── STEP 3: FLATPAK + RUNTIMES ────────────────────────────────
 step "3/6 — Flatpak + language runtimes"
-sudo pacman -S --needed --noconfirm flatpak python-pipx rustup || true
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
-rustup default stable 2>/dev/null || true
-pipx ensurepath || true
-if [[ ! -d "$HOME/.nvm" ]]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-  export NVM_DIR="$HOME/.nvm"; source "$NVM_DIR/nvm.sh"; nvm install --lts
+sudo pacman -S --needed --noconfirm flatpak fuse2 || warn "flatpak/fuse2 install issue"
+sudo flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || warn "could not add the Flathub remote"
+${needPipx || needRust || needNode ? `# pipx ensurepath and the nvm installer append to the shell rc files; record
+# them first so the script can say exactly which ones changed.
+RC_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile" "$HOME/.zshrc" "$HOME/.zprofile")
+rc_hash() { if [[ -e "$1" ]]; then sha256sum "$1" | cut -d' ' -f1; else echo absent; fi; }
+declare -A RC_BEFORE
+for f in "\${RC_FILES[@]}"; do RC_BEFORE[$f]=$(rc_hash "$f"); done
+` : ''}${needRust ? `sudo pacman -S --needed --noconfirm rustup || warn "rustup install issue"
+rustup default stable || warn "rustup default stable failed"
+` : ''}${needPipx ? `sudo pacman -S --needed --noconfirm python-pipx || warn "pipx install issue"
+pipx ensurepath || warn "pipx ensurepath failed"
+` : ''}${needNode ? `if [[ ! -d "$HOME/.nvm" ]]; then
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash || warn "nvm install failed"
+  export NVM_DIR="$HOME/.nvm"; source "$NVM_DIR/nvm.sh" && nvm install --lts || warn "Node LTS install failed"
 fi
-ok "Runtimes ready"
+` : ''}${needPipx || needRust || needNode ? `RC_EDITED=()
+for f in "\${RC_FILES[@]}"; do [[ "\${RC_BEFORE[$f]}" == "$(rc_hash "$f")" ]] || RC_EDITED+=("$f"); done
+if (( \${#RC_EDITED[@]} )); then ok "Shell rc files edited: \${RC_EDITED[*]}"; else ok "No shell rc files were edited"; fi
+` : '# No pipx/rustup/nvm items selected — runtimes and shell rc files left alone\n'}ok "Flatpak and runtimes step done"
 
 ${pacman.length ? `# ── STEP 4: PACMAN PACKAGES ───────────────────────────────────
 step "4/6 — pacman packages"
@@ -2814,16 +2843,32 @@ ok "AUR done"
 ` : ''}
 ${b.flatpak.length ? `# ── STEP 5: FLATPAK PACKAGES ──────────────────────────────────
 step "5/6 — Flatpak packages"
-${b.flatpak.map(p => `flatpak install -y flathub ${p} || warn "flatpak: ${p}"`).join('\n')}
-ok "Flatpak done"
+if sudo flatpak remotes --system --columns=name 2>/dev/null | grep -qx flathub; then
+${b.flatpak.map(p => `  sudo flatpak install -y --system flathub ${p} || warn "flatpak: ${p}"`).join('\n')}
+  ok "Flatpak done"
+else
+  warn "Flathub remote is missing — skipping Flatpak packages"
+fi
 ` : '# ── STEP 5: No flatpak packages selected\n'}
 ${unixTail(b, {
   ollamaInstall: `if ! command -v ollama >/dev/null 2>&1; then
   sudo pacman -S --needed --noconfirm ollama || curl -fsSL https://ollama.com/install.sh | sh
 fi
 sudo systemctl enable --now ollama 2>/dev/null || true`,
-  services: `sudo usermod -aG docker,realtime,audio,video,input,storage "$USER" 2>/dev/null || true
-sudo systemctl enable --now docker 2>/dev/null || true`,
+  servicesReportOwnStatus: true,
+  services: `${needRealtime ? `sudo pacman -S --needed --noconfirm realtime-privileges || warn "realtime-privileges install failed"
+` : ''}GROUPS_ADDED=(); GROUPS_SKIPPED=(); GROUPS_FAILED=()
+for g in ${groups.join(' ')}; do
+  if ! getent group "$g" >/dev/null; then GROUPS_SKIPPED+=("$g")
+  elif sudo usermod -aG "$g" "$USER"; then GROUPS_ADDED+=("$g")
+  else GROUPS_FAILED+=("$g"); fi
+done
+echo "  groups added:   \${GROUPS_ADDED[*]:-none}"
+echo "  groups skipped (do not exist on this system): \${GROUPS_SKIPPED[*]:-none}"
+SERVICE_FAIL=0
+${hasDocker ? `sudo systemctl enable --now docker || { warn "could not enable docker.service"; SERVICE_FAIL=1; }
+` : ''}if (( \${#GROUPS_FAILED[@]} )); then warn "usermod failed for: \${GROUPS_FAILED[*]}"; SERVICE_FAIL=1; fi
+if (( SERVICE_FAIL )); then warn "Services/groups step finished with failures"; else ok "Services configured"; fi`,
   closing: [
     '⚡ ${GREEN}T1NK3R-VER53 // ARCH DEPLOYMENT COMPLETE${RESET}',
     '  ${AMBER}→ Never partial-upgrade: use pacman -Syu, not -Sy pkg${RESET}',

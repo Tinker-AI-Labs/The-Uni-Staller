@@ -218,6 +218,20 @@ async function copyToClipboard(text) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// EXTERNAL LINKS — http(s) only. Tauri: opener plugin (the "opener:default"
+// capability is granted); plain browser: window.open.
+// ═══════════════════════════════════════════════════════════════
+async function openExternal(url) {
+  if (!/^https?:\/\//i.test(url || '')) return false;
+  if (IS_TAURI) {
+    try { await CORE.invoke('plugin:opener|open_url', { url }); return true; }
+    catch (e) { console.warn('[Uni-Staller] could not open link:', e); return false; }
+  }
+  window.open(url, '_blank', 'noopener');
+  return true;
+}
+
+// ═══════════════════════════════════════════════════════════════
 // PATCH: replace downloadScript() with Tauri-aware version
 // ═══════════════════════════════════════════════════════════════
 window.downloadScript = async function(os) {
