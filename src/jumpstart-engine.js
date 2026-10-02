@@ -2511,7 +2511,7 @@ toolbox run --container tinker bash -c "
 
 # ── STEP 4: TOOLBOX CLI AI TOOLS ──────────────────────────────
 step "4/6 — CLI AI tools in toolbox"
-${toolbox.map(c=>`${c} || warn "toolbox: ${c.substring(0,50)}..."`).join('\n')}
+${toolbox.map(c=>`${c} || warn "toolbox: ${c.substring(0,50).replace(/[\"$`\\]/g,'')}..."`).join('\n')}
 ok "Toolbox CLI tools done"
 
 ${flatpak.length?`# ── STEP 5: FLATPAK PACKAGES ─────────────────────────────────
