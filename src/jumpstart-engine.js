@@ -2064,6 +2064,16 @@ function disarmJS(os){ if(!JUMPSTART[os]) return; JUMPSTART[os].forEach(it=>{ js
 // ═══════════════════════════════════════════════════════════════
 // CATEGORIES
 // ═══════════════════════════════════════════════════════════════
+// Optional quiet link on an item: helpType 'help' -> "Help improve",
+// 'site' -> "Project page". Nothing when help/helpType is blank or the URL
+// is not http(s). The click must not toggle the item's checkbox.
+function helpLink(it) {
+  if (!it.help || !/^https?:\/\//i.test(it.help)) return '';
+  const label = it.helpType === 'help' ? 'Help improve' : it.helpType === 'site' ? 'Project page' : '';
+  if (!label) return '';
+  return `<a class="item-help" href="${esc(it.help)}" onclick="event.preventDefault();event.stopPropagation();openExternal(this.getAttribute('href'));">${label}</a>`;
+}
+
 function buildGrid(os) {
   const grid = document.getElementById(`grid-${os}`);
   if (!grid) return;
@@ -2097,6 +2107,7 @@ function buildGrid(os) {
             <div class="item-info">
               <div class="item-name">${esc(it.name)}<span class="tag tag-${it.type}">${it.type}</span></div>
               <div class="item-desc">${esc(it.desc)}</div>
+              ${helpLink(it)}
               <div class="item-cmd">${esc(it.cmd)}</div>
             </div>
           </label>`;
