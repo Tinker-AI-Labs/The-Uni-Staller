@@ -1419,7 +1419,7 @@ const CATS = {
       items:[
         {name:'base-devel + git', desc:'Prerequisite for yay / AUR builds', cmd:'sudo pacman -S --needed --noconfirm base-devel git', type:'pacman'},
         {name:'reflector mirror sort', desc:'Fast mirrors first — everything after depends on it', cmd:'sudo pacman -S --needed --noconfirm reflector', type:'pacman'},
-        {name:'Flatpak + Flathub + FUSE', desc:'Flatpak runtime, FUSE for AppImages and the Flathub remote — needed before any Flatpak app', cmd:'sudo pacman -S --needed --noconfirm flatpak fuse2 && flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo', type:'pacman'},
+        {name:'Flatpak + Flathub + FUSE', desc:'Flatpak runtime, FUSE for AppImages and the Flathub remote — needed before any Flatpak app', cmd:'sudo pacman -S --needed --noconfirm flatpak fuse2 && sudo flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo', type:'pacman'},
         {name:'pipx', desc:'Isolated Python tool runner', cmd:'sudo pacman -S --needed --noconfirm python-pipx', type:'pacman'},
         {name:'nvm → Node LTS', desc:'Required for CLI AI tools', cmd:'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts', type:'manual'},
         {name:'rustup', desc:'Rust toolchain manager', cmd:'sudo pacman -S --needed --noconfirm rustup', type:'pacman'},
@@ -1617,7 +1617,7 @@ const CATS = {
     { id:'a-upgrades', icon:'⬆️', title:'UPGRADES / SYSTEM UPDATES',
       items:[
         {name:'Full system upgrade', desc:'pacman -Syu — never partial-upgrade Arch', cmd:'sudo pacman -Syu --noconfirm', type:'manual'},
-        {name:'Flatpak update all', desc:'Update every Flatpak', cmd:'flatpak update -y', type:'flatpak'},
+        {name:'Flatpak update all', desc:'Update every Flatpak', cmd:'sudo flatpak update -y', type:'flatpak'},
         {name:'Claude Code upgrade', desc:'Upgrade Hermes CLI', cmd:'npm update -g @anthropic-ai/claude-code', type:'npm'},
         {name:'pipx upgrade all', desc:'Upgrade every pipx tool', cmd:'pipx upgrade-all', type:'pip'},
         {name:'Orphan cleanup', desc:'Remove unneeded dependencies', cmd:'sudo pacman -Rns $(pacman -Qtdq) 2>/dev/null || true', type:'manual'},
@@ -2772,7 +2772,7 @@ function genArch() {
 step "1/6 — base-devel + git"
 sudo pacman -S --needed --noconfirm base-devel git || warn "base-devel issue"
 
-# ── STEP 2: AUR HELPER ────────────────────────────────────────
+${aur.length ? `# ── STEP 2: AUR HELPER ────────────────────────────────────────
 step "2/6 — AUR helper (yay)"
 AUR_HELPER=""
 for h in yay paru; do command -v "$h" >/dev/null 2>&1 && { AUR_HELPER="$h"; break; }; done
@@ -2785,11 +2785,11 @@ if [[ -z "$AUR_HELPER" ]]; then
   AUR_HELPER="yay"
   ok "yay installed"
 else ok "AUR helper: $AUR_HELPER"; fi
-
+` : '# ── STEP 2: No AUR packages selected — yay not installed\n'}
 # ── STEP 3: FLATPAK + RUNTIMES ────────────────────────────────
 step "3/6 — Flatpak + language runtimes"
 sudo pacman -S --needed --noconfirm flatpak fuse2 python-pipx rustup || true
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
+sudo flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || warn "could not add the Flathub remote"
 rustup default stable 2>/dev/null || true
 pipx ensurepath || true
 if [[ ! -d "$HOME/.nvm" ]]; then
@@ -2815,8 +2815,12 @@ ok "AUR done"
 ` : ''}
 ${b.flatpak.length ? `# ── STEP 5: FLATPAK PACKAGES ──────────────────────────────────
 step "5/6 — Flatpak packages"
-${b.flatpak.map(p => `flatpak install -y flathub ${p} || warn "flatpak: ${p}"`).join('\n')}
-ok "Flatpak done"
+if sudo flatpak remotes --system --columns=name 2>/dev/null | grep -qx flathub; then
+${b.flatpak.map(p => `  sudo flatpak install -y --system flathub ${p} || warn "flatpak: ${p}"`).join('\n')}
+  ok "Flatpak done"
+else
+  warn "Flathub remote is missing — skipping Flatpak packages"
+fi
 ` : '# ── STEP 5: No flatpak packages selected\n'}
 ${unixTail(b, {
   ollamaInstall: `if ! command -v ollama >/dev/null 2>&1; then
