@@ -59,10 +59,6 @@
         <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--arch)">ARCH / LINUX</div>
         <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
-      <div class="or-target"><div class="ot-os" style="color:var(--macos)">MACOS</div>
-        <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
-      <div class="or-target"><div class="ot-os" style="color:var(--ipados)">IPADOS</div>
-        <div class="ot-path">a-Shell / iSH: ~/.config/tinker-verse/openrouter.env</div></div>
       <div class="or-target"><div class="ot-os" style="color:var(--android)">ANDROID / TERMUX</div>
         <div class="ot-path">~/.config/tinker-verse/openrouter.env</div></div>
     </div>
@@ -100,14 +96,6 @@
   <div class="tab arch" id="tab-arch" onclick="switchTab('arch')">
     🏗️ ARCH
     <span class="cross-warn" id="cwarn-arch"></span>
-  </div>
-  <div class="tab macos" id="tab-macos" onclick="switchTab('macos')">
-    🍎 MACOS
-    <span class="cross-warn" id="cwarn-macos"></span>
-  </div>
-  <div class="tab ipados" id="tab-ipados" onclick="switchTab('ipados')">
-    📱 IPADOS
-    <span class="cross-warn" id="cwarn-ipados"></span>
   </div>
   <div class="tab android" id="tab-android" onclick="switchTab('android')">
     🤖 ANDROID
@@ -430,111 +418,6 @@
   </div>
 </div>
 
-<!-- MACOS TAB -->
-<div class="tab-content" id="content-macos">
-  <div class="cross-banner" id="xbanner-macos" style="display:none">
-    ⚠ <strong>CROSS-OS MODE</strong> — You are not on macOS. Generates a <strong>zsh (.sh)</strong> for macOS.
-    Uses Homebrew (brew) as the primary package manager.
-  </div>
-  <div class="jumpstart" id="js-macos">
-    <div class="js-head">
-      <div class="js-title-wrap"><span class="js-icon">⚡</span>
-        <div><div class="js-title">JUMPSTART — MACOS GOD MODE</div>
-          <div class="js-sub">Bootstrap: brew → nvm → cargo → pipx → companions. One run.</div></div>
-      </div>
-      <div class="js-actions">
-        <button class="js-btn js-arm" onclick="armJS('macos')">⚡ ARM ALL</button>
-        <button class="js-btn js-disarm" onclick="disarmJS('macos')">✕ DISARM</button>
-      </div>
-    </div>
-    <div class="js-divider"></div>
-    <div class="js-items" id="js-items-macos"></div>
-  </div>
-  <div class="controls">
-    <button class="btn active" onclick="filterCat('macos','all')">ALL</button>
-    <button class="btn" onclick="filterCat('macos','pending')">PENDING</button>
-    <button class="btn" onclick="filterCat('macos','done')">DONE</button>
-    <button class="btn danger" onclick="clearOS('macos')">CLEAR</button>
-    <input class="search" type="text" placeholder="search..." oninput="searchCat('macos',this.value)">
-  </div>
-  <div class="grid" id="grid-macos"></div>
-  <button class="generate-btn" onclick="generateScript('macos')">⚡ GENERATE MACOS ZSH SCRIPT (.sh)</button>
-  <div class="output-panel" id="out-macos">
-    <div class="output-label">// MACOS BOOTSTRAP SCRIPT — save as install.sh → run: zsh install.sh</div>
-    <pre class="output-code" id="code-macos"></pre>
-    <div style="display:flex;gap:8px;margin-top:10px;">
-      <button class="copy-btn" onclick="copyScript('macos')">[ COPY RUN COMMAND ]</button>
-      <button class="copy-btn" onclick="downloadScript('macos')" style="border-color:var(--green);color:var(--green);">[ DOWNLOAD install.sh ]</button>
-    </div>
-  </div>
-
-  <div class="gapfill-panel" id="gapfillPanel-macos">
-    <div class="gapfill-head" onclick="toggleGapfill('macos')">
-      <span style="font-size:20px">🧩</span>
-      <div>
-        <div class="gapfill-title" style="color:var(--macos)">GAP-FILL COMPANION — GENERAL DESKTOP APPS</div>
-        <div class="gapfill-sub">Homebrew formulae and casks — browsers, office, graphics, media, gaming and utilities not covered by CATS.macos above.</div>
-      </div>
-      <span class="gapfill-chevron" id="gapfillChevron-macos">▼</span>
-    </div>
-    <div class="gapfill-body" id="gapfillBody-macos">
-      <iframe class="gapfill-frame" id="gapfillFrame-macos" data-src="gapfill.html?os=macos" title="Uni-Staller Gap-Fill Companion — macOS"></iframe>
-    </div>
-  </div>
-</div>
-
-<!-- IPADOS TAB -->
-<div class="tab-content" id="content-ipados">
-  <div class="cross-banner" id="xbanner-ipados" style="display:none">
-    ⚠ <strong>CROSS-OS MODE</strong> — You are not on iPadOS. Generates guidance for iPadOS.
-    iPadOS requires a-Shell or iSH for CLI. Many desktop apps are unavailable.
-  </div>
-  <div class="jumpstart" id="js-ipados">
-    <div class="js-head">
-      <div class="js-title-wrap"><span class="js-icon">⚡</span>
-        <div><div class="js-title">JUMPSTART — IPADOS GOD MODE</div>
-          <div class="js-sub">Bootstrap: a-Shell or iSH → pip → Ollama if supported → companions.</div></div>
-      </div>
-      <div class="js-actions">
-        <button class="js-btn js-arm" onclick="armJS('ipados')">⚡ ARM ALL</button>
-        <button class="js-btn js-disarm" onclick="disarmJS('ipados')">✕ DISARM</button>
-      </div>
-    </div>
-    <div class="js-divider"></div>
-    <div class="js-items" id="js-items-ipados"></div>
-  </div>
-  <div class="controls">
-    <button class="btn active" onclick="filterCat('ipados','all')">ALL</button>
-    <button class="btn" onclick="filterCat('ipados','pending')">PENDING</button>
-    <button class="btn" onclick="filterCat('ipados','done')">DONE</button>
-    <button class="btn danger" onclick="clearOS('ipados')">CLEAR</button>
-    <input class="search" type="text" placeholder="search..." oninput="searchCat('ipados',this.value)">
-  </div>
-  <div class="grid" id="grid-ipados"></div>
-  <button class="generate-btn" onclick="generateScript('ipados')">⚡ GENERATE IPADOS SETUP GUIDE</button>
-  <div class="output-panel" id="out-ipados">
-    <div class="output-label">// IPADOS SETUP GUIDE — Generated by T1NK3R.TRIBOOT</div>
-    <pre class="output-code" id="code-ipados"></pre>
-    <div style="display:flex;gap:8px;margin-top:10px;">
-      <button class="copy-btn" onclick="copyScript('ipados')">[ COPY TO CLIPBOARD ]</button>
-    </div>
-  </div>
-
-  <div class="gapfill-panel" id="gapfillPanel-ipados">
-    <div class="gapfill-head" onclick="toggleGapfill('ipados')">
-      <span style="font-size:20px">🧩</span>
-      <div>
-        <div class="gapfill-title" style="color:var(--ipados)">GAP-FILL COMPANION — GENERAL IPAD APPS</div>
-        <div class="gapfill-sub">App Store apps and a-Shell/iSH commands not covered by CATS.ipados above. Generates a checklist — iPadOS runs no installer.</div>
-      </div>
-      <span class="gapfill-chevron" id="gapfillChevron-ipados">▼</span>
-    </div>
-    <div class="gapfill-body" id="gapfillBody-ipados">
-      <iframe class="gapfill-frame" id="gapfillFrame-ipados" data-src="gapfill.html?os=ipados" title="Uni-Staller Gap-Fill Companion — iPadOS"></iframe>
-    </div>
-  </div>
-</div>
-
 <!-- ANDROID TAB -->
 <div class="tab-content" id="content-android">
   <div class="cross-banner" id="xbanner-android" style="display:none">
@@ -610,7 +493,7 @@ if (typeof window.detectOS === 'function') {
 }
 
 // URL anchor support — #win #cachy #bazzite #fedora #ubuntu #arch
-// #macos #ipados #android open that tab instead of the detected one.
+// #android open that tab instead of the detected one.
 function tabFromHash() {
   const id = (location.hash || '').replace('#', '');
   if (id && typeof allTabs !== 'undefined' && allTabs.includes(id)) switchTab(id);

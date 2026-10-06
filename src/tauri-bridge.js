@@ -13,8 +13,8 @@ let tauriPkgManagers = [];
 let detectedOS = 'win';
 let detectedArch = 'unknown';
 
-// The 9 OS tabs that actually exist in index.html (content-<id> / tab-<id>).
-const allTabs = ['win','cachy','bazzite','fedora','ubuntu','arch','macos','ipados','android'];
+// The 7 OS tabs that actually exist in index.html (content-<id> / tab-<id>).
+const allTabs = ['win','cachy','bazzite','fedora','ubuntu','arch','android'];
 
 // ═══════════════════════════════════════════════════════════════
 // TAB SWITCHING — pure UI, matches styles.css's .tab.active /
@@ -105,9 +105,7 @@ if (!IS_TAURI) {
     const plat = (uaData && uaData.platform) || ua;
 
     if (/Android/i.test(ua)) detectedOS = 'android';
-    else if (/iPad|iPhone|iPod/i.test(ua) || (/Mac/i.test(plat) && navigator.maxTouchPoints > 1)) detectedOS = 'ipados';
     else if (/Win/i.test(plat)) detectedOS = 'win';
-    else if (/Mac/i.test(plat)) detectedOS = 'macos';
     else if (/Ubuntu/i.test(ua)) detectedOS = 'ubuntu';
     else if (/Fedora/i.test(ua)) detectedOS = 'fedora';
     else if (/Linux|X11/i.test(plat)) detectedOS = 'cachy';

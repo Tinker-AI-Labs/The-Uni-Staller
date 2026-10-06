@@ -17,8 +17,7 @@ addAll();
 
 const MARKERS = {
   win:'winget', cachy:'pacman -S', bazzite:'flatpak install', fedora:'dnf install',
-  ubuntu:'apt install', arch:'pacman -S', macos:'brew install', android:'pkg install',
-  ipados:'IPADOS SETUP GUIDE',
+  ubuntu:'apt install', arch:'pacman -S', android:'pkg install',
 };
 
 allTabs.forEach(os => {
@@ -35,21 +34,19 @@ allTabs.forEach(os => {
     else if (os==='fedora') script=genFedora();
     else if (os==='ubuntu') script=genUbuntu();
     else if (os==='arch') script=genArch();
-    else if (os==='macos') script=genMacos();
     else if (os==='android') script=genAndroid();
-    else if (os==='ipados') script=genIpados();
   } catch (e) { check(os+': generator throws', false, e.message); return; }
 
   check(os+': script generated', script.length > 400, script.split('\n').length+' lines');
   check(os+': no undefined/[object', !/undefined|\[object Object\]/.test(script));
   check(os+': expected marker "'+MARKERS[os]+'"', script.includes(MARKERS[os]));
-  if (os!=='win' && os!=='ipados') {
+  if (os!=='win') {
     check(os+': bash colors unescaped', script.includes('${GREEN}') && !script.includes('\\${GREEN}'));
   }
 });
 
-// Gap-fill catalogs for the six tabs that had none.
-['cachy','bazzite','arch','macos','ipados','android'].forEach(os => {
+// Gap-fill catalogs for the four tabs that had none.
+['cachy','bazzite','arch','android'].forEach(os => {
   const cfg = GAPFILL[os];
   const n = cfg ? cfg.cats.reduce((a,c)=>a+c.items.length,0) : 0;
   check('gapfill '+os, !!cfg && n > 40, n+' apps in '+(cfg?cfg.cats.length:0)+' categories');

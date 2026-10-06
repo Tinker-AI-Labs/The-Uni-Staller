@@ -3,7 +3,7 @@
   --bg:#0e0e0e; --panel:#1a1a1a; --border:#2a2a2a;
   --copper:#b87333; --green:#00ff88; --amber:#ffaa00;
   --red:#ff4444; --blue:#4a9eff; --purple:#a855f7;
-  --cyan:#00e5ff; --win:#0078d4; --cachy:#6bc5f8; --bazzite:#6a5acd; --fedora:#3c6eb4; --ubuntu:#E95420; --arch:#1793D1; --macos:#A2AAAD; --ipados:#5E5CE6; --android:#3DDC84; --aarch64:#FF6B35;
+  --cyan:#00e5ff; --win:#0078d4; --cachy:#6bc5f8; --bazzite:#6a5acd; --fedora:#3c6eb4; --ubuntu:#E95420; --arch:#1793D1; --android:#3DDC84; --aarch64:#FF6B35;
   --text:#c8c8c8; --dim:#555;
   --mono:'Share Tech Mono',monospace; --display:'Orbitron',monospace;
 }
@@ -27,8 +27,6 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .os-badge.fedora{border-color:var(--fedora);color:var(--fedora);}
 .os-badge.ubuntu{border-color:var(--ubuntu);color:var(--ubuntu);}
 .os-badge.arch{border-color:var(--arch);color:var(--arch);}
-.os-badge.macos{border-color:var(--macos);color:var(--macos);}
-.os-badge.ipados{border-color:var(--ipados);color:var(--ipados);}
 .os-badge.android{border-color:var(--android);color:var(--android);}
 .os-badge.aarch64{border-color:var(--aarch64);color:var(--aarch64);}
 .os-badge.unknown{border-color:var(--dim);color:var(--dim);}
@@ -113,8 +111,6 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .tab.fedora.active{border-color:rgba(60,110,180,0.5);color:var(--fedora);background:rgba(60,110,180,0.08);}
 .tab.ubuntu.active{border-color:rgba(233,84,32,0.5);color:var(--ubuntu);background:rgba(233,84,32,0.08);}
 .tab.arch.active{border-color:rgba(23,147,209,0.5);color:var(--arch);background:rgba(23,147,209,0.08);}
-.tab.macos.active{border-color:rgba(162,170,173,0.5);color:var(--macos);background:rgba(162,170,173,0.08);}
-.tab.ipados.active{border-color:rgba(94,92,230,0.5);color:var(--ipados);background:rgba(94,92,230,0.08);}
 .tab.android.active{border-color:rgba(61,220,132,0.5);color:var(--android);background:rgba(61,220,132,0.08);}
 .tab .cross-warn{font-size:8px;position:absolute;top:4px;right:6px;color:var(--amber);}
 
@@ -229,7 +225,6 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .tag-toolbox{border-color:#9b59b6;color:#c39bd3;}
 .tag-dnf{border-color:var(--fedora);color:var(--fedora);}
 .tag-apt{border-color:var(--ubuntu);color:var(--ubuntu);}
-.tag-brew{border-color:var(--macos);color:var(--macos);}
 .tag-termux{border-color:var(--android);color:var(--android);}
 .tag-snap{border-color:#82BFA1;color:#82BFA1;}
 .tag-na{border-color:#333;color:#444;} .tag-appimage{border-color:var(--cyan);color:var(--cyan);}

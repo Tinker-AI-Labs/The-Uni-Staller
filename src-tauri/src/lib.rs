@@ -55,7 +55,6 @@ fn detect_platform() -> PlatformInfo {
 
     let os_id = match os_family.as_str() {
         "windows" => "win",
-        "macos" => "macos",
         "linux" => detect_linux_distro(),
         _ => "unknown",
     }
@@ -130,14 +129,6 @@ fn detect_version(os_family: &str) -> String {
             .unwrap_or_default()
             .trim()
             .to_string(),
-        "macos" => Command::new("sw_vers")
-            .arg("-productVersion")
-            .output()
-            .ok()
-            .and_then(|o| String::from_utf8(o.stdout).ok())
-            .unwrap_or_default()
-            .trim()
-            .to_string(),
         "linux" => Command::new("uname")
             .arg("-r")
             .output()
@@ -153,7 +144,6 @@ fn detect_version(os_family: &str) -> String {
 fn detect_desktop_env(os_family: &str) -> String {
     match os_family {
         "windows" => "windows".to_string(),
-        "macos" => "macos".to_string(),
         "linux" => std::env::var("XDG_CURRENT_DESKTOP")
             .unwrap_or_default()
             .to_lowercase()
@@ -185,7 +175,6 @@ fn detect_pkg_managers() -> Vec<PkgManagerInfo> {
         ("flatpak", "flatpak"),
         ("apt", "apt"),
         ("dnf", "dnf"),
-        ("brew", "brew"),
         ("winget", "winget"),
         ("choco", "choco"),
         ("cargo", "cargo"),
@@ -281,7 +270,7 @@ fn run_install(
             } else {
                 match item.cmd_type.as_str() {
                     "winget" | "choco" | "pacman" | "aur" | "flatpak" | "apt" | "dnf"
-                    | "brew" | "pkg" | "termux" | "snap" | "npm" | "pip" | "cargo" | "sh"
+                    | "pkg" | "termux" | "snap" | "npm" | "pip" | "cargo" | "sh"
                     | "ps" | "ollama" | "toolbox" | "ostree" => {
                         let shell = if os == "win" { "powershell" } else { "bash" };
                         let arg = if os == "win" { "-Command" } else { "-c" };

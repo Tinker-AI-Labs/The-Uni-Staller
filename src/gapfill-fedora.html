@@ -262,7 +262,6 @@ const CATS = [
       {name:'Htop / Btop', desc:'Terminal process monitors', cmd:'sudo dnf install -y htop btop', type:'dnf'},
       {name:'Gnome-Firmware', desc:'Firmware update manager (fwupd GUI)', cmd:'sudo dnf install -y gnome-firmware', type:'dnf'},
       {name:'Guake', desc:'Drop-down terminal', cmd:'sudo dnf install -y guake', type:'dnf'},
-      {name:'Waydroid', desc:'Android container — run "sudo waydroid init" after install', cmd:'sudo dnf install -y waydroid', type:'manual'},
       {name:'Celluloid', desc:'GNOME mpv front-end', cmd:'sudo dnf install -y celluloid', type:'dnf'},
       {name:'Boxes (GNOME Boxes)', desc:'VM manager', cmd:'sudo dnf install -y gnome-boxes', type:'dnf'},
     ]},
@@ -443,8 +442,7 @@ ok "pipx ready"
 
   script += `
 echo ""
-echo -e "🎩 \${GREEN}GAP-FILL DEPLOYMENT COMPLETE\${RESET}"
-echo -e "  \${AMBER}→ Waydroid (if installed): run 'sudo waydroid init' then 'waydroid session start'\${RESET}"`;
+echo -e "🎩 \${GREEN}GAP-FILL DEPLOYMENT COMPLETE\${RESET}"`;
 
   document.getElementById('outCode').textContent = script;
   panel.classList.add('visible');

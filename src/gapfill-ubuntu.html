@@ -761,12 +761,6 @@ const CATS = [
         "type": "apt"
       },
       {
-        "name": "Waydroid",
-        "desc": "Android container \u2014 run \"sudo waydroid session start\" after install",
-        "cmd": "curl https://raw.githubusercontent.com/waydroid/waydroid/main/tools/setup.sh | sudo bash -s init",
-        "type": "manual"
-      },
-      {
         "name": "Celluloid",
         "desc": "GNOME mpv front-end",
         "cmd": "sudo apt install -y celluloid",
@@ -952,8 +946,7 @@ ok "pipx ready"
 
   script += `
 echo ""
-echo -e "\U1F9E1 \${GREEN}GAP-FILL DEPLOYMENT COMPLETE\${RESET}"
-echo -e "  \${AMBER}→ Waydroid (if installed): run 'waydroid session start'\${RESET}"`;
+echo -e "\U1F9E1 \${GREEN}GAP-FILL DEPLOYMENT COMPLETE\${RESET}"`;
 
   document.getElementById('outCode').textContent = script;
   panel.classList.add('visible');

@@ -4,12 +4,12 @@ Universal sovereign software installer for the T1NK3R-V3R53 ecosystem. Built wit
 
 ## What it does
 
-- **9 OS tabs** — Tiny11/Windows, CachyOS, Bazzite, Fedora, Ubuntu/Debian, Arch, macOS, iPadOS, Android
+- **7 OS tabs** — Tiny11/Windows, CachyOS, Bazzite, Fedora, Ubuntu/Debian, Arch, Android
 - **JUMPSTART God Mode** — curated "arm all" bootstrap block per OS: base tools, runtimes (nvm/Rust/pipx), Ollama, companions
 - **Companion Models** — installer-default roster pulled per OS: Alfred (mistral:latest), Sage (mistral:latest), Steward (phi3:latest), Scout (phi3:mini), Daisy (llama3.2:1b), Coach (llama3.2:3b)
 - **Full category library** — beyond JUMPSTART, each OS tab has dozens of expandable categories: Development, CLI AI Tools, Gaming, Audio/DAW/VST, Game Engines/3D, 3D Printing (Bambu P1S), SDR/R[...]
 - **Gap-Fill Companion on every tab** — a second catalog of general desktop apps (browsers, office, graphics, media, gaming, dev, system utilities) the curated stack doesn't cover, with its own script generator
-- **Script generator** — outputs `.ps1` (Windows) or `.sh` (Linux/macOS) from your selections, deduped and ordered correctly
+- **Script generator** — outputs `.ps1` (Windows) or `.sh` (Linux/Android) from your selections, deduped and ordered correctly
 - **OpenRouter importer** — writes your OR key to the correct OS-specific path, generates setup script
 - **ROCm support** — AMD RX 6600 / RDNA2 paths on CachyOS, Bazzite, and Fedora
 - **Cross-OS mode** — use any tab from any OS; cross-platform warning banners activate automatically
@@ -18,14 +18,17 @@ Universal sovereign software installer for the T1NK3R-V3R53 ecosystem. Built wit
 
 ## Recent Updates
 
-### August 2026 - All nine tabs completed
-- **Six OSes filled in**: Fedora, Ubuntu/Debian, Arch, macOS, iPadOS and Android had empty JUMPSTART/CATS data and a placeholder script generator. All six now carry a full JUMPSTART block and a complete category library against their own package manager (`dnf`, `apt`, `pacman`/AUR, `brew`, App Store, `pkg`/Termux).
-- **Real script generators** for those tabs: batched native-package installs, Flatpak/snap/AUR/cask sections, npm/pip/cargo, Ollama pulls, and manual notes. iPadOS deliberately generates a **checklist** rather than a script — nothing on iPadOS can run an installer.
-- **Gap-Fill Companion for the remaining six tabs**: one shared `gapfill.html?os=<id>` page driven by `gapfill-data.js` (~400 extra apps). The older standalone `gapfill-windows/fedora/ubuntu.html` files are unchanged and still wired to their own tabs.
+### Scope cut — macOS, iPadOS and Waydroid removed
+The app now covers seven targets: Windows (Tiny11), CachyOS, Bazzite, Fedora, Ubuntu/Debian, Arch and Android. The macOS and iPadOS tabs (data, generators, build script) and every Waydroid entry were removed.
+
+### August 2026 - Tab completion (history)
+- **Four OSes filled in**: Fedora, Ubuntu/Debian, Arch and Android had empty JUMPSTART/CATS data and a placeholder script generator. All now carry a full JUMPSTART block and a complete category library against their own package manager (`dnf`, `apt`, `pacman`/AUR, `pkg`/Termux).
+- **Real script generators** for those tabs: batched native-package installs, Flatpak/snap/AUR sections, npm/pip/cargo, Ollama pulls, and manual notes.
+- **Gap-Fill Companion for the remaining four tabs**: one shared `gapfill.html?os=<id>` page driven by `gapfill-data.js` (~400 extra apps). The older standalone `gapfill-windows/fedora/ubuntu.html` files are unchanged and still wired to their own tabs.
 - **ADD ALL button now works** — it was wired to a function that was never defined.
-- **URL anchors now work** — `#arch`, `#macos`, … actually switch tabs (documented before, never implemented).
+- **URL anchors now work** — `#arch`, `#android`, … actually switch tabs (documented before, never implemented).
 - **Browser OS detection fallback** — outside the Tauri app the badges resolve from the user agent instead of sitting on "DETECTING…".
-- **Markup escaping fix** — commands containing `<lan-ip>` were parsed as HTML tags and swallowed every item after them on the iPadOS/Android tabs.
+- **Markup escaping fix** — commands containing `<lan-ip>` were parsed as HTML tags and swallowed every item after them on the Android tab.
 - **Filter buttons** highlight the active mode; long unbreakable commands no longer blow out their grid column.
 
 ### July 2026 - Bug Fixes
@@ -38,13 +41,13 @@ Universal sovereign software installer for the T1NK3R-V3R53 ecosystem. Built wit
 
 ```
 src/
-  index.html            — 9 OS tab structure, OpenRouter panel, gap-fill panels, header
-  jumpstart-engine.js   — all data (JUMPSTART + CATS for 9 OSes), state, rendering, script generators
+  index.html            — 7 OS tab structure, OpenRouter panel, gap-fill panels, header
+  jumpstart-engine.js   — all data (JUMPSTART + CATS for 7 OSes), state, rendering, script generators
   app.js                — OpenRouter key verification + setup-script generation
   styles.css            — T1NK3R-V3R53 dark theme, OS color vars
   tauri-bridge.js       — Tauri v2 ↔ browser fallback bridge, OS detection, save/download, terminal output, native install runner
-  gapfill.html          — shared Gap-Fill Companion page: gapfill.html?os=cachy|bazzite|arch|macos|ipados|android
-  gapfill-data.js       — gap-fill catalogs for those six systems
+  gapfill.html          — shared Gap-Fill Companion page: gapfill.html?os=cachy|bazzite|arch|android
+  gapfill-data.js       — gap-fill catalogs for those four systems
   gapfill-windows.html  — older standalone gap-fill companions, one file each,
   gapfill-fedora.html     still wired to their own tabs
   gapfill-ubuntu.html
@@ -68,10 +71,10 @@ packaging/
 com.tinkerverse.uni-staller.yml — Flatpak manifest (repo root; the workflow's
                                   manifest-path points here)
 
-build-appimage-local.sh   .deb + .AppImage    build-macos-local.sh    .app + .dmg
-build-rpm-local.sh        .rpm                build-android-local.sh  .apk / .aab
-build-arch-local.sh       .pkg.tar.zst        build-windows-local.ps1 .msi + .exe
-build-flatpak-local.sh    .flatpak            build-windows-local.sh  .msi + .exe (WSL)
+build-appimage-local.sh   .deb + .AppImage    build-android-local.sh  .apk / .aab
+build-rpm-local.sh        .rpm                build-windows-local.ps1 .msi + .exe
+build-arch-local.sh       .pkg.tar.zst        build-windows-local.sh  .msi + .exe (WSL)
+build-flatpak-local.sh    .flatpak
 ```
 
 ## Build
@@ -104,9 +107,7 @@ it can, and tells you what it cannot install for you.
 | Arch / CachyOS / Manjaro | `.pkg.tar.zst` | `build-arch-local.sh` | — |
 | Bazzite + any Linux | `.flatpak` | `build-flatpak-local.sh` | `build-flatpak.yml` |
 | Windows | `.msi` + NSIS `.exe` | `build-windows-local.ps1` / `.sh` | `build-windows.yml` |
-| macOS | `.app` + `.dmg` | `build-macos-local.sh` | — |
 | Android | `.apk` / `.aab` | `build-android-local.sh` | — |
-| iPadOS / iOS | `.ipa` | not available — see below | — |
 
 CI workflows in that last column live in `.github/workflows/`.
 
@@ -219,22 +220,6 @@ drafts a GitHub Release on tags.
 
 Output lands in `src-tauri/target/release/bundle/msi/` and `.../nsis/`.
 
-### macOS — `.app` and `.dmg`
-
-Must be run on macOS; Apple's bundling tools are not cross-platform.
-
-```bash
-./build-macos-local.sh              # native arch, fastest
-./build-macos-local.sh --universal  # universal binary (Intel + Apple Silicon)
-```
-
-The bundle is unsigned and un-notarized, so Gatekeeper will refuse it on any other Mac
-until it is signed with an Apple Developer ID. To run it on the build machine:
-
-```bash
-xattr -dr com.apple.quarantine "src-tauri/target/release/bundle/macos/Uni-Staller.app"
-```
-
 ### Android — `.apk` / `.aab`
 
 ```bash
@@ -250,15 +235,6 @@ under `$ANDROID_HOME/ndk`. On first run it scaffolds `src-tauri/gen/android` via
 
 Release builds are **unsigned** until a keystore is configured in
 `src-tauri/gen/android/app/build.gradle.kts`; an unsigned APK will not install on a device.
-
-### iPadOS / iOS — not available
-
-There is no build script and there cannot usefully be one from this repo: `tauri ios build`
-only exists on macOS, and it needs Xcode plus a paid Apple Developer account to sign
-anything installable. This is also the target the app itself treats as a special case — the
-iPadOS tab generates a **checklist**, not a script, because nothing on iPadOS can run an
-installer.
-
 
 ## Calsifer (second machine)
 
@@ -284,6 +260,4 @@ Tauri CLI v2.11.3 was compiled via `cargo install` on Calsifer/Ubuntu Studio. Us
 - `#fedora` → Fedora
 - `#ubuntu` → Ubuntu/Debian
 - `#arch` → Arch Linux
-- `#macos` → macOS
-- `#ipados` → iPadOS
 - `#android` → Android

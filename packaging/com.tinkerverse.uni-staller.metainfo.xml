@@ -20,10 +20,10 @@
       want from a curated catalog and it emits a deduped, correctly ordered
       shell or PowerShell script you can inspect before running.
     </p>
-    <p>Covers nine targets:</p>
+    <p>Covers seven targets:</p>
     <ul>
       <li>Windows (Tiny11), CachyOS, Bazzite, Fedora, Ubuntu/Debian, Arch</li>
-      <li>macOS, iPadOS (checklist only — nothing on iPadOS runs an installer), Android/Termux</li>
+      <li>Android/Termux</li>
     </ul>
     <p>
       Each target carries a JUMPSTART block (base tools, runtimes, Ollama,

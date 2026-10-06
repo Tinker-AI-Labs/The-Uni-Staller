@@ -1,10 +1,9 @@
 // ═══════════════════════════════════════════════════════════════
-// JUMPSTART ENGINE — data + script generators for all nine OS tabs.
+// JUMPSTART ENGINE — data + script generators for the seven OS tabs
+// (win / cachy / bazzite / fedora / ubuntu / arch / android).
 // win / cachy / bazzite came from the recovered 2026-08-28 prototype;
-// fedora / ubuntu / arch / macos / ipados / android were built out
-// afterwards against each platform's own package manager.
-// iPadOS deliberately generates a checklist, not a shell script —
-// nothing on iPadOS can run an installer script.
+// fedora / ubuntu / arch / android were built out afterwards against
+// each platform's own package manager.
 // This does NOT replace OS detection (tauri-bridge.js) or the
 // OpenRouter panel (app.js).
 // ═══════════════════════════════════════════════════════════════
@@ -268,80 +267,6 @@ const JUMPSTART = {
      cmd:'sudo pacman -S --needed --noconfirm rocm-opencl-runtime rocm-hip-runtime rocminfo && echo "export HSA_OVERRIDE_GFX_VERSION=10.3.0" >> ~/.bashrc'},
     {id:'a_pw',      name:'PipeWire full stack', desc:'Audio engine — JACK bridge, realtime audio', tier:'sys',
      cmd:'sudo pacman -S --needed --noconfirm pipewire pipewire-jack pipewire-alsa pipewire-pulse wireplumber realtime-privileges && sudo usermod -aG realtime $USER'},
-  ],
-  macos: [
-    {id:'m_clt',     name:'Xcode Command Line Tools', desc:'Must be first. Homebrew will not build without it.', tier:'sys',
-     cmd:'xcode-select --install || true'},
-    {id:'m_brew',    name:'Homebrew', desc:'Primary package manager on macOS', tier:'sys',
-     cmd:'# Auto-bootstrapped in script'},
-    {id:'m_git',     name:'Git', desc:'Newer than Apple\'s bundled git', tier:'dev',
-     cmd:'brew install git'},
-    {id:'m_node',    name:'Node.js LTS', desc:'Required for Claude Code, Gemini CLI', tier:'dev',
-     cmd:'brew install node'},
-    {id:'m_rust',    name:'Rust + Cargo', desc:'Required for RTK, Yazi', tier:'dev',
-     cmd:'brew install rustup && rustup-init -y'},
-    {id:'m_pipx',    name:'pipx', desc:'Isolated Python tool installs', tier:'dev',
-     cmd:'brew install pipx && pipx ensurepath'},
-    {id:'m_ollama',  name:'Ollama 0.17.1+', desc:'Local LLM runner — Metal accelerated on Apple Silicon', tier:'core',
-     cmd:'brew install --cask ollama'},
-    {id:'m_docker',  name:'Docker Desktop', desc:'Container engine', tier:'core',
-     cmd:'brew install --cask docker'},
-    {id:'m_claude',  name:'Claude Code (Hermes)', desc:'Agentic coding CLI', tier:'ai',
-     cmd:'npm install -g @anthropic-ai/claude-code'},
-    {id:'m_gemini',  name:'Gemini CLI', desc:'Google Gemini CLI — codegen layer', tier:'ai',
-     cmd:'npm install -g @google/gemini-cli'},
-    {id:'m_rtk',     name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', tier:'dev',
-     cmd:'brew install rtk', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
-    {id:'m_yazi',    name:'Yazi File Manager', desc:'Iron Works themed terminal file manager', tier:'dev',
-     cmd:'brew install yazi'},
-    {id:'m_alfred',  name:'Alfred → qwen3:8b', desc:'Primary companion — always warm', tier:'ai',
-     cmd:'ollama pull qwen3:8b'},
-    {id:'m_steward', name:'Steward → deepseek-r1:14b', desc:'Safety watchdog — always warm', tier:'ai',
-     cmd:'ollama pull deepseek-r1:14b'},
-    {id:'m_scout',   name:'Scout → llama3.2:3b', desc:'Field recon — always warm', tier:'ai',
-     cmd:'ollama pull llama3.2:3b'},
-    {id:'m_embed',   name:'nomic-embed-text', desc:'RAG embeddings', tier:'ai',
-     cmd:'ollama pull nomic-embed-text'},
-    {id:'m_whisper', name:'Whisper STT', desc:'Local speech recognition — Alfred daemon', tier:'ai',
-     cmd:'pipx install openai-whisper'},
-    {id:'m_piper',   name:'Piper TTS', desc:'Local neural TTS — Alfred voice output', tier:'ai',
-     cmd:'pipx install piper-tts'},
-    {id:'m_iterm',   name:'iTerm2', desc:'Terminal replacement', tier:'sys',
-     cmd:'brew install --cask iterm2'},
-    {id:'m_vscode',  name:'VS Code', desc:'Primary code editor', tier:'dev',
-     cmd:'brew install --cask visual-studio-code'},
-    {id:'m_metal',   name:'Metal / MPS note (no ROCm)', desc:'Apple Silicon uses Metal — HSA_OVERRIDE does nothing here.', tier:'sys',
-     cmd:'# Ollama and PyTorch use Metal (MPS) automatically. There is no ROCm on macOS.'},
-  ],
-  ipados: [
-    {id:'i_ashell',  name:'a-Shell (App Store)', desc:'Sandboxed local shell — python3, pip, lua, ffmpeg built in', tier:'sys',
-     cmd:'# App Store: a-Shell — https://apps.apple.com/app/id1473805438'},
-    {id:'i_ish',     name:'iSH (App Store)', desc:'Alpine Linux in x86 emulation — apk package manager', tier:'sys',
-     cmd:'# App Store: iSH Shell — then: apk update && apk add git python3'},
-    {id:'i_blink',   name:'Blink Shell', desc:'Best SSH/mosh client — this is how you reach the sovereign box', tier:'core',
-     cmd:'# App Store: Blink Shell — then: ssh tinkerv@<your-lan-ip>'},
-    {id:'i_tailscale',name:'Tailscale', desc:'Mesh VPN — reach Ollama at home from anywhere', tier:'core',
-     cmd:'# App Store: Tailscale — sign in, then the LAN box is reachable by name'},
-    {id:'i_pip',     name:'pip bootstrap (a-Shell)', desc:'Python package installs inside a-Shell', tier:'dev',
-     cmd:'pip install --upgrade pip'},
-    {id:'i_pyreq',   name:'requests + httpx', desc:'Talk to a remote Ollama / OpenRouter from a-Shell', tier:'dev',
-     cmd:'pip install requests httpx'},
-    {id:'i_ollama_remote', name:'Remote Ollama endpoint', desc:'iPadOS cannot run Ollama natively — point at the LAN box', tier:'ai',
-     cmd:'export OLLAMA_HOST=http://<lan-ip>:11434 && echo "export OLLAMA_HOST=http://<lan-ip>:11434" >> ~/.profile'},
-    {id:'i_workingcopy', name:'Working Copy', desc:'Full git client for iPadOS — clones the tinker-verse repos', tier:'dev',
-     cmd:'# App Store: Working Copy'},
-    {id:'i_textastic',name:'Textastic', desc:'Code editor with SSH/SFTP + Working Copy integration', tier:'dev',
-     cmd:'# App Store: Textastic Code Editor'},
-    {id:'i_obsidian',name:'Obsidian', desc:'Markdown PKM — same vault as desktop via sync', tier:'dev',
-     cmd:'# App Store: Obsidian'},
-    {id:'i_shortcuts',name:'Siri Shortcuts → Alfred', desc:'Voice trigger that POSTs to the companion API over Tailscale', tier:'ai',
-     cmd:'# Shortcuts app → Get Contents of URL → POST http://<lan-ip>:11434/api/generate'},
-    {id:'i_localsend',name:'LocalSend', desc:'Sovereign LAN file transfer — same app as desktop', tier:'core',
-     cmd:'# App Store: LocalSend'},
-    {id:'i_vlc',     name:'VLC for Mobile', desc:'Plays anything — T1NK3R.TV client', tier:'sys',
-     cmd:'# App Store: VLC for Mobile'},
-    {id:'i_kodi_na', name:'No local LLM runtime', desc:'No Ollama/llama.cpp App Store build — remote inference only', tier:'ai',
-     cmd:'# Honest limit: iPadOS sandboxing blocks local model servers. Use the LAN box.'},
   ],
   android: [
     {id:'n_termux',  name:'Termux (F-Droid build)', desc:'Must be the F-Droid/GitHub build — the Play Store one is abandoned.', tier:'sys',
@@ -1639,266 +1564,6 @@ const CATS = {
       ]},
   ],
 
-  macos: [
-    { id:'m-bootstrap', icon:'🔧', title:'BOOTSTRAP (AUTO-RUNS FIRST)',
-      items:[
-        {name:'Xcode Command Line Tools', desc:'Homebrew will not build without it', cmd:'xcode-select --install || true', type:'manual'},
-        {name:'Homebrew', desc:'Primary package manager on macOS', cmd:'/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', type:'manual'},
-        {name:'Rosetta 2 (Apple Silicon)', desc:'Runs x86_64 binaries on M-series', cmd:'softwareupdate --install-rosetta --agree-to-license', type:'manual'},
-        {name:'Node.js LTS', desc:'Required for CLI AI tools', cmd:'brew install node', type:'brew'},
-        {name:'rustup + cargo', desc:'Required for RTK, Yazi', cmd:'brew install rustup', type:'brew'},
-        {name:'pipx', desc:'Isolated Python tool runner', cmd:'brew install pipx', type:'brew'},
-        {name:'mas (Mac App Store CLI)', desc:'Install App Store apps from the terminal', cmd:'brew install mas', type:'brew'},
-        {name:'coreutils + gnu-sed', desc:'GNU tools — most Linux scripts assume these', cmd:'brew install coreutils gnu-sed gawk findutils', type:'brew'},
-      ]},
-    { id:'m-cliai', icon:'🖥️', title:'CLI AI TOOLS',
-      items:[
-        {name:'Claude Code (Hermes)', desc:'Primary agentic coding CLI', cmd:'npm install -g @anthropic-ai/claude-code', type:'npm'},
-        {name:'Gemini CLI', desc:'Google Gemini — codegen layer', cmd:'npm install -g @google/gemini-cli', type:'npm'},
-        {name:'OpenAI Codex CLI', desc:'OpenAI Codex — OpenRouter Tier 1', cmd:'npm install -g @openai/codex', type:'npm'},
-        {name:'OpenCode', desc:'Open-source multi-provider AI CLI', cmd:'npm install -g opencode-ai', type:'npm'},
-        {name:'Aider', desc:'AI pair programmer — git-aware', cmd:'pipx install aider-chat', type:'pip'},
-        {name:'Shell-GPT', desc:'LLM queries in terminal', cmd:'pipx install shell-gpt', type:'pip'},
-        {name:'LLM (Willison)', desc:'Universal LLM CLI', cmd:'brew install llm', type:'brew'},
-        {name:'RTK', desc:'Compresses command output for AI coding agents (not the \'rtk\' crate on crates.io)', cmd:'brew install rtk', type:'brew', license:'Apache-2.0', help:'https://github.com/rtk-ai/rtk', helpType:'site'},
-        {name:'RTK: enable for Claude Code', desc:'Edits your Claude Code settings (adds a hook); run after installing RTK', cmd:'rtk init -g', type:'cargo'},
-        {name:'Yazi File Manager', desc:'Rust terminal file manager', cmd:'brew install yazi', type:'brew'},
-      ]},
-    { id:'m-sovereign', icon:'🛡️', title:'SOVEREIGN STACK',
-      items:[
-        {name:'Ollama 0.17.1+', desc:'Metal accelerated on Apple Silicon', cmd:'brew install --cask ollama', type:'brew'},
-        {name:'Docker Desktop', desc:'Container engine', cmd:'brew install --cask docker', type:'brew'},
-        {name:'OrbStack (lighter alt)', desc:'Faster Docker/Linux VM runtime for macOS', cmd:'brew install --cask orbstack', type:'brew'},
-        {name:'Open WebUI', desc:'Browser UI for Ollama — port 3000', cmd:'docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main', type:'manual'},
-        {name:'LM Studio', desc:'GUI local model runner — MLX support', cmd:'brew install --cask lm-studio', type:'brew'},
-        {name:'LocalSend', desc:'Sovereign LAN file transfer', cmd:'brew install --cask localsend', type:'brew'},
-        {name:'KeePassXC', desc:'Offline password manager', cmd:'brew install --cask keepassxc', type:'brew'},
-        {name:'Whisper STT', desc:'Local speech recognition', cmd:'pipx install openai-whisper', type:'pip'},
-        {name:'Piper TTS', desc:'Local neural TTS', cmd:'pipx install piper-tts', type:'pip'},
-      ]},
-    { id:'m-companions', icon:'🤝', title:'COMPANION MODELS',
-      items:[
-        {name:'Alfred — qwen3:8b', desc:'Always warm', cmd:'ollama pull qwen3:8b', type:'ollama'},
-        {name:'Steward — deepseek-r1:14b', desc:'Always warm', cmd:'ollama pull deepseek-r1:14b', type:'ollama'},
-        {name:'Scout — llama3.2:3b', desc:'Always warm', cmd:'ollama pull llama3.2:3b', type:'ollama'},
-        {name:'Daisy — gemma2:2b', desc:'Safe Space support', cmd:'ollama pull gemma2:2b', type:'ollama'},
-        {name:'Coach — llama3.2:3b', desc:'Motivation', cmd:'ollama pull llama3.2:3b', type:'ollama'},
-        {name:'Spark — phi3.5:latest', desc:'Inspiration engine', cmd:'ollama pull phi3.5:latest', type:'ollama'},
-        {name:'Solace — llama3.2:1b', desc:'Deep creative voice', cmd:'ollama pull llama3.2:1b', type:'ollama'},
-        {name:'Sage — phi4:14b', desc:'Knowledge layer', cmd:'ollama pull phi4:14b', type:'ollama'},
-        {name:'Luna — gemma2:2b', desc:'P.A.W.S. / living systems', cmd:'ollama pull gemma2:2b', type:'ollama'},
-        {name:'Tink — qwen2.5vl:7b', desc:'Ward — vision-capable', cmd:'ollama pull qwen2.5vl:7b', type:'ollama'},
-        {name:'Wren — qwen2.5:1.5b', desc:'Ward', cmd:'ollama pull qwen2.5:1.5b', type:'ollama'},
-        {name:'Qwen — qwen2.5:3b', desc:'Ward', cmd:'ollama pull qwen2.5:3b', type:'ollama'},
-        {name:'Remy — smollm2:1.7b', desc:'Ward — lightweight', cmd:'ollama pull smollm2:1.7b', type:'ollama'},
-        {name:'moondream', desc:'Vision / daydreaming utility model', cmd:'ollama pull moondream', type:'ollama'},
-        {name:'nomic-embed-text', desc:'RAG embeddings', cmd:'ollama pull nomic-embed-text', type:'ollama'},
-      ]},
-    { id:'m-dev', icon:'💻', title:'DEVELOPMENT',
-      items:[
-        {name:'Git + GitHub CLI', desc:'Newer than Apple\'s bundled git', cmd:'brew install git gh', type:'brew'},
-        {name:'VS Code', desc:'Primary editor', cmd:'brew install --cask visual-studio-code', type:'brew'},
-        {name:'iTerm2', desc:'Terminal replacement', cmd:'brew install --cask iterm2', type:'brew'},
-        {name:'Neovim', desc:'Hyperextensible Vim', cmd:'brew install neovim', type:'brew'},
-        {name:'Python 3', desc:'Homebrew python + venv', cmd:'brew install python', type:'brew'},
-        {name:'Go', desc:'Google systems language', cmd:'brew install go', type:'brew'},
-        {name:'Java 21 (Temurin)', desc:'JVM runtime + compiler', cmd:'brew install --cask temurin@21', type:'brew'},
-        {name:'tmux + zsh tooling', desc:'Terminal essentials', cmd:'brew install tmux starship', type:'brew'},
-        {name:'bat + ripgrep + fzf + fd', desc:'Modern CLI search stack', cmd:'brew install bat ripgrep fzf fd', type:'brew'},
-        {name:'Xcode (full IDE)', desc:'Needed for iOS/iPadOS builds', cmd:'mas install 497799835', type:'manual'},
-      ]},
-    { id:'m-gaming', icon:'🎮', title:'GAMING / EMULATION',
-      items:[
-        {name:'Steam', desc:'PC gaming platform', cmd:'brew install --cask steam', type:'brew'},
-        {name:'Whisky', desc:'Wine/Game Porting Toolkit front-end', cmd:'brew install --cask whisky', type:'brew'},
-        {name:'CrossOver', desc:'Commercial Windows compat layer', cmd:'brew install --cask crossover', type:'brew'},
-        {name:'RetroArch', desc:'Multi-system emulator frontend', cmd:'brew install --cask retroarch', type:'brew'},
-        {name:'Dolphin (GC/Wii)', desc:'Nintendo emulator', cmd:'brew install --cask dolphin', type:'brew'},
-        {name:'PPSSPP (PSP)', desc:'PSP emulator', cmd:'brew install --cask ppsspp', type:'brew'},
-        {name:'DuckStation (PS1)', desc:'PlayStation 1 emulator', cmd:'brew install --cask duckstation', type:'brew'},
-        {name:'OpenEmu', desc:'macOS-native multi-system emulator', cmd:'brew install --cask openemu', type:'brew'},
-        {name:'ScummVM', desc:'Classic adventure engine', cmd:'brew install --cask scummvm', type:'brew'},
-      ]},
-    { id:'m-engines', icon:'🕹️', title:'GAME ENGINES / 3D',
-      items:[
-        {name:'Godot 4', desc:'Open-source engine — T1NK3R Games', cmd:'brew install --cask godot', type:'brew'},
-        {name:'Blender', desc:'3D modeling / VIGA / Modly', cmd:'brew install --cask blender', type:'brew'},
-        {name:'Unity Hub', desc:'Unity engine manager', cmd:'brew install --cask unity-hub', type:'brew'},
-        {name:'Unreal Engine 5', desc:'Via Epic Games Launcher', cmd:'brew install --cask epic-games', type:'brew'},
-        {name:'Bevy (Rust engine)', desc:'ECS game engine — cargo template', cmd:'cargo install cargo-generate', type:'cargo'},
-        {name:'LÖVE 2D', desc:'Lua game framework', cmd:'brew install --cask love', type:'brew'},
-        {name:'FreeCAD', desc:'Parametric CAD', cmd:'brew install --cask freecad', type:'brew'},
-        {name:'OpenSCAD', desc:'Script-driven CAD', cmd:'brew install --cask openscad', type:'brew'},
-      ]},
-    { id:'m-daw', icon:'🎚️', title:'DAWs / AUDIO',
-      items:[
-        {name:'Reaper', desc:'Lightweight pro DAW', cmd:'brew install --cask reaper', type:'brew'},
-        {name:'Ardour', desc:'Full pro DAW', cmd:'brew install --cask ardour', type:'brew'},
-        {name:'LMMS', desc:'FL Studio-style beat production', cmd:'brew install --cask lmms', type:'brew'},
-        {name:'Audacity', desc:'Audio editor & recorder', cmd:'brew install --cask audacity', type:'brew'},
-        {name:'Mixxx', desc:'DJ software — T1NK3R.FM', cmd:'brew install --cask mixxx', type:'brew'},
-        {name:'Surge XT', desc:'Hybrid wavetable synth', cmd:'brew install --cask surge-xt', type:'brew'},
-        {name:'BlackHole (virtual audio)', desc:'Route audio between apps — macOS ASIO equivalent', cmd:'brew install --cask blackhole-2ch', type:'brew'},
-        {name:'Hydrogen Drum Machine', desc:'Drum machine / step sequencer', cmd:'brew install --cask hydrogen', type:'brew'},
-        {name:'FluidSynth', desc:'General MIDI synth engine', cmd:'brew install fluidsynth', type:'brew'},
-        {name:'GarageBand', desc:'Free Apple DAW — App Store', cmd:'mas install 682658836', type:'manual'},
-      ]},
-    { id:'m-media', icon:'📺', title:'MEDIA / T1NK3R.TV',
-      items:[
-        {name:'VLC', desc:'Universal media player', cmd:'brew install --cask vlc', type:'brew'},
-        {name:'IINA', desc:'macOS-native mpv front-end', cmd:'brew install --cask iina', type:'brew'},
-        {name:'yt-dlp', desc:'YouTube downloader', cmd:'brew install yt-dlp', type:'brew'},
-        {name:'Kodi', desc:'Media center — T1NK3R.TV frontend', cmd:'brew install --cask kodi', type:'brew'},
-        {name:'Jellyfin Media Player', desc:'Client for the home server', cmd:'brew install --cask jellyfin-media-player', type:'brew'},
-        {name:'Calibre', desc:'E-book manager', cmd:'brew install --cask calibre', type:'brew'},
-        {name:'HandBrake', desc:'Video transcoder', cmd:'brew install --cask handbrake', type:'brew'},
-        {name:'FFmpeg', desc:'CLI multimedia toolkit', cmd:'brew install ffmpeg', type:'brew'},
-      ]},
-    { id:'m-art', icon:'🎨', title:'ART / VIDEO',
-      items:[
-        {name:'GIMP', desc:'GNU image manipulation', cmd:'brew install --cask gimp', type:'brew'},
-        {name:'Krita', desc:'Professional digital painting', cmd:'brew install --cask krita', type:'brew'},
-        {name:'Inkscape', desc:'Vector graphics (SVG)', cmd:'brew install --cask inkscape', type:'brew'},
-        {name:'Darktable', desc:'RAW photo workflow', cmd:'brew install --cask darktable', type:'brew'},
-        {name:'OBS Studio', desc:'Streaming & screen recording', cmd:'brew install --cask obs', type:'brew'},
-        {name:'DaVinci Resolve', desc:'Pro video editor — Metal accelerated', cmd:'brew install --cask davinci-resolve', type:'brew'},
-        {name:'Kdenlive', desc:'Open-source video editor', cmd:'brew install --cask kdenlive', type:'brew'},
-        {name:'Upscayl', desc:'AI image upscaler', cmd:'brew install --cask upscayl', type:'brew'},
-      ]},
-    { id:'m-creai', icon:'🤖', title:'CREATIVE AI / ACE STACK',
-      items:[
-        {name:'ComfyUI (MPS)', desc:'Node-based Stable Diffusion — Metal backend', cmd:'git clone https://github.com/comfyanonymous/ComfyUI.git ~/tinker-verse/comfyui && cd ~/tinker-verse/comfyui && python3 -m venv venv && source venv/bin/activate && pip install torch torchvision torchaudio && pip install -r requirements.txt', type:'manual'},
-        {name:'Draw Things', desc:'Native macOS/iOS Stable Diffusion app', cmd:'mas install 6444050820', type:'manual'},
-        {name:'MLX (Apple Silicon ML)', desc:'Apple\'s native array framework — fastest local inference', cmd:'pipx install mlx-lm', type:'pip'},
-        {name:'InvokeAI', desc:'Clean professional SD interface', cmd:'pipx install InvokeAI', type:'pip'},
-        {name:'text-generation-webui', desc:'Oobabooga — local model chat UI', cmd:'git clone https://github.com/oobabooga/text-generation-webui.git ~/tinker-verse/text-gen-webui', type:'manual'},
-        {name:'Diffusers (HuggingFace)', desc:'Core AI image library', cmd:'pipx install diffusers', type:'pip'},
-        {name:'FreeMoCap', desc:'Markerless motion capture — ACE Visual', cmd:'pipx install freemocap', type:'pip'},
-      ]},
-    { id:'m-network', icon:'🌐', title:'NETWORKING / SECURITY',
-      items:[
-        {name:'Tailscale', desc:'Mesh VPN — cluster access', cmd:'brew install --cask tailscale', type:'brew'},
-        {name:'WireGuard', desc:'Modern VPN', cmd:'brew install wireguard-tools', type:'brew'},
-        {name:'Wireshark', desc:'Network protocol analyzer', cmd:'brew install --cask wireshark', type:'brew'},
-        {name:'Nmap', desc:'Network scanner', cmd:'brew install nmap', type:'brew'},
-        {name:'Syncthing', desc:'Peer-to-peer file sync', cmd:'brew install syncthing', type:'brew'},
-        {name:'croc + magic-wormhole', desc:'One-shot encrypted file transfer', cmd:'brew install croc magic-wormhole', type:'brew'},
-      ]},
-    { id:'m-writing', icon:'✍️', title:'WRITING / KNOWLEDGE',
-      items:[
-        {name:'LibreOffice', desc:'Full office suite', cmd:'brew install --cask libreoffice', type:'brew'},
-        {name:'Obsidian', desc:'Markdown PKM — Tinker-Verse vault', cmd:'brew install --cask obsidian', type:'brew'},
-        {name:'Logseq', desc:'Outliner PKM alternative', cmd:'brew install --cask logseq', type:'brew'},
-        {name:'Zotero', desc:'Reference manager', cmd:'brew install --cask zotero', type:'brew'},
-        {name:'Pandoc', desc:'Universal document converter', cmd:'brew install pandoc', type:'brew'},
-        {name:'MacTeX (LaTeX)', desc:'Full LaTeX distribution', cmd:'brew install --cask mactex-no-gui', type:'brew'},
-      ]},
-    { id:'m-print3d', icon:'🖨️', title:'3D PRINTING (BAMBU P1S)',
-      items:[
-        {name:'Bambu Studio', desc:'Official P1S slicer', cmd:'brew install --cask bambu-studio', type:'brew'},
-        {name:'OrcaSlicer', desc:'Community fork — better P1S profiles', cmd:'brew install --cask orcaslicer', type:'brew'},
-        {name:'PrusaSlicer', desc:'Alternative slicer', cmd:'brew install --cask prusaslicer', type:'brew'},
-        {name:'Cura', desc:'Ultimaker slicer', cmd:'brew install --cask ultimaker-cura', type:'brew'},
-        {name:'MeshLab', desc:'Mesh cleanup and repair', cmd:'brew install --cask meshlab', type:'brew'},
-      ]},
-    { id:'m-upgrades', icon:'⬆️', title:'UPGRADES / SYSTEM UPDATES',
-      items:[
-        {name:'brew update + upgrade', desc:'Update every formula and cask', cmd:'brew update && brew upgrade && brew upgrade --cask', type:'manual'},
-        {name:'macOS software update', desc:'System + security updates', cmd:'softwareupdate -ia', type:'manual'},
-        {name:'Claude Code upgrade', desc:'Upgrade Hermes CLI', cmd:'npm update -g @anthropic-ai/claude-code', type:'npm'},
-        {name:'Gemini CLI upgrade', desc:'Upgrade Gemini CLI', cmd:'npm update -g @google/gemini-cli', type:'npm'},
-        {name:'pipx upgrade all', desc:'Upgrade every pipx tool', cmd:'pipx upgrade-all', type:'pip'},
-        {name:'brew cleanup', desc:'Reclaim disk from old versions', cmd:'brew cleanup --prune=all', type:'manual'},
-      ]},
-    { id:'m-crosstech', icon:'🔗', title:'CROSS-TECH EXTENSIONS',
-      items:[
-        {name:'tinker-verse dir structure', desc:'Create canonical project dirs', cmd:'mkdir -p ~/tinker-verse/{ai,games,luna,forge}', type:'manual'},
-        {name:'OpenRouter env file', desc:'Key at the canonical path', cmd:'mkdir -p ~/.config/tinker-verse && chmod 600 ~/.config/tinker-verse/openrouter.env 2>/dev/null || true', type:'manual'},
-        {name:'Tailscale mesh join', desc:'Join T1NK3R cluster mesh VPN', cmd:'tailscale up', type:'manual'},
-        {name:'rclone (offsite sync)', desc:'Backup layer for the float', cmd:'brew install rclone', type:'brew'},
-        {name:'SSH alias to the Linux box', desc:'Quick jump into CachyOS/Fedora', cmd:'# Add to ~/.ssh/config: Host cachy\\n  HostName 192.168.1.138\\n  User tinkerv', type:'manual'},
-      ]},
-  ],
-
-  ipados: [
-    { id:'i-shells', icon:'🔧', title:'SHELLS & TERMINALS (START HERE)',
-      items:[
-        {name:'a-Shell', desc:'Sandboxed local shell — python3, pip, lua, ffmpeg built in', cmd:'# App Store: a-Shell', type:'manual'},
-        {name:'iSH Shell', desc:'Alpine Linux in x86 emulation — apk packages', cmd:'# App Store: iSH — then: apk update && apk add git python3', type:'manual'},
-        {name:'Blink Shell', desc:'Best SSH/mosh client — reaches the sovereign box', cmd:'# App Store: Blink Shell', type:'manual'},
-        {name:'Termius', desc:'Free-tier SSH client with synced hosts', cmd:'# App Store: Termius', type:'manual'},
-        {name:'Secure ShellFish', desc:'SSH + Files.app integration for remote mounts', cmd:'# App Store: Secure ShellFish', type:'manual'},
-      ]},
-    { id:'i-remote', icon:'🛡️', title:'SOVEREIGN STACK (REMOTE)',
-      items:[
-        {name:'Tailscale', desc:'Mesh VPN — reach home Ollama from anywhere', cmd:'# App Store: Tailscale', type:'manual'},
-        {name:'OLLAMA_HOST endpoint', desc:'iPadOS cannot run Ollama — point at the LAN box', cmd:'export OLLAMA_HOST=http://<lan-ip>:11434', type:'manual'},
-        {name:'Open WebUI (as web app)', desc:'Add the server\'s WebUI to the Home Screen', cmd:'# Safari → http://<lan-ip>:3000 → Share → Add to Home Screen', type:'manual'},
-        {name:'LocalSend', desc:'Sovereign LAN file transfer', cmd:'# App Store: LocalSend', type:'manual'},
-        {name:'KeePassium', desc:'KeePassXC-compatible vault reader', cmd:'# App Store: KeePassium', type:'manual'},
-        {name:'No local LLM runtime', desc:'App Store sandbox blocks local model servers', cmd:'# Honest limit — inference happens on the LAN box, not here.', type:'na'},
-      ]},
-    { id:'i-dev', icon:'💻', title:'DEVELOPMENT',
-      items:[
-        {name:'Working Copy', desc:'Full git client — clones the tinker-verse repos', cmd:'# App Store: Working Copy', type:'manual'},
-        {name:'Textastic', desc:'Code editor with SSH/SFTP + Working Copy integration', cmd:'# App Store: Textastic Code Editor', type:'manual'},
-        {name:'Runestone', desc:'Free open-source code editor', cmd:'# App Store: Runestone', type:'manual'},
-        {name:'Swift Playgrounds', desc:'Build real iPad/Mac apps on-device', cmd:'# App Store: Swift Playgrounds', type:'manual'},
-        {name:'Pythonista 3', desc:'Full offline Python IDE with iOS APIs', cmd:'# App Store: Pythonista 3 (paid)', type:'manual'},
-        {name:'pip in a-Shell', desc:'Python package installs inside a-Shell', cmd:'pip install --upgrade pip', type:'pip'},
-        {name:'requests + httpx', desc:'Talk to remote Ollama / OpenRouter', cmd:'pip install requests httpx', type:'pip'},
-        {name:'Jupyter (remote kernel)', desc:'Notebook UI against the LAN box\'s kernel', cmd:'# Carnets app, or Safari → http://<lan-ip>:8888', type:'manual'},
-      ]},
-    { id:'i-ai', icon:'🤖', title:'AI CLIENTS',
-      items:[
-        {name:'Claude', desc:'Official Anthropic client', cmd:'# App Store: Claude', type:'manual'},
-        {name:'ChatGPT', desc:'Official OpenAI client', cmd:'# App Store: ChatGPT', type:'manual'},
-        {name:'Enchanted', desc:'Native Ollama client — points at your LAN server', cmd:'# App Store: Enchanted (Ollama client)', type:'manual'},
-        {name:'Draw Things', desc:'On-device Stable Diffusion — actually runs locally', cmd:'# App Store: Draw Things', type:'manual'},
-        {name:'Siri Shortcut → Alfred', desc:'Voice trigger POSTing to the companion API', cmd:'# Shortcuts → Get Contents of URL → POST http://<lan-ip>:11434/api/generate', type:'manual'},
-        {name:'OpenRouter via Shortcuts', desc:'Key stored in a Shortcut, not in a third-party app', cmd:'# Shortcuts → Text (key) → Get Contents of URL → openrouter.ai/api/v1/chat/completions', type:'manual'},
-      ]},
-    { id:'i-create', icon:'🎨', title:'ART / MUSIC / VIDEO',
-      items:[
-        {name:'Procreate', desc:'The reason to own an iPad — raster painting', cmd:'# App Store: Procreate (paid)', type:'manual'},
-        {name:'Affinity Designer 2', desc:'Vector design — Inkscape equivalent', cmd:'# App Store: Affinity Designer 2 (paid)', type:'manual'},
-        {name:'Affinity Photo 2', desc:'Raster editing — Photoshop equivalent', cmd:'# App Store: Affinity Photo 2 (paid)', type:'manual'},
-        {name:'GarageBand', desc:'Free Apple DAW', cmd:'# App Store: GarageBand', type:'manual'},
-        {name:'Cubasis 3', desc:'Full mobile DAW', cmd:'# App Store: Cubasis 3 (paid)', type:'manual'},
-        {name:'AUM — Audio Mixer', desc:'AUv3 host/router — Carla equivalent', cmd:'# App Store: AUM (paid)', type:'manual'},
-        {name:'LumaFusion', desc:'Pro multitrack video editing', cmd:'# App Store: LumaFusion (paid)', type:'manual'},
-        {name:'Nomad Sculpt', desc:'3D sculpting — Blender-adjacent on iPad', cmd:'# App Store: Nomad Sculpt (paid)', type:'manual'},
-        {name:'Shapr3D', desc:'Parametric CAD for 3D printing', cmd:'# App Store: Shapr3D', type:'manual'},
-      ]},
-    { id:'i-media', icon:'📺', title:'MEDIA / T1NK3R.TV',
-      items:[
-        {name:'VLC for Mobile', desc:'Plays anything', cmd:'# App Store: VLC for Mobile', type:'manual'},
-        {name:'Infuse', desc:'Best Jellyfin/Plex front-end on iPadOS', cmd:'# App Store: Infuse', type:'manual'},
-        {name:'Jellyfin Mobile', desc:'Official client for the home server', cmd:'# App Store: Jellyfin Mobile', type:'manual'},
-        {name:'Kodi', desc:'Requires sideload — not on the App Store', cmd:'# Sideload via AltStore/TrollStore — not App Store distributed', type:'na'},
-        {name:'Prologue / Doppler', desc:'Local music library players', cmd:'# App Store: Doppler', type:'manual'},
-        {name:'Documents by Readdle', desc:'File manager + downloader + SMB client', cmd:'# App Store: Documents', type:'manual'},
-      ]},
-    { id:'i-writing', icon:'✍️', title:'WRITING / KNOWLEDGE',
-      items:[
-        {name:'Obsidian', desc:'Markdown PKM — same vault as desktop via sync', cmd:'# App Store: Obsidian', type:'manual'},
-        {name:'iA Writer', desc:'Focused markdown writing', cmd:'# App Store: iA Writer (paid)', type:'manual'},
-        {name:'LibreOffice? No', desc:'Use Apple Pages/Numbers or Google Docs instead', cmd:'# No LibreOffice build for iPadOS', type:'na'},
-        {name:'Apple Pages / Numbers / Keynote', desc:'Free Apple office suite', cmd:'# App Store: Pages, Numbers, Keynote (free)', type:'manual'},
-        {name:'GoodNotes 6', desc:'Handwriting + PDF annotation', cmd:'# App Store: GoodNotes 6', type:'manual'},
-        {name:'Zotero (via web)', desc:'Reference manager — browser access only', cmd:'# Safari → zotero.org — no native iPadOS client', type:'na'},
-      ]},
-    { id:'i-sys', icon:'🛠️', title:'SYSTEM / UTILITIES',
-      items:[
-        {name:'Shortcuts', desc:'Built in — the automation layer for everything above', cmd:'# Pre-installed on iPadOS', type:'manual'},
-        {name:'Screens 5', desc:'VNC into the desktop machines', cmd:'# App Store: Screens 5 (paid)', type:'manual'},
-        {name:'Jump Desktop', desc:'RDP/VNC alternative', cmd:'# App Store: Jump Desktop (paid)', type:'manual'},
-        {name:'iSH apk essentials', desc:'Base CLI toolchain inside iSH', cmd:'apk add git python3 py3-pip curl nano', type:'manual'},
-        {name:'a-Shell ffmpeg', desc:'Built-in — no install needed', cmd:'ffmpeg -i in.mov -c:v h264 out.mp4', type:'manual'},
-        {name:'Files.app + SMB mount', desc:'Mount the LAN box\'s shares natively', cmd:'# Files → ⋯ → Connect to Server → smb://<lan-ip>', type:'manual'},
-      ]},
-  ],
-
   android: [
     { id:'n-bootstrap', icon:'🔧', title:'TERMUX BOOTSTRAP (AUTO-RUNS FIRST)',
       items:[
@@ -2213,9 +1878,7 @@ function generateScript(os) {
   else if (os==='fedora') script=genFedora();
   else if (os==='ubuntu') script=genUbuntu();
   else if (os==='arch') script=genArch();
-  else if (os==='macos') script=genMacos();
   else if (os==='android') script=genAndroid();
-  else if (os==='ipados') script=genIpados();
   else script = `# Unknown OS tab: ${os}`;
   const codeEl = document.getElementById(`code-${os}`);
   if (codeEl) codeEl.textContent = script;
@@ -2557,7 +2220,7 @@ echo "════════════════════════�
 }
 
 // ═══════════════════════════════════════════════════════════════
-// BUCKETS — shared by the fedora/ubuntu/arch/macos/android
+// BUCKETS — shared by the fedora/ubuntu/arch/android
 // generators. Package-manager commands only get batched when they
 // are a plain single install line; anything chained with && / | / ;
 // is emitted verbatim instead of being mis-parsed as a package name.
@@ -2878,84 +2541,6 @@ if (( SERVICE_FAIL )); then warn "Services/groups step finished with failures"; 
 })}`;
 }
 
-function genMacos() {
-  const b = collectBuckets('macos');
-  const fRe = /^brew install ((?!--cask)[^&|;]+)$/;
-  const cRe = /^brew install --cask ([^&|;]+)$/;
-  const formula = b.names('brew', fRe), cask = b.names('brew', cRe);
-  const brewExtra = b.raw('brew').filter(c => !fRe.test(c) && !cRe.test(c));
-  return `#!/usr/bin/env bash
-# ══════════════════════════════════════════════════════════════
-# T1NK3R-VER53 // MACOS BOOTSTRAP — FRESH INSTALL
-# Generated by T1NK3R.TRIBOOT // NANITE GOD MODE
-# zsh install.sh    (or: bash install.sh — both work)
-# ══════════════════════════════════════════════════════════════
-set -euo pipefail
-
-RED="\\033[0;31m"; GREEN="\\033[0;32m"; AMBER="\\033[0;33m"; BLUE="\\033[0;34m"; RESET="\\033[0m"
-ok()   { echo -e "\${GREEN}[OK]\${RESET} $*"; }
-warn() { echo -e "\${AMBER}[WARN]\${RESET} $*"; }
-err()  { echo -e "\${RED}[ERR]\${RESET} $*" >&2; }
-step() { echo -e "\${BLUE}══ $* \${RESET}"; }
-
-[[ "$(uname -s)" == "Darwin" ]] || { err "This script is for macOS."; exit 1; }
-[[ $(id -u) -eq 0 ]] && { err "Do not run as root — Homebrew refuses."; exit 1; }
-
-echo -e "⚡ \${GREEN}T1NK3R-VER53 // MACOS DEPLOYMENT INITIATED\${RESET}"
-
-# ── STEP 1: XCODE COMMAND LINE TOOLS ──────────────────────────
-step "1/5 — Xcode Command Line Tools"
-xcode-select -p >/dev/null 2>&1 || xcode-select --install || warn "CLT install may need a GUI confirm"
-
-# ── STEP 2: HOMEBREW ──────────────────────────────────────────
-step "2/5 — Homebrew"
-if ! command -v brew >/dev/null 2>&1; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  # Apple Silicon installs to /opt/homebrew, Intel to /usr/local
-  [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
-  [[ -x /usr/local/bin/brew ]] && eval "$(/usr/local/bin/brew shellenv)"
-  ok "Homebrew installed"
-else ok "Homebrew already present"; fi
-brew update || warn "brew update issue"
-
-${formula.length ? `# ── STEP 3: BREW FORMULAE ─────────────────────────────────────
-step "3/5 — brew formulae"
-brew install \\
-  ${formula.join(' \\\n  ')} || warn "Some formulae may have failed"
-ok "Formulae done"
-` : '# ── STEP 3: No brew formulae selected\n'}
-${cask.length ? `# ── STEP 3b: BREW CASKS (GUI APPS) ────────────────────────────
-step "3b — brew casks"
-brew install --cask \\
-  ${cask.join(' \\\n  ')} || warn "Some casks may have failed"
-ok "Casks done"
-` : ''}
-${brewExtra.length ? `# ── STEP 3c: BREW EXTRAS (chained commands) ───────────────────
-${brewExtra.map(c => `${c} || warn "failed: ${c}"`).join('\n')}
-` : ''}
-# ── STEP 4: RUNTIMES ──────────────────────────────────────────
-step "4/5 — Runtimes (node, rustup, pipx)"
-command -v node  >/dev/null 2>&1 || brew install node
-command -v cargo >/dev/null 2>&1 || { brew install rustup && rustup-init -y; }
-command -v pipx  >/dev/null 2>&1 || brew install pipx
-pipx ensurepath || true
-[[ -s "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
-ok "Runtimes ready"
-${unixTail(b, {
-  ollamaInstall: `if ! command -v ollama >/dev/null 2>&1; then
-  brew install --cask ollama || warn "install Ollama.app manually from ollama.com"
-fi
-open -a Ollama 2>/dev/null || true`,
-  services: null,
-  closing: [
-    '⚡ ${GREEN}T1NK3R-VER53 // MACOS DEPLOYMENT COMPLETE${RESET}',
-    '  ${AMBER}→ Ollama uses Metal on Apple Silicon — no ROCm, no HSA override${RESET}',
-    '  ${AMBER}→ Casks may prompt for your password and Gatekeeper approval${RESET}',
-    '  ${AMBER}→ Open WebUI: http://localhost:3000${RESET}',
-  ],
-})}`;
-}
-
 function genAndroid() {
   const b = collectBuckets('android');
   const re = /^pkg install -y ([^&|;]+)$/;
@@ -3013,47 +2598,6 @@ fi
 })}`;
 }
 
-// iPadOS has no shell that can install desktop software — the honest
-// output here is a checklist, not a script that would never run.
-function genIpados() {
-  const js = collectJSItems('ipados'), cat = collectCatItems('ipados');
-  const all = [...js, ...cat];
-  if (!all.length) {
-    return `# T1NK3R-VER53 // IPADOS SETUP GUIDE
-# Nothing selected yet — tick items above, then generate again.`;
-  }
-  const appStore = all.filter(i => i.cmd.trim().startsWith('#'));
-  const shell = all.filter(i => !i.cmd.trim().startsWith('#'));
-  return `# ══════════════════════════════════════════════════════════════
-# T1NK3R-VER53 // IPADOS SETUP GUIDE
-# Generated by T1NK3R.TRIBOOT // NANITE GOD MODE
-# iPadOS cannot run an installer script — this is a work order.
-# ══════════════════════════════════════════════════════════════
-
-## 1. INSTALL FROM THE APP STORE (${appStore.length} item${appStore.length === 1 ? '' : 's'})
-${appStore.length ? appStore.map((i, n) => `  ${String(n + 1).padStart(2, ' ')}. ${i.name}\n      ${i.desc}\n      ${i.cmd.replace(/^#\s*/, '')}`).join('\n') : '  (none selected)'}
-
-## 2. RUN INSIDE a-Shell / iSH (${shell.length} command${shell.length === 1 ? '' : 's'})
-${shell.length ? shell.map(i => `  # ${i.name} — ${i.desc}\n  ${i.cmd}`).join('\n') : '  (none selected)'}
-
-## 3. WIRE IT TO THE SOVEREIGN STACK
-  # Companions run on the LAN box, never on the iPad.
-  export OLLAMA_HOST=http://<lan-ip>:11434
-  echo 'export OLLAMA_HOST=http://<lan-ip>:11434' >> ~/.profile
-
-  # Reach the box from outside the LAN via Tailscale, then use its
-  # tailnet name instead of <lan-ip>.
-
-  # OpenRouter key (a-Shell):
-  mkdir -p ~/.config/tinker-verse
-  echo 'export OPENROUTER_API_KEY=sk-or-...' > ~/.config/tinker-verse/openrouter.env
-
-## 4. KNOWN LIMITS (not bugs — App Store policy)
-  - No local Ollama / llama.cpp server: inference is remote-only.
-  - No Docker, no systemd, no background daemons.
-  - a-Shell is sandboxed per-app; iSH is x86 emulation and slow.
-  - Draw Things is the exception: it really does run diffusion on-device.`;
-}
 
 // ═══════════════════════════════════════════════════════════════
 // COPY SCRIPT — uses the Tauri-aware clipboard helper already
@@ -3062,8 +2606,8 @@ ${shell.length ? shell.map(i => `  # ${i.name} — ${i.desc}\n  ${i.cmd}`).join(
 // ═══════════════════════════════════════════════════════════════
 function copyScript(os) {
   // Tabs that produce a downloadable .sh copy the run command instead of the
-  // whole script; win (.ps1) and ipados (a checklist) copy their text.
-  const isShellScript = ['cachy','bazzite','fedora','ubuntu','arch','macos','android'].includes(os);
+  // whole script; win (.ps1) copies its text.
+  const isShellScript = ['cachy','bazzite','fedora','ubuntu','arch','android'].includes(os);
   const codeEl = document.getElementById(`code-${os}`);
   const text = isShellScript ? 'bash ~/Downloads/tinker_install.sh' : (codeEl ? codeEl.textContent : '');
   const doCopy = (typeof copyToClipboard === 'function') ? copyToClipboard(text) : navigator.clipboard.writeText(text);

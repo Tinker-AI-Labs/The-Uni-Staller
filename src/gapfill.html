@@ -77,7 +77,7 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .tag{display:inline-block;font-size:8px;padding:1px 5px;border-radius:8px;margin-left:4px;vertical-align:middle;border:1px solid;}
 .tag-pacman{border-color:#6bc5f8;color:#6bc5f8;} .tag-aur{border-color:#ff9900;color:#ff9900;}
 .tag-flatpak{border-color:var(--purple);color:var(--purple);} .tag-ostree{border-color:#6a5acd;color:#a08fff;}
-.tag-toolbox{border-color:#9b59b6;color:#c39bd3;} .tag-brew{border-color:#A2AAAD;color:#A2AAAD;}
+.tag-toolbox{border-color:#9b59b6;color:#c39bd3;}
 .tag-termux{border-color:#3DDC84;color:#3DDC84;} .tag-pip{border-color:var(--amber);color:var(--amber);}
 .tag-npm{border-color:var(--cyan);color:var(--cyan);} .tag-manual{border-color:var(--red);color:var(--red);}
 .tag-na{border-color:#333;color:#555;}
@@ -134,7 +134,7 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 <script src="gapfill-data.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════════
-// One page, six catalogs — the OS comes from ?os= on the iframe src.
+// One page, four catalogs — the OS comes from ?os= on the iframe src.
 // ═══════════════════════════════════════════════════════════════
 const OS = new URLSearchParams(location.search).get('os');
 const CFG = GAPFILL[OS];
@@ -156,7 +156,7 @@ function init() {
   if (!CFG) {
     document.getElementById('banner').innerHTML =
       'No gap-fill catalog for <strong>' + (OS || '(no os given)') + '</strong>. ' +
-      'Open this page as <strong>gapfill.html?os=cachy</strong> (or bazzite / arch / macos / ipados / android).';
+      'Open this page as <strong>gapfill.html?os=cachy</strong> (or bazzite / arch / android).';
     document.getElementById('genBtn').style.display = 'none';
     return;
   }
@@ -165,7 +165,7 @@ function init() {
   document.getElementById('osBadge').textContent = CFG.label;
   document.getElementById('banner').innerHTML = CFG.intro;
   document.getElementById('genBtn').textContent =
-    CFG.kind === 'text' ? '⚡ GENERATE ' + CFG.label + ' CHECKLIST' : '⚡ GENERATE ' + CFG.label + ' GAP-FILL SCRIPT (.sh)';
+    '⚡ GENERATE ' + CFG.label + ' GAP-FILL SCRIPT (.sh)';
   document.getElementById('outLabel').textContent = '// GAP-FILL OUTPUT — ' + CFG.file;
   document.getElementById('dlBtn').textContent = '[ DOWNLOAD ' + CFG.file + ' ]';
   CATS.forEach(cat => cat.items.forEach((_, i) => { state[cat.id + '_' + i] = false; }));
@@ -280,7 +280,7 @@ function collectSelected() {
 function generateScript() {
   const items = collectSelected();
   const panel = document.getElementById('out');
-  const code = CFG.kind === 'text' ? buildChecklist(items) : buildScript(items);
+  const code = buildScript(items);
   document.getElementById('outCode').textContent = code;
   panel.classList.add('visible');
   panel.scrollIntoView({ behavior: 'smooth' });
@@ -335,24 +335,6 @@ ${blocks.join('\n\n') || '# Only manual items were selected — see the notes be
 ${notes.length ? `# ── MANUAL / UNAVAILABLE ──────────────────────────────────────\n${notes.join('\n')}\n` : ''}
 echo ""
 ok "${CFG.label} gap-fill complete — ${items.length} item(s) processed"`;
-}
-
-function buildChecklist(items) {
-  if (!items.length) {
-    return '# Nothing selected yet — tick some apps above, then generate again.';
-  }
-  const store = items.filter(it => it.cmd.trim().startsWith('#'));
-  const shell = items.filter(it => !it.cmd.trim().startsWith('#'));
-  return `# ══════════════════════════════════════════════════════════════
-# T1NK3R-VER53 // ${CFG.label} GAP-FILL CHECKLIST — ${items.length} item${items.length === 1 ? '' : 's'}
-# ${CFG.label} has no package manager: this is a work order, not a script.
-# ══════════════════════════════════════════════════════════════
-
-## TAP TO INSTALL (${store.length})
-${store.length ? store.map((it, n) => `  ${String(n + 1).padStart(2, ' ')}. ${it.name}\n      ${it.desc}\n      ${it.cmd.replace(/^#\s*/, '')}`).join('\n') : '  (none selected)'}
-
-## RUN IN a-Shell / iSH (${shell.length})
-${shell.length ? shell.map(it => `  # ${it.name} — ${it.desc}\n  ${it.cmd}`).join('\n') : '  (none selected)'}`;
 }
 
 function copyScript() {
