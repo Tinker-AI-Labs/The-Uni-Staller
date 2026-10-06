@@ -250,6 +250,14 @@ drafts a GitHub Release on tags.
 
 Output lands in `src-tauri/target/release/bundle/msi/` and `.../nsis/`.
 
+### AppImage: blank white window on Wayland
+
+The AppImage ships a launcher hook (`packaging/appimage/uni-staller-env.sh`, installed as `apprun-hooks/`)
+that sets `WEBKIT_DISABLE_DMABUF_RENDERER=1` before the app starts. If a machine still shows a white window,
+try `UNI_STALLER_SAFE_RENDER=1 ./Uni-Staller.AppImage`, which also sets `WEBKIT_DISABLE_COMPOSITOR_MODE=1`
+(some rendering slowdown). To turn the fix off: `WEBKIT_DISABLE_DMABUF_RENDERER=0 ./Uni-Staller.AppImage`.
+The `.deb`/`.rpm`/Flatpak builds are unaffected.
+
 ### Android — `.apk` / `.aab`
 
 ```bash

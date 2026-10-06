@@ -45,6 +45,37 @@ jobs:
       - name: Build AppImage
         run: npx tauri build --bundles appimage,deb
 
+      - name: Check the Wayland render workaround is inside the AppImage
+        run: |
+          set -eu
+          img=$(ls src-tauri/target/release/bundle/appimage/*.AppImage | head -n1)
+          chmod +x "$img"
+          mkdir -p /tmp/appimage-check && cd /tmp/appimage-check
+          "$GITHUB_WORKSPACE/$img" --appimage-extract >/dev/null
+          echo "--- hooks in the AppDir:"; ls squashfs-root/apprun-hooks
+          grep -q 'WEBKIT_DISABLE_DMABUF_RENDERER' squashfs-root/apprun-hooks/uni-staller-env.sh
+          echo "--- AppRun sources apprun-hooks:"
+          grep -n 'apprun-hooks' squashfs-root/AppRun
+
+      - name: Smoke-launch the AppImage (X11, virtual display)
+        # Not a Wayland test: it only proves the packaged app starts and paints
+        # something that is not a blank white window. Informational.
+        continue-on-error: true
+        run: |
+          sudo apt-get install -y xvfb imagemagick
+          img=$(ls "$GITHUB_WORKSPACE"/src-tauri/target/release/bundle/appimage/*.AppImage | head -n1)
+          xvfb-run -a -s "-screen 0 1280x900x24" bash -c '
+            "$0" --appimage-extract-and-run >/tmp/launch.log 2>&1 &
+            pid=$!; sleep 15
+            if ! kill -0 $pid 2>/dev/null; then echo "app exited early"; cat /tmp/launch.log; exit 1; fi
+            import -window root /tmp/shot.png
+            kill $pid || true
+          ' "$img"
+          # A blank white window has (almost) no variation; a rendered UI has plenty.
+          sd=$(identify -format "%[fx:standard_deviation]" /tmp/shot.png)
+          echo "screenshot standard deviation: $sd"
+          awk -v v="$sd" 'BEGIN{ exit !(v > 0.02) }'
+
       - name: Upload AppImage as artifact
         uses: actions/upload-artifact@v4
         with:
