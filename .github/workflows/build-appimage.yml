@@ -58,7 +58,12 @@ jobs:
             pid=$!; sleep 20
             if ! pgrep -x uni-staller >/dev/null; then echo "app exited early"; cat /tmp/launch.log; exit 1; fi
             import -window root /tmp/shot.png
-            wp=$(pgrep -x WebKitWebProcess | head -n1 || true)
+            # comm is truncated to 15 chars, so match the prefix by scanning /proc
+            wp=""
+            for d in /proc/[0-9]*; do
+              case "$(cat "$d/comm" 2>/dev/null)" in WebKitWebProc*) wp=${d#/proc/}; break;; esac
+            done
+            [ -n "$wp" ] || { echo "processes:"; for d in /proc/[0-9]*; do cat "$d/comm" 2>/dev/null; done | sort | uniq -c; }
             echo "WebKitWebProcess pid: ${wp:-none}"
             if [ -n "$wp" ]; then tr "\0" "\n" < /proc/$wp/environ | grep -E "^WEBKIT_" > /tmp/webkit-env.txt || true; fi
             pkill -x uni-staller || true; kill $pid 2>/dev/null || true
