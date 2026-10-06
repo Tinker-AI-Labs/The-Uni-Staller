@@ -49,6 +49,10 @@ jobs:
         # Diagnostic only, NOT a Wayland test: it prints, per launch variant,
         # whether the app stayed up, spawned a WebKit web process and painted
         # something other than a blank window. It never fails the build.
+        # Known limitation: on the CI runner every variant (including the
+        # workaround turned off) shows no web process and a blank window, so
+        # this cannot validate the Wayland fix; it only confirms that the
+        # variables are applied (see the 'APP SAID' column).
         continue-on-error: true
         run: |
           sudo apt-get install -y xvfb imagemagick

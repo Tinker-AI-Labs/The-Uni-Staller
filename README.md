@@ -255,7 +255,12 @@ Output lands in `src-tauri/target/release/bundle/msi/` and `.../nsis/`.
 When it runs as an AppImage the app sets `WEBKIT_DISABLE_DMABUF_RENDERER=1` at startup (`src-tauri/src/render.rs`).
 If a machine still shows a white window, try `UNI_STALLER_SAFE_RENDER=1 ./Uni-Staller.AppImage`, which also sets
 `WEBKIT_DISABLE_COMPOSITOR_MODE=1` (some rendering slowdown). To turn the fix off:
-`WEBKIT_DISABLE_DMABUF_RENDERER=0 ./Uni-Staller.AppImage`. Your own values are never overridden. The `.deb`, `.rpm`
+`WEBKIT_DISABLE_DMABUF_RENDERER=0 ./Uni-Staller.AppImage`. Your own values are never overridden.
+`UNI_STALLER_DEBUG=1` prints which variables were applied.
+
+**Status: not verified on a real Wayland desktop.** The variables are applied (confirmed in CI), but CI has no Wayland
+session or GPU, so whether they cure the white screen on an affected machine still needs a test there. If they do not,
+please report the output of `UNI_STALLER_DEBUG=1 ./Uni-Staller.AppImage` and your GPU/compositor. The `.deb`, `.rpm`
 and Flatpak builds are unaffected. (Tauri's AppImage bundler can only add files under `usr/`, so a launcher hook in
 `apprun-hooks/` would need a custom repack; this avoids touching the bundling.)
 
