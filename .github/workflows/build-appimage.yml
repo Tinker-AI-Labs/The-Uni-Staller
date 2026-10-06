@@ -56,12 +56,12 @@ jobs:
           xvfb-run -a -s "-screen 0 1280x900x24" bash -c '
             "$0" --appimage-extract-and-run >/tmp/launch.log 2>&1 &
             pid=$!; sleep 20
-            if ! pgrep -f Uni-Staller >/dev/null && ! pgrep -f uni-staller >/dev/null; then echo "app exited early"; cat /tmp/launch.log; exit 1; fi
+            if ! pgrep -x uni-staller >/dev/null; then echo "app exited early"; cat /tmp/launch.log; exit 1; fi
             import -window root /tmp/shot.png
-            wp=$(pgrep -f WebKitWebProcess | head -n1 || true)
+            wp=$(pgrep -x WebKitWebProcess | head -n1 || true)
             echo "WebKitWebProcess pid: ${wp:-none}"
             if [ -n "$wp" ]; then tr "\0" "\n" < /proc/$wp/environ | grep -E "^WEBKIT_" > /tmp/webkit-env.txt || true; fi
-            pkill -f uni-staller || true; kill $pid 2>/dev/null || true
+            pkill -x uni-staller || true; kill $pid 2>/dev/null || true
           ' "$img"
           echo "--- WEBKIT_* seen by the web process:"; cat /tmp/webkit-env.txt
           grep -q '^WEBKIT_DISABLE_DMABUF_RENDERER=1$' /tmp/webkit-env.txt
