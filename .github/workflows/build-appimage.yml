@@ -45,42 +45,15 @@ jobs:
       - name: Build AppImage
         run: npx tauri build --bundles appimage,deb
 
-      - name: Smoke-launch the AppImage (X11, virtual display)
-        # Informational, and NOT a Wayland test. It reports whether the packaged
-        # app starts, whether the window paints something other than blank white,
-        # and whether the processes it spawns inherited WEBKIT_DISABLE_DMABUF_RENDERER=1.
+      - name: Smoke-launch the AppImage several ways (X11, virtual display)
+        # Diagnostic only, NOT a Wayland test: it prints, per launch variant,
+        # whether the app stayed up, spawned a WebKit web process and painted
+        # something other than a blank window. It never fails the build.
         continue-on-error: true
         run: |
           sudo apt-get install -y xvfb imagemagick
           img=$(ls "$GITHUB_WORKSPACE"/src-tauri/target/release/bundle/appimage/*.AppImage | head -n1)
-          chmod +x "$img"
-          xvfb-run -a -s "-screen 0 1280x900x24" bash -c '
-            "$0" --appimage-extract-and-run >/tmp/launch.log 2>&1 &
-            sleep 25
-            main=$(pgrep -x uni-staller | head -n1 || true)
-            echo "main pid: ${main:-none}"
-            echo "--- process tree (webkit/bwrap/uni-staller):"
-            ps -eo pid,ppid,comm,args | grep -iE "webkit|bwrap|uni-staller" | grep -v grep | cut -c1-200 || true
-            import -window root /tmp/shot.png || true
-            # every descendant of the app: which of them carry the variable?
-            : > /tmp/webkit-env.txt
-            todo="$main"; seen=""
-            while [ -n "$todo" ]; do
-              set -- $todo; cur=$1; shift; todo="$*"
-              for c in $(pgrep -P "$cur" 2>/dev/null); do todo="$todo $c"; done
-              seen="$seen $cur"
-              n=$(cat /proc/$cur/comm 2>/dev/null)
-              v=$(tr "\0" "\n" < /proc/$cur/environ 2>/dev/null | grep -E "^WEBKIT_DISABLE" | tr "\n" " ")
-              echo "$cur $n : ${v:-<no WEBKIT_DISABLE vars>}" >> /tmp/webkit-env.txt
-            done
-            pkill -x uni-staller || true
-          ' "$img"
-          echo "--- launch log (tail):"; tail -n 30 /tmp/launch.log || true
-          echo "--- env of app + descendants:"; cat /tmp/webkit-env.txt
-          sd=$(identify -format "%[fx:standard_deviation]" /tmp/shot.png)
-          echo "screenshot standard deviation (blank window ~0): $sd"
-          grep -q 'WEBKIT_DISABLE_DMABUF_RENDERER=1' /tmp/webkit-env.txt
-          awk -v v="$sd" 'BEGIN{ exit !(v > 0.02) }'
+          bash scripts/appimage-smoke.sh "$img"
 
       - name: Upload AppImage as artifact
         uses: actions/upload-artifact@v4

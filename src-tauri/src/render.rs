@@ -28,8 +28,14 @@ pub fn webkit_workarounds(
 pub fn apply() {
     let is_appimage = std::env::var_os("APPIMAGE").is_some() || std::env::var_os("APPDIR").is_some();
     let safe = std::env::var("UNI_STALLER_SAFE_RENDER").map(|v| v == "1").unwrap_or(false);
-    for (k, v) in webkit_workarounds(is_appimage, safe, |k| std::env::var_os(k).is_some()) {
+    let debug = std::env::var("UNI_STALLER_DEBUG").map(|v| v == "1").unwrap_or(false);
+    let applied = webkit_workarounds(is_appimage, safe, |k| std::env::var_os(k).is_some());
+    for (k, v) in &applied {
         std::env::set_var(k, v);
+    }
+    if debug {
+        // Opt-in: lets you (or CI) see what was applied.
+        eprintln!("[Uni-Staller] appimage={} safe_render={} applied={:?}", is_appimage, safe, applied);
     }
 }
 
