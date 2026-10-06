@@ -18,8 +18,15 @@ jobs:
 
       - name: Install Fedora build dependencies
         run: |
-          sudo dnf groupinstall -y "Development Tools"
+          # fedora:latest ships dnf5, which has no `groupinstall` subcommand
+          # (it is `dnf group install` there), so name the toolchain packages
+          # instead of relying on the "Development Tools" group.
           sudo dnf install -y \
+            gcc \
+            gcc-c++ \
+            make \
+            git \
+            rpm-build \
             webkit2gtk4.1-devel \
             gtk3-devel \
             libappindicator-gtk3-devel \

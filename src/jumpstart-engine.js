@@ -796,27 +796,40 @@ function genArch() {
   const groups = ['realtime', 'audio', 'video', 'input', 'storage'].concat(hasDocker ? ['docker'] : []);
   return `${unixHeader('ARCH LINUX', 'pacman', 'pacman not found — is this Arch?')}
 
+# ── PREFLIGHT ─────────────────────────────────────────────────
+# Official repositories only unless AUR packages were explicitly selected.
+if [[ -e /var/lib/pacman/db.lck ]] && ! pgrep -x pacman >/dev/null 2>&1; then
+  err "pacman is locked (/var/lib/pacman/db.lck). If no package manager is running, remove that file and re-run."
+  exit 1
+fi
+sudo -v || { err "sudo access is required to install packages."; exit 1; }
+
+FAILED=()
+# Batch install; if the batch fails (one bad package name aborts the whole
+# pacman transaction), retry one package at a time so the rest still install.
+pac_install() {
+  sudo pacman -S --needed --noconfirm "$@" && return 0
+  warn "batch install failed — retrying one package at a time"
+  local p
+  for p in "$@"; do
+    sudo pacman -S --needed --noconfirm "$p" || { err "pacman could not install: $p"; FAILED+=("$p"); }
+  done
+}
+
 ${needBuild ? `# ── STEP 1: BASE-DEVEL + GIT ──────────────────────────────────
 step "1/6 — base-devel + git"
-sudo pacman -S --needed --noconfirm base-devel git || warn "base-devel issue"
+pac_install base-devel git
 ` : '# ── STEP 1: base-devel + git not needed (no AUR or cargo items selected)\n'}
-${aur.length ? `# ── STEP 2: AUR HELPER ────────────────────────────────────────
-step "2/6 — AUR helper (yay)"
+${aur.length ? `# ── STEP 2: AUR HELPER (not installed automatically) ───────────
+step "2/6 — AUR helper"
 AUR_HELPER=""
 for h in yay paru; do command -v "$h" >/dev/null 2>&1 && { AUR_HELPER="$h"; break; }; done
-if [[ -z "$AUR_HELPER" ]]; then
-  warn "No AUR helper found — installing yay..."
-  tmpdir=$(mktemp -d)
-  git clone https://aur.archlinux.org/yay.git "$tmpdir/yay"
-  (cd "$tmpdir/yay" && makepkg -si --noconfirm)
-  rm -rf "$tmpdir"
-  AUR_HELPER="yay"
-  ok "yay installed"
-else ok "AUR helper: $AUR_HELPER"; fi
+if [[ -n "$AUR_HELPER" ]]; then ok "AUR helper: $AUR_HELPER"
+else warn "No AUR helper (yay/paru) installed — AUR packages will be skipped. Tick the yay item to install one, or install it yourself and re-run."; fi
 ` : '# ── STEP 2: No AUR packages selected — yay not installed\n'}
 # ── STEP 3: FLATPAK + RUNTIMES ────────────────────────────────
 step "3/6 — Flatpak + language runtimes"
-sudo pacman -S --needed --noconfirm flatpak fuse2 || warn "flatpak/fuse2 install issue"
+pac_install flatpak fuse2
 sudo flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || warn "could not add the Flathub remote"
 ${needPipx || needRust || needNode ? `# pipx ensurepath and the nvm installer append to the shell rc files; record
 # them first so the script can say exactly which ones changed.
@@ -824,9 +837,9 @@ RC_FILES=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile" "$HOME/.zshrc" 
 rc_hash() { if [[ -e "$1" ]]; then sha256sum "$1" | cut -d' ' -f1; else echo absent; fi; }
 declare -A RC_BEFORE
 for f in "\${RC_FILES[@]}"; do RC_BEFORE[$f]=$(rc_hash "$f"); done
-` : ''}${needRust ? `sudo pacman -S --needed --noconfirm rustup || warn "rustup install issue"
+` : ''}${needRust ? `pac_install rustup
 rustup default stable || warn "rustup default stable failed"
-` : ''}${needPipx ? `sudo pacman -S --needed --noconfirm python-pipx || warn "pipx install issue"
+` : ''}${needPipx ? `pac_install python-pipx
 pipx ensurepath || warn "pipx ensurepath failed"
 ` : ''}${needNode ? `if [[ ! -d "$HOME/.nvm" ]]; then
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash || warn "nvm install failed"
@@ -839,18 +852,22 @@ if (( \${#RC_EDITED[@]} )); then ok "Shell rc files edited: \${RC_EDITED[*]}"; e
 
 ${pacman.length ? `# ── STEP 4: PACMAN PACKAGES ───────────────────────────────────
 step "4/6 — pacman packages"
-sudo pacman -S --needed --noconfirm \\
-  ${pacman.join(' \\\n  ')} || warn "Some pacman packages may have failed"
+pac_install \\
+  ${pacman.join(' \\\n  ')}
 ok "pacman done"
 ` : '# ── STEP 4: No pacman packages selected\n'}
 ${pacExtra.length ? `# ── STEP 4b: PACMAN EXTRAS (chained commands) ─────────────────
 ${pacExtra.map(c => `${c} || warn "failed: ${c}"`).join('\n')}
 ` : ''}
 ${aur.length ? `# ── STEP 4c: AUR PACKAGES ─────────────────────────────────────
-step "4c — AUR packages via $AUR_HELPER"
-"$AUR_HELPER" -S --needed --noconfirm \\
-  ${aur.join(' \\\n  ')} || warn "Some AUR packages may have failed"
-ok "AUR done"
+step "4c — AUR packages"
+if [[ -n "$AUR_HELPER" ]]; then
+  "$AUR_HELPER" -S --needed --noconfirm \\
+    ${aur.join(' \\\n    ')} || { warn "Some AUR packages failed"; FAILED+=("aur batch"); }
+  ok "AUR done"
+else
+  warn "Skipped AUR packages (no helper): ${aur.join(' ')}"
+fi
 ` : ''}
 ${b.flatpak.length ? `# ── STEP 5: FLATPAK PACKAGES ──────────────────────────────────
 step "5/6 — Flatpak packages"
@@ -867,7 +884,7 @@ ${unixTail(b, {
 fi
 sudo systemctl enable --now ollama 2>/dev/null || true`,
   servicesReportOwnStatus: true,
-  services: `${needRealtime ? `sudo pacman -S --needed --noconfirm realtime-privileges || warn "realtime-privileges install failed"
+  services: `${needRealtime ? `pac_install realtime-privileges
 ` : ''}GROUPS_ADDED=(); GROUPS_SKIPPED=(); GROUPS_FAILED=()
 for g in ${groups.join(' ')}; do
   if ! getent group "$g" >/dev/null; then GROUPS_SKIPPED+=("$g")
@@ -886,7 +903,11 @@ if (( SERVICE_FAIL )); then warn "Services/groups step finished with failures"; 
     '  ${AMBER}→ Then: ollama serve &${RESET}',
     '  ${AMBER}→ Open WebUI: http://localhost:3000${RESET}',
   ],
-})}`;
+})}
+if (( \${#FAILED[@]} )); then
+  err "These packages did NOT install: \${FAILED[*]}"
+  exit 1
+fi`;
 }
 
 function genAndroid() {

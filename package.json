@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "tauri": "tauri",
-    "verify-data": "node scripts/verify-data.js"
+    "verify-data": "node scripts/verify-data.js",
+    "check-versions": "node scripts/check-versions.js"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2"

@@ -3,6 +3,8 @@ use std::path::PathBuf;
 use std::process::Command;
 use tauri::Emitter;
 
+mod pkg;
+
 // ═══════════════════════════════════════════════════════════════
 // DATA STRUCTURES
 // ═══════════════════════════════════════════════════════════════
@@ -15,12 +17,16 @@ pub struct PlatformInfo {
     pub version: String,
     pub desktop_env: String,
     pub is_wsl: bool,
+    /// The distro's own package manager (pacman / apt / dnf / ...), if known.
+    pub pkg_manager: Option<String>,
 }
 
 #[derive(Serialize, Clone, Debug)]
 pub struct PkgManagerInfo {
     pub name: String,
     pub available: bool,
+    /// "native" (pacman/apt/dnf/...), "aur" helper, "universal" (flatpak) or "language".
+    pub kind: String,
 }
 
 #[derive(Serialize)]
@@ -63,6 +69,7 @@ fn detect_platform() -> PlatformInfo {
     let version = detect_version(&os_family);
     let desktop_env = detect_desktop_env(&os_family);
     let is_wsl = detect_wsl();
+    let pkg_manager = pkg::native_manager(&os_id).map(|s| s.to_string());
 
     PlatformInfo {
         os_family,
@@ -71,6 +78,7 @@ fn detect_platform() -> PlatformInfo {
         version,
         desktop_env,
         is_wsl,
+        pkg_manager,
     }
 }
 
@@ -168,13 +176,15 @@ fn detect_wsl() -> bool {
 
 #[tauri::command]
 fn detect_pkg_managers() -> Vec<PkgManagerInfo> {
+    // Native distro managers first (pacman, apt, dnf side by side), then AUR
+    // helpers, then universal and language tooling.
     let managers = vec![
         ("pacman", "pacman"),
+        ("apt", "apt"),
+        ("dnf", "dnf"),
         ("yay", "yay"),
         ("paru", "paru"),
         ("flatpak", "flatpak"),
-        ("apt", "apt"),
-        ("dnf", "dnf"),
         ("winget", "winget"),
         ("choco", "choco"),
         ("cargo", "cargo"),
@@ -186,7 +196,9 @@ fn detect_pkg_managers() -> Vec<PkgManagerInfo> {
     managers
         .into_iter()
         .map(|(name, cmd)| {
-            let available = Command::new("which")
+            // `which` does not exist on Windows; `where` does.
+            let finder = if cfg!(windows) { "where" } else { "which" };
+            let available = Command::new(finder)
                 .arg(cmd)
                 .output()
                 .map(|o| o.status.success())
@@ -194,6 +206,7 @@ fn detect_pkg_managers() -> Vec<PkgManagerInfo> {
             PkgManagerInfo {
                 name: name.to_string(),
                 available,
+                kind: pkg::manager_kind(name).to_string(),
             }
         })
         .collect()
@@ -256,49 +269,88 @@ fn save_script(content: String, default_name: String) -> Result<SaveResult, Stri
 // INSTALLATION ENGINE
 // ═══════════════════════════════════════════════════════════════
 
+/// Run one install item. Returns (ok, output).
+fn run_item(os: &str, item: &InstallItem, allow_aur: bool) -> (bool, String) {
+    let t = item.cmd_type.as_str();
+
+    // Official repos first: AUR helpers only run when the caller opted in.
+    if pkg::is_aur(t) {
+        if !allow_aur {
+            return (false, "Skipped: this is an AUR package and AUR installs are off. Official repositories only by default.".to_string());
+        }
+        let has_helper = ["yay", "paru"].iter().any(|h| {
+            Command::new("which").arg(h).output().map(|o| o.status.success()).unwrap_or(false)
+        });
+        if !has_helper {
+            return (false, "No AUR helper (yay or paru) is installed. Install one first, then retry.".to_string());
+        }
+    }
+
+    if t == "pacman" {
+        if let Some(msg) = pkg::pacman_lock_message(std::path::Path::new("/var/lib/pacman/db.lck").exists()) {
+            return (false, msg.to_string());
+        }
+    }
+
+    let known = matches!(
+        t,
+        "winget" | "choco" | "pacman" | "aur" | "flatpak" | "apt" | "dnf" | "pkg" | "termux"
+            | "snap" | "npm" | "pip" | "cargo" | "sh" | "ps" | "ollama" | "toolbox" | "ostree"
+    );
+    if !known {
+        return (false, format!("Skipped: unknown command type: {}", item.cmd_type));
+    }
+
+    let cmd = pkg::make_noninteractive(t, &item.cmd);
+    let shell = if os == "win" { "powershell" } else { "bash" };
+    let arg = if os == "win" { "-Command" } else { "-c" };
+
+    match Command::new(shell).arg(arg).arg(&cmd).output() {
+        Ok(o) => {
+            let text = format!("{}{}", String::from_utf8_lossy(&o.stdout), String::from_utf8_lossy(&o.stderr));
+            if o.status.success() {
+                (true, text)
+            } else {
+                let code = o.status.code().map_or("signal".to_string(), |c| c.to_string());
+                let why = pkg::explain_failure(&text).map(|w| format!("{}\n", w)).unwrap_or_default();
+                (false, format!("{}(exit {})\n{}", why, code, text))
+            }
+        }
+        Err(e) => (false, format!("Could not start {}: {}", shell, e)),
+    }
+}
+
 #[tauri::command]
 fn run_install(
     os: String,
     items: Vec<InstallItem>,
     dry_run: bool,
+    allow_aur: Option<bool>,
     app_handle: tauri::AppHandle,
 ) -> Result<(), String> {
+    let allow_aur = allow_aur.unwrap_or(false);
     std::thread::spawn(move || {
         for item in items {
-            let output = if dry_run {
-                format!("[DRY RUN] Would execute: {}", item.cmd)
+            let (status, output) = if dry_run {
+                let shown = pkg::make_noninteractive(&item.cmd_type, &item.cmd);
+                let note = if pkg::is_aur(&item.cmd_type) && !allow_aur { " (would be skipped: AUR is off)" } else { "" };
+                ("dry_run", format!("[DRY RUN] Would execute: {}{}", shown, note))
             } else {
-                match item.cmd_type.as_str() {
-                    "winget" | "choco" | "pacman" | "aur" | "flatpak" | "apt" | "dnf"
-                    | "pkg" | "termux" | "snap" | "npm" | "pip" | "cargo" | "sh"
-                    | "ps" | "ollama" | "toolbox" | "ostree" => {
-                        let shell = if os == "win" { "powershell" } else { "bash" };
-                        let arg = if os == "win" { "-Command" } else { "-c" };
-
-                        match Command::new(shell).arg(arg).arg(&item.cmd).output() {
-                            Ok(o) => {
-                                let stdout = String::from_utf8_lossy(&o.stdout);
-                                let stderr = String::from_utf8_lossy(&o.stderr);
-                                format!("{}{}", stdout, stderr)
-                            }
-                            Err(e) => format!("Error: {}", e),
-                        }
-                    }
-                    _ => format!("[SKIPPED] Unknown command type: {}", item.cmd_type),
-                }
-            };
-
-            let event = ProgressEvent {
-                step: item.name.clone(),
-                status: if dry_run {
-                    "dry_run".to_string()
+                let (ok, out) = run_item(&os, &item, allow_aur);
+                let status = if ok {
+                    "ok"
+                } else if out.starts_with("Skipped") {
+                    "skipped"
                 } else {
-                    "running".to_string()
-                },
-                output,
+                    "error"
+                };
+                (status, out)
             };
 
-            let _ = app_handle.emit("install-progress", event);
+            let _ = app_handle.emit(
+                "install-progress",
+                ProgressEvent { step: item.name.clone(), status: status.to_string(), output },
+            );
         }
 
         let _ = app_handle.emit(
