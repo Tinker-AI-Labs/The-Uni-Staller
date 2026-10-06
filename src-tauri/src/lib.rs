@@ -4,7 +4,6 @@ use std::process::Command;
 use tauri::Emitter;
 
 mod pkg;
-mod render;
 
 // ═══════════════════════════════════════════════════════════════
 // DATA STRUCTURES
@@ -373,8 +372,6 @@ fn run_install(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // Must run before any thread or webview exists (see render.rs).
-    render::apply();
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())

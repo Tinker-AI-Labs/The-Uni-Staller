@@ -68,20 +68,6 @@ jobs:
           fi
           echo "OK: unpacked $(find squashfs-root -type f | wc -l) files, none match libwayland-*"
 
-      - name: Smoke-launch the AppImage several ways (X11, virtual display)
-        # Diagnostic only, NOT a Wayland test: it prints, per launch variant,
-        # whether the app stayed up, spawned a WebKit web process and painted
-        # something other than a blank window. It never fails the build.
-        # Known limitation: on the CI runner every variant (including the
-        # workaround turned off) shows no web process and a blank window, so
-        # this cannot validate the Wayland fix; it only confirms that the
-        # variables are applied (see the 'APP SAID' column).
-        continue-on-error: true
-        run: |
-          sudo apt-get install -y xvfb imagemagick
-          img=$(ls "$GITHUB_WORKSPACE"/src-tauri/target/release/bundle/appimage/*.AppImage | head -n1)
-          bash scripts/appimage-smoke.sh "$img"
-
       - name: Upload AppImage as artifact
         uses: actions/upload-artifact@v4
         with:
