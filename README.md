@@ -264,6 +264,11 @@ please report the output of `UNI_STALLER_DEBUG=1 ./Uni-Staller.AppImage` and you
 and Flatpak builds are unaffected. (Tauri's AppImage bundler can only add files under `usr/`, so a launcher hook in
 `apprun-hooks/` would need a custom repack; this avoids touching the bundling.)
 
+The AppImage is also post-processed to drop every bundled `libwayland-*` (`scripts/strip-appimage-wayland.sh`, run by
+CI and by `build-appimage-local.sh`), so the host's own Wayland libraries are used instead of the build machine's.
+Trade-off: a host with no `libwayland-client` at all can no longer start the AppImage, even on X11 (GTK needs it to load).
+The `.deb` is unchanged.
+
 ### Android — `.apk` / `.aab`
 
 ```bash

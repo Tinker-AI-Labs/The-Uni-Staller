@@ -45,6 +45,29 @@ jobs:
       - name: Build AppImage
         run: npx tauri build --bundles appimage,deb
 
+      - name: Strip libwayland-* from the AppImage and repack
+        # The bundled libwayland-* clash with the host's graphics stack on
+        # Wayland desktops; the host's own copies are used once they are gone.
+        run: |
+          sudo apt-get install -y squashfs-tools
+          for img in src-tauri/target/release/bundle/appimage/*.AppImage; do
+            bash scripts/strip-appimage-wayland.sh "$img"
+          done
+
+      - name: Assert no libwayland-* remains in the final AppImage
+        # Independent of the strip script: unpack the finished image and look.
+        run: |
+          set -eu
+          img=$(ls "$GITHUB_WORKSPACE"/src-tauri/target/release/bundle/appimage/*.AppImage | head -n1)
+          rm -rf /tmp/appimage-final && mkdir -p /tmp/appimage-final && cd /tmp/appimage-final
+          "$img" --appimage-extract >/dev/null
+          test -x squashfs-root/AppRun || { echo "AppRun missing or not executable after repack"; exit 1; }
+          found=$(find squashfs-root \( -type f -o -type l \) -name 'libwayland-*')
+          if [ -n "$found" ]; then
+            echo "libwayland-* still present in the AppImage:"; echo "$found"; exit 1
+          fi
+          echo "OK: unpacked $(find squashfs-root -type f | wc -l) files, none match libwayland-*"
+
       - name: Smoke-launch the AppImage several ways (X11, virtual display)
         # Diagnostic only, NOT a Wayland test: it prints, per launch variant,
         # whether the app stayed up, spawned a WebKit web process and painted

@@ -25,6 +25,7 @@ build_native() {
     libayatana-appindicator3-dev \
     librsvg2-dev \
     patchelf \
+    squashfs-tools \
     build-essential \
     curl wget file libssl-dev pkg-config
 
@@ -53,6 +54,11 @@ build_native() {
 
   echo "==> Building AppImage natively for $HOST_ARCH..."
   npx tauri build --bundles appimage,deb
+
+  echo "==> Stripping libwayland-* from the AppImage (clashes with the host's graphics stack on Wayland)..."
+  for f in src-tauri/target/release/bundle/appimage/*.AppImage; do
+    bash scripts/strip-appimage-wayland.sh "$f"
+  done
 
   echo ""
   echo "==> Done. Output files:"
@@ -94,6 +100,11 @@ build_arm64_emulated() {
 
   echo "==> Fixing file ownership on build output (container ran as root)..."
   sudo chown -R "$(id -u):$(id -g)" src-tauri/target
+
+  echo "==> Stripping libwayland-* from the aarch64 AppImage (needs squashfs-tools on this host)..."
+  for f in src-tauri/target/aarch64-unknown-linux-gnu/release/bundle/appimage/*.AppImage; do
+    bash scripts/strip-appimage-wayland.sh "$f"
+  done
 
   echo "==> Renaming artifacts for aarch64..."
   cd src-tauri/target/aarch64-unknown-linux-gnu/release/bundle
