@@ -1,0 +1,54 @@
+{
+  "source": "src/jumpstart-engine.js @ 21e85df",
+  "os": {
+    "win": {
+      "jumpstart": 20,
+      "categories": 16,
+      "items": 128,
+      "commands": 148,
+      "sha256": "0e09308e3fa0f4d20bdab785be563633313ebb728588383043a79e1b50e38590"
+    },
+    "cachy": {
+      "jumpstart": 20,
+      "categories": 21,
+      "items": 194,
+      "commands": 214,
+      "sha256": "99d28616a0f63514135f6a699f98c34b1f669c93447344747a2bc667870515ba"
+    },
+    "bazzite": {
+      "jumpstart": 18,
+      "categories": 12,
+      "items": 100,
+      "commands": 118,
+      "sha256": "a36803bbdde0b9497988517a04a0338474f07167f7380a18b713cd588f476037"
+    },
+    "fedora": {
+      "jumpstart": 21,
+      "categories": 19,
+      "items": 166,
+      "commands": 187,
+      "sha256": "3abdcab7152ba1e3cd1f85a0ba6fc7e3e8b5512ba61465d81678fa2c519df9ff"
+    },
+    "ubuntu": {
+      "jumpstart": 21,
+      "categories": 19,
+      "items": 166,
+      "commands": 187,
+      "sha256": "c3b53ed751fbde7c986a35c108af70db339fba0bb44a8461c00319aa8be02b34"
+    },
+    "arch": {
+      "jumpstart": 22,
+      "categories": 20,
+      "items": 157,
+      "commands": 179,
+      "sha256": "fb8e77453e62bd2aff78fe154d84882415dbfe1c2879a8853cbf52c878c3bfaf"
+    },
+    "android": {
+      "jumpstart": 19,
+      "categories": 10,
+      "items": 74,
+      "commands": 93,
+      "sha256": "671d871b65cc2c8396c0b10822074de470da31b213a729fdd82affb419ef7bd5"
+    }
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "os": "win",
+  "jumpstart": [
+    {"id":"w_policy","name":"Execution Policy + Self-Elevate","desc":"Must run first on fresh Tiny11. Unlocks PS scripts.","tier":"sys","cmd":"Set-ExecutionPolicy RemoteSigned -Force; if(!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]\"Administrator\")){Start-Process PowerShell \"-NoProfile -ExecutionPolicy Bypass -File `\"$PSCommandPath`\"\" -Verb RunAs;exit}"},
+    {"id":"w_winget","name":"Winget Bootstrap","desc":"Ensure winget is installed (App Installer MSIX)","tier":"sys","cmd":"# Auto-handled in bootstrap script header"},
+    {"id":"w_choco","name":"Chocolatey Package Manager","desc":"Fallback package manager for tools not in winget","tier":"sys","cmd":"Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol=[System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString(\"https://community.chocolatey.org/install.ps1\"))"},
+    {"id":"w_wsl2","name":"WSL2 + Ubuntu","desc":"Windows Subsystem for Linux — sovereign Linux layer on Win","tier":"sys","cmd":"wsl --install -d Ubuntu"},
+    {"id":"w_git","name":"Git for Windows","desc":"Version control — required for Claude Code, repos","tier":"dev","cmd":"winget install -e --id Git.Git --silent"},
+    {"id":"w_node","name":"Node.js LTS","desc":"Required for Claude Code, Gemini CLI, Codex","tier":"dev","cmd":"winget install -e --id OpenJS.NodeJS.LTS --silent"},
+    {"id":"w_vscode","name":"VS Code","desc":"Primary code editor","tier":"dev","cmd":"winget install -e --id Microsoft.VisualStudioCode --silent"},
+    {"id":"w_claude","name":"Claude Code (Hermes)","desc":"Agentic coding CLI — installs after Node","tier":"ai","cmd":"npm install -g @anthropic-ai/claude-code"},
+    {"use":"gemini","id":"w_gemini"},
+    {"id":"w_rust","name":"Rust + Cargo","desc":"Systems lang — RTK, Yazi","tier":"dev","cmd":"winget install -e --id Rustlang.Rust.GNU --silent"},
+    {"id":"w_rtk","name":"RTK (Token Compression)","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","tier":"dev","cmd":"winget install rtk-ai.rtk","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+    {"id":"w_docker","name":"Docker Desktop","desc":"Container engine","tier":"core","cmd":"winget install -e --id Docker.DockerDesktop --silent"},
+    {"id":"w_ollama","name":"Ollama 0.17.1+","desc":"Local LLM runner — CVE patched","tier":"core","cmd":"winget install -e --id Ollama.Ollama --silent"},
+    {"use":"alfred","id":"w_alfred"},
+    {"use":"steward","id":"w_steward"},
+    {"use":"scout","id":"w_scout"},
+    {"use":"embed","id":"w_embed"},
+    {"id":"w_ps7","name":"PowerShell 7","desc":"Modern PS — cross-platform, required for scripts","tier":"sys","cmd":"winget install -e --id Microsoft.PowerShell --silent"},
+    {"id":"w_winterm","name":"Windows Terminal","desc":"Modern terminal — replaces cmd.exe","tier":"sys","cmd":"winget install -e --id Microsoft.WindowsTerminal --silent"},
+    {"id":"w_7zip","name":"7-Zip","desc":"Archive tool","tier":"sys","cmd":"winget install -e --id 7zip.7zip --silent"}
+  ],
+  "cats": [
+    {"id": "w-dev", "icon": "💻", "title": "DEVELOPMENT", "items": [
+      {"name":"Git for Windows","desc":"Version control","cmd":"winget install -e --id Git.Git --silent","type":"winget"},
+      {"name":"GitHub CLI","desc":"GitHub from terminal — kalifurd","cmd":"winget install -e --id GitHub.cli --silent","type":"winget"},
+      {"name":"VS Code","desc":"Primary editor","cmd":"winget install -e --id Microsoft.VisualStudioCode --silent","type":"winget"},
+      {"name":"Node.js LTS","desc":"Required for CLI AI tools","cmd":"winget install -e --id OpenJS.NodeJS.LTS --silent","type":"winget"},
+      {"name":"Python 3","desc":"Python runtime","cmd":"winget install -e --id Python.Python.3.12 --silent","type":"winget"},
+      {"name":"Rust","desc":"Systems lang — RTK/Yazi","cmd":"winget install -e --id Rustlang.Rust.GNU --silent","type":"winget"},
+      {"name":"Go","desc":"Google systems language","cmd":"winget install -e --id GoLang.Go --silent","type":"winget"},
+      {"name":"Neovim","desc":"Hyperextensible Vim","cmd":"winget install -e --id Neovim.Neovim --silent","type":"winget"},
+      {"name":"Windows Terminal","desc":"Modern terminal replacement","cmd":"winget install -e --id Microsoft.WindowsTerminal --silent","type":"winget"},
+      {"name":"PowerShell 7","desc":"Cross-platform PS","cmd":"winget install -e --id Microsoft.PowerShell --silent","type":"winget"},
+      {"name":"tmux (via choco)","desc":"Terminal multiplexer","cmd":"choco install -y tmux","type":"choco"},
+      {"name":"bat","desc":"cat with syntax highlighting","cmd":"winget install -e --id sharkdp.bat --silent","type":"winget"},
+      {"name":"ripgrep","desc":"Fast grep","cmd":"winget install -e --id BurntSushi.ripgrep.MSVC --silent","type":"winget"},
+      {"name":"fzf","desc":"Fuzzy finder","cmd":"winget install -e --id junegunn.fzf --silent","type":"winget"}
+    ]},
+    {"id": "w-cliai", "icon": "🖥️", "title": "CLI AI TOOLS", "items": [
+      {"name":"Claude Code (Hermes)","desc":"Primary agentic coding CLI","cmd":"npm install -g @anthropic-ai/claude-code","type":"npm"},
+      {"name":"Gemini CLI","desc":"Google Gemini CLI — codegen layer","cmd":"npm install -g @google/gemini-cli","type":"npm"},
+      {"name":"OpenAI Codex CLI","desc":"OpenAI Codex via OpenRouter","cmd":"npm install -g @openai/codex","type":"npm"},
+      {"name":"OpenCode","desc":"Open-source multi-provider AI CLI","cmd":"npm install -g opencode-ai","type":"npm"},
+      {"name":"Aider","desc":"AI pair programmer — git-aware","cmd":"pip install aider-chat","type":"ps"},
+      {"name":"Shell-GPT","desc":"LLM in terminal","cmd":"pip install shell-gpt","type":"ps"},
+      {"name":"LLM (Simon Willison)","desc":"Universal LLM CLI","cmd":"pip install llm","type":"ps"},
+      {"name":"RTK","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","cmd":"winget install rtk-ai.rtk","type":"winget","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+      {"name":"RTK: enable for Claude Code","desc":"Edits your Claude Code settings (adds a hook); run after installing RTK","cmd":"rtk init -g","type":"ps"}
+    ]},
+    {"id": "w-sovereign", "icon": "🛡️", "title": "SOVEREIGN STACK", "items": [
+      {"name":"Ollama 0.17.1+","desc":"Local LLM runner — CVE patched","cmd":"winget install -e --id Ollama.Ollama --silent","type":"winget"},
+      {"name":"Docker Desktop","desc":"Container engine","cmd":"winget install -e --id Docker.DockerDesktop --silent","type":"winget"},
+      {"name":"Open WebUI","desc":"Browser UI for Ollama — after Docker","cmd":"docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main","type":"ps"},
+      {"name":"LocalSend","desc":"Sovereign LAN file transfer","cmd":"winget install -e --id LocalSend.LocalSend --silent","type":"winget"},
+      {"name":"KeePassXC","desc":"Offline password manager","cmd":"winget install -e --id KeePassXCTeam.KeePassXC --silent","type":"winget"},
+      {"name":"WSL2 + Ubuntu","desc":"Linux layer on Windows","cmd":"wsl --install -d Ubuntu","type":"ps"}
+    ]},
+    {"id": "w-companions", "icon": "🤝", "title": "COMPANION MODELS", "items": [
+      {"name":"Alfred — qwen3:8b","desc":"Primary orchestrator — always warm","cmd":"ollama pull qwen3:8b","type":"winget"},
+      {"name":"Steward — deepseek-r1:14b","desc":"Safety watchdog — always warm","cmd":"ollama pull deepseek-r1:14b","type":"winget"},
+      {"name":"Scout — llama3.2:3b","desc":"Field recon — always warm","cmd":"ollama pull llama3.2:3b","type":"winget"},
+      {"name":"Daisy — gemma2:2b","desc":"Safe Space support","cmd":"ollama pull gemma2:2b","type":"winget"},
+      {"name":"Coach — llama3.2:3b","desc":"Motivation","cmd":"ollama pull llama3.2:3b","type":"winget"},
+      {"name":"Spark — phi3.5:latest","desc":"Inspiration engine","cmd":"ollama pull phi3.5:latest","type":"winget"},
+      {"name":"Solace — llama3.2:1b","desc":"Deep creative voice","cmd":"ollama pull llama3.2:1b","type":"winget"},
+      {"name":"Sage — phi4:14b","desc":"Knowledge layer","cmd":"ollama pull phi4:14b","type":"winget"},
+      {"name":"Luna — gemma2:2b","desc":"P.A.W.S. / living systems","cmd":"ollama pull gemma2:2b","type":"winget"},
+      {"name":"Tink — qwen2.5vl:7b","desc":"Ward — vision-capable","cmd":"ollama pull qwen2.5vl:7b","type":"winget"},
+      {"name":"Wren — qwen2.5:1.5b","desc":"Ward","cmd":"ollama pull qwen2.5:1.5b","type":"winget"},
+      {"name":"Qwen — qwen2.5:3b","desc":"Ward","cmd":"ollama pull qwen2.5:3b","type":"winget"},
+      {"name":"Remy — smollm2:1.7b","desc":"Ward — lightweight","cmd":"ollama pull smollm2:1.7b","type":"winget"},
+      {"name":"moondream","desc":"Vision / daydreaming utility model","cmd":"ollama pull moondream","type":"winget"},
+      {"name":"nomic-embed-text","desc":"RAG embeddings","cmd":"ollama pull nomic-embed-text","type":"winget"}
+    ]},
+    {"id": "w-gaming", "icon": "🎮", "title": "GAMING", "items": [
+      {"name":"Steam","desc":"PC gaming platform","cmd":"winget install -e --id Valve.Steam --silent","type":"winget"},
+      {"name":"Epic Games Launcher","desc":"Epic + free games","cmd":"winget install -e --id EpicGames.EpicGamesLauncher --silent","type":"winget"},
+      {"name":"GOG Galaxy","desc":"DRM-free games","cmd":"winget install -e --id GOG.Galaxy --silent","type":"winget"},
+      {"name":"HeroicGamesLauncher","desc":"Epic/GOG/Amazon on Windows","cmd":"winget install -e --id HeroicGamesLauncher.HeroicGamesLauncher --silent","type":"winget"},
+      {"name":"RetroArch","desc":"Multi-system emulator frontend","cmd":"winget install -e --id Libretro.RetroArch --silent","type":"winget"},
+      {"name":"RPCS3 (PS3)","desc":"PlayStation 3 emulator","cmd":"winget install -e --id RPCS3.RPCS3 --silent","type":"winget"},
+      {"name":"PCSX2 (PS2)","desc":"PlayStation 2 emulator","cmd":"winget install -e --id PCSX2Team.PCSX2 --silent","type":"winget"},
+      {"name":"DuckStation (PS1)","desc":"PlayStation 1 emulator","cmd":"winget install -e --id stenzek.duckstation --silent","type":"winget"},
+      {"name":"Dolphin (GC/Wii)","desc":"Nintendo emulator","cmd":"winget install -e --id DolphinEmu.Dolphin --silent","type":"winget"},
+      {"name":"PPSSPP (PSP)","desc":"PSP emulator","cmd":"winget install -e --id PPSSPP.PPSSPP --silent","type":"winget"},
+      {"name":"Ryujinx (Switch)","desc":"Nintendo Switch emulator","cmd":"winget install -e --id Ryujinx.Ryujinx --silent","type":"winget"},
+      {"name":"ScummVM","desc":"Classic adventure engine","cmd":"winget install -e --id ScummVM.ScummVM --silent","type":"winget"},
+      {"name":"MangoHud (Windows)","desc":"N/A on Windows — use RivaTuner/MSI AB","cmd":"# Use MSI Afterburner + RivaTuner Statistics Server for overlay","type":"ps"}
+    ]},
+    {"id": "w-gameengines", "icon": "🕹️", "title": "GAME ENGINES", "items": [
+      {"name":"Godot 4","desc":"Open-source engine — T1NK3R Games","cmd":"winget install -e --id GodotEngine.GodotEngine --silent","type":"winget"},
+      {"name":"Unreal Engine 5","desc":"UE5 Live Desktop / Chrono-Crest","cmd":"winget install -e --id EpicGames.EpicGamesLauncher --silent","type":"winget"},
+      {"name":"Blender","desc":"3D modeling / VIGA / Modly","cmd":"winget install -e --id BlenderFoundation.Blender --silent","type":"winget"},
+      {"name":"Unity Hub","desc":"Unity engine manager","cmd":"winget install -e --id Unity.UnityHub --silent","type":"winget"}
+    ]},
+    {"id": "w-daw", "icon": "🎚️", "title": "DAWs", "items": [
+      {"name":"Reaper","desc":"Lightweight pro DAW — low CPU, best on Windows","cmd":"winget install -e --id Cockos.REAPER --silent","type":"winget"},
+      {"name":"LMMS","desc":"FL Studio-style beat production","cmd":"winget install -e --id LMMS.LMMS --silent","type":"winget"},
+      {"name":"Audacity","desc":"Audio editor & recorder","cmd":"winget install -e --id Audacity.Audacity --silent","type":"winget"},
+      {"name":"Bitwig Studio","desc":"Modern modular DAW","cmd":"# Download installer: bitwig.com/download","type":"ps"},
+      {"name":"FL Studio Trial","desc":"Classic beat DAW","cmd":"winget install -e --id ImageLine.FLStudio --silent","type":"winget"},
+      {"name":"Mixxx","desc":"DJ software — T1NK3R.FM","cmd":"winget install -e --id Mixxx.Mixxx --silent","type":"winget"}
+    ]},
+    {"id": "w-audio", "icon": "🔊", "title": "AUDIO / VST / SYNTHS", "items": [
+      {"name":"Surge XT","desc":"Hybrid wavetable synth — free, pro quality","cmd":"winget install -e --id SurgeSynth.SurgeXT --silent","type":"winget"},
+      {"name":"ASIO4ALL","desc":"Low-latency ASIO driver for Windows audio","cmd":"# Download from asio4all.org","type":"ps"},
+      {"name":"VB-Cable (Virtual Audio)","desc":"Virtual audio cable — routing between apps","cmd":"# Download from vb-audio.com/Cable","type":"ps"},
+      {"name":"Voicemeeter Banana","desc":"Advanced audio mixer / virtual cable","cmd":"winget install -e --id VB-Audio.Voicemeeter.Banana --silent","type":"winget"},
+      {"name":"EQ APO + Peace GUI","desc":"System-wide EQ — replaces EasyEffects","cmd":"choco install -y eqapo","type":"choco"},
+      {"name":"Hydrogen Drum Machine","desc":"Drum machine / step sequencer","cmd":"winget install -e --id Hydrogen.Hydrogen --silent","type":"winget"},
+      {"name":"Helm Synth","desc":"Polyphonic VST synth","cmd":"# Download from tytel.org/helm","type":"ps"},
+      {"name":"Vital Synth","desc":"Spectral wavetable — free tier","cmd":"# Download from vital.audio","type":"ps"},
+      {"name":"FluidSynth + GM soundfont","desc":"General MIDI synth engine","cmd":"choco install -y fluidsynth","type":"choco"}
+    ]},
+    {"id": "w-media", "icon": "📺", "title": "MEDIA / T1NK3R.TV", "items": [
+      {"name":"VLC","desc":"Universal media player","cmd":"winget install -e --id VideoLAN.VLC --silent","type":"winget"},
+      {"name":"mpv","desc":"CLI/GPU media player","cmd":"winget install -e --id mpv.net --silent","type":"winget"},
+      {"name":"yt-dlp","desc":"YouTube downloader","cmd":"winget install -e --id yt-dlp.yt-dlp --silent","type":"winget"},
+      {"name":"Spotify","desc":"Music streaming","cmd":"winget install -e --id Spotify.Spotify --silent","type":"winget"},
+      {"name":"Jellyfin Server","desc":"Local media streaming server","cmd":"winget install -e --id Jellyfin.JellyfinServer --silent","type":"winget"},
+      {"name":"Calibre","desc":"E-book manager","cmd":"winget install -e --id calibre.calibre --silent","type":"winget"},
+      {"name":"Kodi","desc":"Media center — T1NK3R.TV frontend","cmd":"winget install -e --id XBMCFoundation.Kodi --silent","type":"winget"}
+    ]},
+    {"id": "w-art", "icon": "🎨", "title": "DIGITAL ART / VIDEO", "items": [
+      {"name":"DaVinci Resolve","desc":"Pro video editor — ACE ViMax backend","cmd":"winget install -e --id BlackmagicDesign.DaVinciResolve --silent","type":"winget"},
+      {"name":"OBS Studio","desc":"Streaming & screen recording","cmd":"winget install -e --id OBSProject.OBSStudio --silent","type":"winget"},
+      {"name":"Krita","desc":"Professional digital painting","cmd":"winget install -e --id KDE.Krita --silent","type":"winget"},
+      {"name":"GIMP","desc":"GNU image manipulation","cmd":"winget install -e --id GIMP.GIMP --silent","type":"winget"},
+      {"name":"Inkscape","desc":"Vector graphics (SVG)","cmd":"winget install -e --id Inkscape.Inkscape --silent","type":"winget"},
+      {"name":"Blender","desc":"3D modeling / sculpting","cmd":"winget install -e --id BlenderFoundation.Blender --silent","type":"winget"},
+      {"name":"HandBrake","desc":"Video transcoder","cmd":"winget install -e --id HandBrake.HandBrake --silent","type":"winget"},
+      {"name":"FFmpeg","desc":"CLI multimedia toolkit","cmd":"winget install -e --id Gyan.FFmpeg --silent","type":"winget"}
+    ]},
+    {"id": "w-writing", "icon": "✍️", "title": "WRITING / DOCS", "items": [
+      {"name":"LibreOffice","desc":"Full office suite","cmd":"winget install -e --id TheDocumentFoundation.LibreOffice --silent","type":"winget"},
+      {"name":"Obsidian","desc":"Markdown PKM — Tinker-Verse vault","cmd":"winget install -e --id Obsidian.Obsidian --silent","type":"winget"},
+      {"name":"Notepad++","desc":"Fast text editor","cmd":"winget install -e --id Notepad++.Notepad++ --silent","type":"winget"}
+    ]},
+    {"id": "w-network", "icon": "🌐", "title": "NETWORKING / SECURITY", "items": [
+      {"name":"Tailscale","desc":"Mesh VPN — cluster access","cmd":"winget install -e --id tailscale.tailscale --silent","type":"winget"},
+      {"name":"WireGuard","desc":"Modern VPN","cmd":"winget install -e --id WireGuard.WireGuard --silent","type":"winget"},
+      {"name":"Wireshark","desc":"Network protocol analyzer","cmd":"winget install -e --id WiresharkFoundation.Wireshark --silent","type":"winget"},
+      {"name":"Nmap","desc":"Network scanner","cmd":"winget install -e --id Insecure.Nmap --silent","type":"winget"},
+      {"name":"PuTTY","desc":"SSH client for Windows","cmd":"winget install -e --id PuTTY.PuTTY --silent","type":"winget"}
+    ]},
+    {"id": "w-creai", "icon": "🤖", "title": "CREATIVE AI / ACE STACK", "items": [
+      {"name":"ComfyUI","desc":"Node-based Stable Diffusion — most powerful","cmd":"git clone https://github.com/comfyanonymous/ComfyUI.git %USERPROFILE%\\tinker-verse\\comfyui && cd %USERPROFILE%\\tinker-verse\\comfyui && python -m venv venv && venv\\Scripts\\activate && pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 && pip install -r requirements.txt","type":"manual"},
+      {"name":"Fooocus","desc":"Easy high-quality local image gen","cmd":"git clone https://github.com/lllyasviel/Fooocus.git %USERPROFILE%\\tinker-verse\\fooocus && cd %USERPROFILE%\\tinker-verse\\fooocus && python -m venv venv && venv\\Scripts\\activate && pip install -r requirements_versions.txt","type":"manual"},
+      {"name":"Stable Diffusion WebUI Forge","desc":"Modern A1111 with video support","cmd":"git clone https://github.com/lllyasviel/stable-diffusion-webui-forge.git %USERPROFILE%\\tinker-verse\\sd-forge","type":"manual"},
+      {"name":"InvokeAI","desc":"Clean professional SD interface","cmd":"pip install InvokeAI","type":"ps"},
+      {"name":"ACE-Step UI","desc":"ACE music generation step UI","cmd":"git clone https://github.com/ace-step/ACE-Step.git %USERPROFILE%\\tinker-verse\\ace-step && cd %USERPROFILE%\\tinker-verse\\ace-step && python -m venv venv && venv\\Scripts\\activate && pip install -r requirements.txt","type":"manual"},
+      {"name":"FreeMoCap","desc":"Markerless motion capture — ACE Visual","cmd":"pip install freemocap","type":"ps"},
+      {"name":"text-generation-webui","desc":"Oobabooga — local model chat UI","cmd":"git clone https://github.com/oobabooga/text-generation-webui.git %USERPROFILE%\\tinker-verse\\text-gen-webui","type":"manual"},
+      {"name":"Diffusers (HuggingFace)","desc":"Core AI image library","cmd":"pip install diffusers transformers accelerate safetensors","type":"ps"}
+    ]},
+    {"id": "w-homelab", "icon": "🏠", "title": "HOMELAB / SELF-HOSTED", "items": [
+      {"name":"Portainer","desc":"Docker web UI — manage all containers","cmd":"docker run -d -p 9000:9000 --name portainer --restart always -v //./pipe/docker_engine:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce","type":"ps"},
+      {"name":"Jellyfin Server","desc":"Local media server — T1NK3R.TV backend","cmd":"winget install -e --id Jellyfin.JellyfinServer --silent","type":"winget"},
+      {"name":"Vaultwarden","desc":"Self-hosted Bitwarden","cmd":"docker run -d -p 8222:80 --name vaultwarden --restart unless-stopped -v %USERPROFILE%\\vaultwarden:/data vaultwarden/server:latest","type":"ps"},
+      {"name":"Nextcloud AIO","desc":"Full private cloud — Docker","cmd":"docker run -d -p 8080:8080 --name nextcloud-aio-mastercontainer --restart always -v nextcloud_aio_mastercontainer:/mnt/docker-aio-config -v //./pipe/docker_engine:/var/run/docker.sock nextcloud/all-in-one:latest","type":"ps"},
+      {"name":"Uptime Kuma","desc":"Monitoring dashboard","cmd":"docker run -d -p 3002:3001 --name uptime-kuma --restart unless-stopped -v uptime-kuma:/app/data louislam/uptime-kuma:1","type":"ps"},
+      {"name":"AnythingLLM","desc":"RAG + LLM front-end","cmd":"docker run -d -p 3003:3001 --name anythingllm --restart unless-stopped mintplexlabs/anythingllm","type":"ps"},
+      {"name":"TaxHacker","desc":"Sovereign tax AI — port 7331","cmd":"docker run -d -p 7331:7331 --name taxhacker --restart unless-stopped -e OLLAMA_HOST=host.docker.internal taxhacker/taxhacker","type":"ps"}
+    ]},
+    {"id": "w-upgrades", "icon": "⬆️", "title": "UPGRADES / SYSTEM UPDATES", "items": [
+      {"name":"Winget Upgrade All","desc":"Update all winget packages","cmd":"winget upgrade --all --silent","type":"ps"},
+      {"name":"Chocolatey Upgrade All","desc":"Update all choco packages","cmd":"choco upgrade all -y","type":"ps"},
+      {"name":"Claude Code Upgrade","desc":"Upgrade Hermes CLI","cmd":"npm update -g @anthropic-ai/claude-code","type":"ps"},
+      {"name":"Gemini CLI Upgrade","desc":"Upgrade Gemini CLI","cmd":"npm update -g @google/gemini-cli","type":"ps"},
+      {"name":"Ollama Upgrade","desc":"Reinstall to latest build","cmd":"winget upgrade -e --id Ollama.Ollama --silent","type":"winget"},
+      {"name":"pip Upgrade All","desc":"Upgrade all pip packages","cmd":"pip list --outdated --format=freeze | %{$_.split(\"==\")[0]} | ForEach-Object {pip install --upgrade $_}","type":"ps"},
+      {"name":"Docker Pull Latest Images","desc":"Refresh all running container images","cmd":"docker ps --format \"{{.Image}}\" | ForEach-Object { docker pull $_ }","type":"ps"},
+      {"name":"WSL Update","desc":"Update WSL kernel","cmd":"wsl --update","type":"ps"}
+    ]},
+    {"id": "w-crosstech", "icon": "🔗", "title": "CROSS-TECH EXTENSIONS", "items": [
+      {"name":"HexaMedia Studio setup","desc":"Windows-side HexaMedia project dir","cmd":"New-Item -ItemType Directory -Force -Path \"$env:USERPROFILE\\HexaMedia\"","type":"ps"},
+      {"name":"OpenRouter env (Windows)","desc":"Set OR key in user environment","cmd":"[System.Environment]::SetEnvironmentVariable(\"OPENROUTER_API_KEY\",\"your-key-here\",\"User\")","type":"ps"},
+      {"name":"ANTHROPIC_API_KEY env","desc":"Set Claude API key in user env","cmd":"[System.Environment]::SetEnvironmentVariable(\"ANTHROPIC_API_KEY\",\"your-key-here\",\"User\")","type":"ps"},
+      {"name":"WSL2 CachyOS bridge alias","desc":"Quick SSH into CachyOS from Windows","cmd":"# Add to PowerShell profile: function cachy { ssh tinkerv@192.168.1.138 }","type":"manual"},
+      {"name":"Tailscale mesh join","desc":"Join T1NK3R cluster mesh VPN","cmd":"tailscale up","type":"ps"},
+      {"name":"tinker-verse dir structure","desc":"Create canonical project dirs","cmd":"New-Item -ItemType Directory -Force \"$env:USERPROFILE\\tinker-verse\\ai\",\"$env:USERPROFILE\\tinker-verse\\games\",\"$env:USERPROFILE\\tinker-verse\\luna\"","type":"ps"}
+    ]}
+  ]
+}

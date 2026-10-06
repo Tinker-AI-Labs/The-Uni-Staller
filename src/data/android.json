@@ -1,0 +1,120 @@
+{
+  "os": "android",
+  "jumpstart": [
+    {"id":"n_termux","name":"Termux (F-Droid build)","desc":"Must be the F-Droid/GitHub build — the Play Store one is abandoned.","tier":"sys","cmd":"# Install from https://f-droid.org/packages/com.termux/ — NOT Google Play"},
+    {"id":"n_pkgup","name":"pkg update + upgrade","desc":"First command in a fresh Termux","tier":"sys","cmd":"pkg update -y && pkg upgrade -y"},
+    {"id":"n_storage","name":"termux-setup-storage","desc":"Grants access to shared device storage","tier":"sys","cmd":"termux-setup-storage"},
+    {"id":"n_base","name":"git + curl + wget + openssh","desc":"Core CLI toolchain","tier":"sys","cmd":"pkg install -y git curl wget openssh"},
+    {"id":"n_python","name":"Python 3","desc":"Termux python + pip","tier":"dev","cmd":"pkg install -y python"},
+    {"id":"n_node","name":"Node.js LTS","desc":"Required for Claude Code, Gemini CLI","tier":"dev","cmd":"pkg install -y nodejs-lts"},
+    {"id":"n_rust","name":"Rust + Cargo","desc":"Native Termux Rust toolchain","tier":"dev","cmd":"pkg install -y rust"},
+    {"id":"n_tur","name":"tur-repo (extra packages)","desc":"Termux User Repository — where ollama lives","tier":"sys","cmd":"pkg install -y tur-repo"},
+    {"id":"n_ollama","name":"Ollama (tur-repo)","desc":"CPU-only on Android — small models only","tier":"core","cmd":"pkg install -y ollama"},
+    {"id":"n_claude","name":"Claude Code (Hermes)","desc":"Agentic coding CLI — runs in Termux","tier":"ai","cmd":"npm install -g @anthropic-ai/claude-code"},
+    {"use":"gemini","id":"n_gemini"},
+    {"id":"n_scout","name":"Scout → llama3.2:3b","desc":"Smallest always-warm companion — the realistic one on-device","tier":"ai","cmd":"ollama pull llama3.2:3b"},
+    {"id":"n_daisy","name":"Daisy → gemma2:2b","desc":"2B model — fits comfortably in phone RAM","tier":"ai","cmd":"ollama pull gemma2:2b"},
+    {"id":"n_spark","name":"Spark → phi3.5:latest","desc":"Compact — fastest option on low-RAM devices","tier":"ai","cmd":"ollama pull phi3.5:latest"},
+    {"id":"n_remote","name":"Remote Ollama fallback","desc":"Prefer the LAN box for anything above 3B","tier":"ai","cmd":"echo \"export OLLAMA_HOST=http://<lan-ip>:11434\" >> ~/.bashrc"},
+    {"id":"n_termuxapi","name":"Termux:API","desc":"Battery, clipboard, TTS, sensors from the shell","tier":"sys","cmd":"pkg install -y termux-api"},
+    {"id":"n_sshd","name":"sshd on port 8022","desc":"SSH into the phone from the desktop","tier":"sys","cmd":"pkg install -y openssh && sshd && echo \"Connect: ssh -p 8022 $(whoami)@<phone-ip>\""},
+    {"id":"n_tailscale","name":"Tailscale (Play Store)","desc":"Mesh VPN — joins the phone to the T1NK3R cluster","tier":"core","cmd":"# Play Store: Tailscale — sign in with the same account as the desktop"},
+    {"id":"n_termuxboot","name":"Termux:Boot","desc":"Run sshd/ollama at device boot","tier":"sys","cmd":"# F-Droid: Termux:Boot — then put scripts in ~/.termux/boot/"}
+  ],
+  "cats": [
+    {"id": "n-bootstrap", "icon": "🔧", "title": "TERMUX BOOTSTRAP (AUTO-RUNS FIRST)", "items": [
+      {"name":"Termux (F-Droid build)","desc":"The Play Store build is abandoned — use F-Droid","cmd":"# https://f-droid.org/packages/com.termux/","type":"manual"},
+      {"name":"pkg update + upgrade","desc":"First command in a fresh Termux","cmd":"pkg update -y && pkg upgrade -y","type":"termux"},
+      {"name":"termux-setup-storage","desc":"Grants access to shared device storage","cmd":"termux-setup-storage","type":"manual"},
+      {"name":"git + curl + wget","desc":"Core CLI toolchain","cmd":"pkg install -y git curl wget","type":"termux"},
+      {"name":"Python 3 + pip","desc":"Termux python toolchain","cmd":"pkg install -y python","type":"termux"},
+      {"name":"Node.js LTS","desc":"Required for CLI AI tools","cmd":"pkg install -y nodejs-lts","type":"termux"},
+      {"name":"Rust + Cargo","desc":"Native Termux Rust toolchain","cmd":"pkg install -y rust","type":"termux"},
+      {"name":"tur-repo","desc":"Termux User Repository — where ollama lives","cmd":"pkg install -y tur-repo","type":"termux"},
+      {"name":"termux-api","desc":"Battery, clipboard, TTS, sensors from the shell","cmd":"pkg install -y termux-api","type":"termux"}
+    ]},
+    {"id": "n-cliai", "icon": "🖥️", "title": "CLI AI TOOLS", "items": [
+      {"name":"Claude Code (Hermes)","desc":"Runs in Termux on aarch64","cmd":"npm install -g @anthropic-ai/claude-code","type":"npm"},
+      {"name":"Gemini CLI","desc":"Google Gemini — codegen layer","cmd":"npm install -g @google/gemini-cli","type":"npm"},
+      {"name":"OpenCode","desc":"Open-source multi-provider AI CLI","cmd":"npm install -g opencode-ai","type":"npm"},
+      {"name":"Aider","desc":"AI pair programmer — git-aware","cmd":"pip install aider-chat","type":"pip"},
+      {"name":"Shell-GPT","desc":"LLM queries in terminal","cmd":"pip install shell-gpt","type":"pip"},
+      {"name":"LLM (Willison)","desc":"Universal LLM CLI","cmd":"pip install llm","type":"pip"},
+      {"name":"RTK","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","cmd":"cargo install --git https://github.com/rtk-ai/rtk","type":"cargo","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+      {"name":"RTK: enable for Claude Code","desc":"Edits your Claude Code settings (adds a hook); run after installing RTK","cmd":"rtk init -g","type":"cargo"},
+      {"name":"Yazi File Manager","desc":"Rust terminal file manager","cmd":"pkg install -y yazi","type":"termux"}
+    ]},
+    {"id": "n-sovereign", "icon": "🛡️", "title": "SOVEREIGN STACK", "items": [
+      {"name":"Ollama (tur-repo)","desc":"CPU-only on Android — small models only","cmd":"pkg install -y ollama","type":"termux"},
+      {"name":"Remote Ollama fallback","desc":"Anything above 3B belongs on the LAN box","cmd":"echo \"export OLLAMA_HOST=http://<lan-ip>:11434\" >> ~/.bashrc","type":"manual"},
+      {"name":"Tailscale (Play Store)","desc":"Mesh VPN — joins the phone to the cluster","cmd":"# Play Store: Tailscale","type":"manual"},
+      {"name":"OpenSSH server","desc":"SSH into the phone on port 8022","cmd":"pkg install -y openssh","type":"termux"},
+      {"name":"LocalSend","desc":"Sovereign LAN file transfer","cmd":"# F-Droid / Play Store: LocalSend","type":"manual"},
+      {"name":"KeePassDX","desc":"Offline password manager — KeePassXC compatible","cmd":"# F-Droid: KeePassDX","type":"manual"},
+      {"name":"Termux:Boot","desc":"Run sshd/ollama at device boot","cmd":"# F-Droid: Termux:Boot — scripts go in ~/.termux/boot/","type":"manual"},
+      {"name":"proot-distro (full Linux)","desc":"Real Debian/Ubuntu rootfs inside Termux","cmd":"pkg install -y proot-distro && proot-distro install debian","type":"termux"}
+    ]},
+    {"id": "n-companions", "icon": "🤝", "title": "COMPANION MODELS (SMALL ONLY)", "items": [
+      {"name":"Scout — llama3.2:3b","desc":"The realistic always-warm companion on-device","cmd":"ollama pull llama3.2:3b","type":"ollama"},
+      {"name":"Daisy — gemma2:2b","desc":"2B — fits comfortably in phone RAM","cmd":"ollama pull gemma2:2b","type":"ollama"},
+      {"name":"Spark — phi3.5:latest","desc":"Compact — fastest option on low-RAM devices","cmd":"ollama pull phi3.5:latest","type":"ollama"},
+      {"name":"Coach — llama3.2:3b","desc":"3B — needs 8GB+ RAM, expect slow tokens","cmd":"ollama pull llama3.2:3b","type":"ollama"},
+      {"name":"nomic-embed-text","desc":"RAG embeddings — small enough to run local","cmd":"ollama pull nomic-embed-text","type":"ollama"},
+      {"name":"Alfred (remote only)","desc":"qwen3:8b is too heavy for a phone","cmd":"# Route Alfred to the LAN box via OLLAMA_HOST","type":"na"}
+    ]},
+    {"id": "n-dev", "icon": "💻", "title": "DEVELOPMENT", "items": [
+      {"name":"GitHub CLI","desc":"GitHub from the phone terminal","cmd":"pkg install -y gh","type":"termux"},
+      {"name":"Neovim","desc":"Hyperextensible Vim","cmd":"pkg install -y neovim","type":"termux"},
+      {"name":"tmux + zsh + htop","desc":"Terminal essentials","cmd":"pkg install -y tmux zsh htop","type":"termux"},
+      {"name":"bat + ripgrep + fzf + fd","desc":"Modern CLI search stack","cmd":"pkg install -y bat ripgrep fzf fd","type":"termux"},
+      {"name":"clang + make","desc":"C/C++ toolchain","cmd":"pkg install -y clang make","type":"termux"},
+      {"name":"SQLite","desc":"Local database work","cmd":"pkg install -y sqlite","type":"termux"},
+      {"name":"Acode editor","desc":"GUI code editor that reads Termux storage","cmd":"# F-Droid / Play Store: Acode","type":"manual"},
+      {"name":"Termux:Styling","desc":"Fonts + color schemes for the terminal","cmd":"# F-Droid: Termux:Styling","type":"manual"}
+    ]},
+    {"id": "n-media", "icon": "📺", "title": "MEDIA / T1NK3R.TV", "items": [
+      {"name":"VLC for Android","desc":"Plays anything","cmd":"# F-Droid / Play Store: VLC","type":"manual"},
+      {"name":"mpv-android","desc":"GPU media player","cmd":"# F-Droid: mpv-android","type":"manual"},
+      {"name":"Jellyfin for Android","desc":"Client for the home server","cmd":"# F-Droid / Play Store: Jellyfin","type":"manual"},
+      {"name":"Kodi","desc":"Media center — T1NK3R.TV frontend","cmd":"# F-Droid / Play Store: Kodi","type":"manual"},
+      {"name":"yt-dlp (Termux)","desc":"Downloader — pairs with termux-setup-storage","cmd":"pip install yt-dlp","type":"pip"},
+      {"name":"NewPipe","desc":"Privacy-respecting YouTube front-end","cmd":"# F-Droid: NewPipe","type":"manual"},
+      {"name":"AntennaPod","desc":"Open-source podcast client","cmd":"# F-Droid: AntennaPod","type":"manual"},
+      {"name":"ffmpeg (Termux)","desc":"CLI multimedia toolkit","cmd":"pkg install -y ffmpeg","type":"termux"}
+    ]},
+    {"id": "n-create", "icon": "🎨", "title": "ART / AUDIO / CREATION", "items": [
+      {"name":"Krita? No","desc":"No Android build — use Infinite Painter / Ibis Paint","cmd":"# No official Krita Android release","type":"na"},
+      {"name":"Infinite Painter","desc":"Full-featured raster painting","cmd":"# Play Store: Infinite Painter","type":"manual"},
+      {"name":"Ibis Paint X","desc":"Free painting app with brush engine","cmd":"# Play Store: ibis Paint X","type":"manual"},
+      {"name":"FL Studio Mobile","desc":"Beat production on the phone","cmd":"# Play Store: FL Studio Mobile (paid)","type":"manual"},
+      {"name":"Audio Evolution Mobile","desc":"Multitrack DAW with USB audio support","cmd":"# Play Store: Audio Evolution Mobile Studio","type":"manual"},
+      {"name":"n-Track Studio","desc":"Alternative mobile DAW","cmd":"# Play Store: n-Track Studio","type":"manual"},
+      {"name":"Sox + ffmpeg (CLI audio)","desc":"Scriptable audio processing in Termux","cmd":"pkg install -y sox ffmpeg","type":"termux"},
+      {"name":"OpenCamera","desc":"Manual-control camera — raw capture","cmd":"# F-Droid: Open Camera","type":"manual"}
+    ]},
+    {"id": "n-sdr", "icon": "📡", "title": "SDR / RF / T1NK3R.FM", "items": [
+      {"name":"SDR Touch","desc":"RTL-SDR receiver over USB OTG","cmd":"# Play Store: SDR Touch","type":"manual"},
+      {"name":"RF Analyzer","desc":"Open-source SDR waterfall","cmd":"# F-Droid: RF Analyzer","type":"manual"},
+      {"name":"rtl_433 (Termux)","desc":"Decode 433MHz sensor traffic","cmd":"pkg install -y rtl-433","type":"termux"},
+      {"name":"RadioDroid","desc":"Internet radio client — T1NK3R.FM stream","cmd":"# F-Droid: RadioDroid","type":"manual"},
+      {"name":"APRSdroid","desc":"Ham radio APRS client","cmd":"# F-Droid: APRSdroid","type":"manual"}
+    ]},
+    {"id": "n-sys", "icon": "🛠️", "title": "SYSTEM / UTILITIES", "items": [
+      {"name":"F-Droid","desc":"The open-source app store — install this first","cmd":"# https://f-droid.org","type":"manual"},
+      {"name":"Obtainium","desc":"Installs apps straight from GitHub releases","cmd":"# F-Droid: Obtainium","type":"manual"},
+      {"name":"Syncthing-Fork","desc":"Peer-to-peer file sync with the float","cmd":"# F-Droid: Syncthing-Fork","type":"manual"},
+      {"name":"Material Files","desc":"Open-source file manager with root/SMB","cmd":"# F-Droid: Material Files","type":"manual"},
+      {"name":"Obsidian for Android","desc":"Markdown PKM — same vault via Syncthing","cmd":"# Play Store: Obsidian","type":"manual"},
+      {"name":"rclone (Termux)","desc":"Backup layer for the float","cmd":"pkg install -y rclone","type":"termux"},
+      {"name":"nmap (Termux)","desc":"Network scanner from the phone","cmd":"pkg install -y nmap","type":"termux"},
+      {"name":"Termux:Widget","desc":"Home-screen buttons for shell scripts","cmd":"# F-Droid: Termux:Widget","type":"manual"}
+    ]},
+    {"id": "n-upgrades", "icon": "⬆️", "title": "UPGRADES / SYSTEM UPDATES", "items": [
+      {"name":"pkg upgrade all","desc":"Update every Termux package","cmd":"pkg update -y && pkg upgrade -y","type":"termux"},
+      {"name":"Claude Code upgrade","desc":"Upgrade Hermes CLI","cmd":"npm update -g @anthropic-ai/claude-code","type":"npm"},
+      {"name":"pip upgrade tools","desc":"Upgrade the Python CLI tools","cmd":"pip install --upgrade aider-chat shell-gpt llm","type":"pip"},
+      {"name":"Ollama model refresh","desc":"Re-pull the on-device companions","cmd":"ollama pull phi3:mini","type":"ollama"},
+      {"name":"apt autoclean","desc":"Reclaim Termux package cache","cmd":"apt autoclean","type":"manual"}
+    ]}
+  ]
+}

@@ -6,12 +6,15 @@
 <h2 id="head">running…</h2>
 <table id="t"></table>
 <script src="tauri-bridge.js"></script>
+<script src="data-loader.js"></script>
 <script src="jumpstart-engine.js"></script>
 <script src="gapfill-data.js"></script>
 <script>
 const rows = [];
 function check(name, cond, extra) { rows.push([name, cond, extra || '']); }
 
+dataReady.then(() => {
+check('data: no load/validation errors', dataErrors.length === 0, dataErrors.join(' | '));
 // Tick everything on every tab, then generate each script.
 addAll();
 
@@ -60,5 +63,6 @@ document.getElementById('head').textContent =
 document.getElementById('head').className = fails ? 'fail' : 'pass';
 document.getElementById('t').innerHTML = rows.map(r =>
   `<tr><td class="${r[1]?'pass':'fail'}">${r[1]?'PASS':'FAIL'}</td><td>${r[0]}</td><td>${r[2]}</td></tr>`).join('');
+});
 </script>
 </body></html>

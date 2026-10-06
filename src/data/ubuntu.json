@@ -1,0 +1,207 @@
+{
+  "os": "ubuntu",
+  "jumpstart": [
+    {"id":"u_update","name":"apt update + upgrade","desc":"Must run first on a fresh install.","tier":"sys","cmd":"sudo apt update && sudo apt upgrade -y"},
+    {"id":"u_build","name":"build-essential + git","desc":"gcc/make/headers — needed to build anything","tier":"sys","cmd":"sudo apt install -y build-essential git curl wget ca-certificates"},
+    {"id":"u_flatpak","name":"Flatpak + Flathub","desc":"App runtime — not installed by default on Ubuntu","tier":"sys","cmd":"sudo apt install -y flatpak && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"},
+    {"id":"u_snap","name":"snapd","desc":"Ubuntu-native store — some apps are snap-only","tier":"sys","cmd":"sudo apt install -y snapd"},
+    {"id":"u_nvm","name":"Node.js via nvm","desc":"nvm → Node LTS. Avoids Ubuntu's ancient apt node.","tier":"dev","cmd":"curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts"},
+    {"use":"rust","id":"u_rust"},
+    {"id":"u_pipx","name":"pipx","desc":"Required — Ubuntu 24.04+ blocks system-wide pip installs","tier":"dev","cmd":"sudo apt install -y pipx && pipx ensurepath"},
+    {"id":"u_ollama","name":"Ollama 0.17.1+","desc":"Local LLM runner — official installer, no apt package","tier":"core","cmd":"curl -fsSL https://ollama.com/install.sh | sh && sudo systemctl enable --now ollama"},
+    {"id":"u_docker","name":"Docker + Compose","desc":"Container engine from Ubuntu repos","tier":"core","cmd":"sudo apt install -y docker.io docker-compose-v2 && sudo systemctl enable --now docker && sudo usermod -aG docker $USER"},
+    {"use":"claude","id":"u_claude"},
+    {"use":"gemini","id":"u_gemini"},
+    {"use":"rtk","id":"u_rtk"},
+    {"id":"u_yazi","name":"Yazi File Manager","desc":"Not in apt on LTS — build from cargo","tier":"dev","cmd":"cargo install yazi-fm yazi-cli"},
+    {"use":"alfred","id":"u_alfred"},
+    {"use":"steward","id":"u_steward"},
+    {"use":"scout","id":"u_scout"},
+    {"use":"embed","id":"u_embed"},
+    {"use":"whisper","id":"u_whisper"},
+    {"use":"piper","id":"u_piper"},
+    {"id":"u_rocm","name":"ROCm (RX 6600)","desc":"AMD amdgpu-install repo — HSA override for RDNA2","tier":"sys","cmd":"sudo apt install -y rocm-opencl-runtime mesa-opencl-icd clinfo && echo \"export HSA_OVERRIDE_GFX_VERSION=10.3.0\" >> ~/.bashrc"},
+    {"id":"u_pw","name":"PipeWire full stack","desc":"Audio engine — JACK bridge, realtime audio","tier":"sys","cmd":"sudo apt install -y pipewire pipewire-audio-client-libraries pipewire-jack wireplumber && sudo usermod -aG audio $USER"}
+  ],
+  "cats": [
+    {"id": "u-bootstrap", "icon": "🔧", "title": "BOOTSTRAP (AUTO-RUNS FIRST)", "items": [
+      {"name":"apt update + upgrade","desc":"Sync package lists before anything else","cmd":"sudo apt update && sudo apt upgrade -y","type":"apt"},
+      {"name":"build-essential + git","desc":"gcc/make/headers","cmd":"sudo apt install -y build-essential git curl wget ca-certificates","type":"apt"},
+      {"name":"Flatpak + Flathub","desc":"Not installed by default on Ubuntu","cmd":"sudo apt install -y flatpak && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo","type":"apt"},
+      {"name":"snapd","desc":"Ubuntu-native store","cmd":"sudo apt install -y snapd","type":"apt"},
+      {"name":"pipx","desc":"Required — 24.04+ blocks system-wide pip","cmd":"sudo apt install -y pipx","type":"apt"},
+      {"name":"nvm → Node LTS","desc":"Avoids Ubuntu's ancient apt node","cmd":"curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts","type":"manual"},
+      {"name":"Rust + Cargo","desc":"Required for RTK, Yazi, Bevy","cmd":"curl --proto \"=https\" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source $HOME/.cargo/env","type":"manual"},
+      {"name":"ubuntu-restricted-extras","desc":"Codecs + MS core fonts","cmd":"sudo apt install -y ubuntu-restricted-extras","type":"apt"}
+    ]},
+    {"id": "u-cliai", "icon": "🖥️", "title": "CLI AI TOOLS", "items": [
+      {"name":"Claude Code (Hermes)","desc":"Primary agentic coding CLI","cmd":"npm install -g @anthropic-ai/claude-code","type":"npm"},
+      {"name":"Gemini CLI","desc":"Google Gemini — codegen layer","cmd":"npm install -g @google/gemini-cli","type":"npm"},
+      {"name":"OpenAI Codex CLI","desc":"OpenAI Codex — OpenRouter Tier 1","cmd":"npm install -g @openai/codex","type":"npm"},
+      {"name":"OpenCode","desc":"Open-source multi-provider AI CLI","cmd":"npm install -g opencode-ai","type":"npm"},
+      {"name":"Aider","desc":"AI pair programmer — git-aware","cmd":"pipx install aider-chat","type":"pip"},
+      {"name":"Shell-GPT","desc":"LLM queries in terminal","cmd":"pipx install shell-gpt","type":"pip"},
+      {"name":"LLM (Willison)","desc":"Universal LLM CLI","cmd":"pipx install llm","type":"pip"},
+      {"name":"RTK","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","cmd":"cargo install --git https://github.com/rtk-ai/rtk","type":"cargo","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+      {"name":"RTK: enable for Claude Code","desc":"Edits your Claude Code settings (adds a hook); run after installing RTK","cmd":"rtk init -g","type":"cargo"},
+      {"name":"Yazi File Manager","desc":"Not packaged on LTS — build via cargo","cmd":"cargo install yazi-fm yazi-cli","type":"cargo"}
+    ]},
+    {"id": "u-sovereign", "icon": "🛡️", "title": "SOVEREIGN STACK", "items": [
+      {"name":"Ollama 0.17.1+","desc":"Local LLM runner — official installer","cmd":"curl -fsSL https://ollama.com/install.sh | sh","type":"manual"},
+      {"name":"Docker + Compose","desc":"Container engine from Ubuntu repos","cmd":"sudo apt install -y docker.io docker-compose-v2","type":"apt"},
+      {"name":"Open WebUI","desc":"Browser UI for Ollama — port 3000","cmd":"docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main","type":"manual"},
+      {"name":"LocalSend","desc":"Sovereign LAN file transfer","cmd":"flatpak install -y flathub org.localsend.localsend_app","type":"flatpak"},
+      {"name":"KeePassXC","desc":"Offline password manager","cmd":"sudo apt install -y keepassxc","type":"apt"},
+      {"name":"Whisper STT","desc":"Local speech recognition","cmd":"pipx install openai-whisper","type":"pip"},
+      {"name":"Piper TTS","desc":"Local neural TTS","cmd":"pipx install piper-tts","type":"pip"},
+      {"name":"Porcupine Wake Word","desc":"\"Hey Alfred\" wake engine","cmd":"pipx install pvporcupine","type":"pip"}
+    ]},
+    {"use":"companions","id":"u-companions"},
+    {"id": "u-dev", "icon": "💻", "title": "DEVELOPMENT", "items": [
+      {"name":"Git + GitHub CLI","desc":"Version control — kalifurd","cmd":"sudo apt install -y git gh","type":"apt"},
+      {"name":"VS Code","desc":"Primary editor","cmd":"sudo snap install code --classic","type":"snap"},
+      {"name":"Neovim","desc":"Hyperextensible Vim","cmd":"sudo apt install -y neovim","type":"apt"},
+      {"name":"Python 3 + venv","desc":"Python toolchain","cmd":"sudo apt install -y python3 python3-pip python3-venv","type":"apt"},
+      {"name":"Go","desc":"Google systems language","cmd":"sudo apt install -y golang-go","type":"apt"},
+      {"name":"Java 21 (OpenJDK)","desc":"JVM runtime + compiler","cmd":"sudo apt install -y openjdk-21-jdk","type":"apt"},
+      {"name":"tmux + zsh + htop","desc":"Terminal essentials","cmd":"sudo apt install -y tmux zsh htop","type":"apt"},
+      {"name":"bat + ripgrep + fzf + fd","desc":"Modern CLI search stack","cmd":"sudo apt install -y bat ripgrep fzf fd-find","type":"apt"},
+      {"name":"Meld","desc":"Visual diff/merge","cmd":"sudo apt install -y meld","type":"apt"},
+      {"name":"SQLite + DB Browser","desc":"Local database work","cmd":"sudo apt install -y sqlite3 sqlitebrowser","type":"apt"}
+    ]},
+    {"id": "u-gaming", "icon": "🎮", "title": "GAMING / EMULATION", "items": [
+      {"name":"Steam","desc":"Ubuntu multiverse build","cmd":"sudo apt install -y steam","type":"apt"},
+      {"name":"Lutris","desc":"Wine/Proton game manager","cmd":"sudo apt install -y lutris","type":"apt"},
+      {"name":"Wine + winetricks","desc":"Windows compatibility layer","cmd":"sudo apt install -y wine winetricks","type":"apt"},
+      {"name":"MangoHud + GOverlay","desc":"FPS/thermal overlay + GUI config","cmd":"sudo apt install -y mangohud goverlay","type":"apt"},
+      {"name":"GameMode","desc":"CPU governor switch while gaming","cmd":"sudo apt install -y gamemode","type":"apt"},
+      {"name":"Heroic Games Launcher","desc":"Epic / GOG / Amazon","cmd":"flatpak install -y flathub com.heroicgameslauncher.hgl","type":"flatpak"},
+      {"name":"ProtonUp-Qt","desc":"Install GE-Proton builds","cmd":"flatpak install -y flathub net.davidotek.pupgui2","type":"flatpak"},
+      {"name":"RetroArch","desc":"Multi-system emulator frontend","cmd":"flatpak install -y flathub org.libretro.RetroArch","type":"flatpak"},
+      {"name":"Dolphin (GC/Wii)","desc":"Nintendo emulator","cmd":"flatpak install -y flathub org.DolphinEmu.dolphin-emu","type":"flatpak"},
+      {"name":"PCSX2 (PS2)","desc":"PlayStation 2 emulator","cmd":"flatpak install -y flathub net.pcsx2.PCSX2","type":"flatpak"},
+      {"name":"DuckStation (PS1)","desc":"PlayStation 1 emulator","cmd":"flatpak install -y flathub org.duckstation.DuckStation","type":"flatpak"},
+      {"name":"RPCS3 (PS3)","desc":"PlayStation 3 emulator","cmd":"flatpak install -y flathub net.rpcs3.RPCS3","type":"flatpak"},
+      {"name":"PPSSPP (PSP)","desc":"PSP emulator","cmd":"flatpak install -y flathub org.ppsspp.PPSSPP","type":"flatpak"},
+      {"name":"ScummVM","desc":"Classic adventure engine","cmd":"sudo apt install -y scummvm","type":"apt"}
+    ]},
+    {"id": "u-engines", "icon": "🕹️", "title": "GAME ENGINES / 3D", "items": [
+      {"name":"Godot 4","desc":"Open-source engine — T1NK3R Games","cmd":"sudo snap install godot-4","type":"snap"},
+      {"name":"Blender","desc":"3D modeling / VIGA / Modly","cmd":"sudo snap install blender --classic","type":"snap"},
+      {"name":"Unity Hub","desc":"Unity engine manager — AppImage/manual","cmd":"# Download Unity Hub AppImage from unity.com/download","type":"manual"},
+      {"name":"Unreal Engine 5","desc":"Build from source via Epic GitHub access","cmd":"# github.com/EpicGames/UnrealEngine — requires linked Epic account","type":"manual"},
+      {"name":"Bevy (Rust engine)","desc":"ECS game engine — cargo template","cmd":"cargo install cargo-generate","type":"cargo"},
+      {"name":"LÖVE 2D","desc":"Lua game framework","cmd":"sudo apt install -y love","type":"apt"},
+      {"name":"FreeCAD","desc":"Parametric CAD","cmd":"sudo apt install -y freecad","type":"apt"},
+      {"name":"OpenSCAD","desc":"Script-driven CAD","cmd":"sudo apt install -y openscad","type":"apt"}
+    ]},
+    {"id": "u-daw", "icon": "🎚️", "title": "DAWs", "items": [
+      {"name":"Ardour","desc":"Full pro DAW","cmd":"sudo apt install -y ardour","type":"apt"},
+      {"name":"Reaper","desc":"Lightweight pro DAW","cmd":"flatpak install -y flathub fm.reaper.Reaper","type":"flatpak"},
+      {"name":"LMMS","desc":"FL Studio-style beat production","cmd":"sudo apt install -y lmms","type":"apt"},
+      {"name":"Audacity","desc":"Audio editor & recorder","cmd":"sudo apt install -y audacity","type":"apt"},
+      {"name":"Zrythm","desc":"Modern modular DAW","cmd":"flatpak install -y flathub org.zrythm.Zrythm","type":"flatpak"},
+      {"name":"Mixxx","desc":"DJ software — T1NK3R.FM","cmd":"sudo apt install -y mixxx","type":"apt"},
+      {"name":"Qtractor","desc":"MIDI/audio sequencer","cmd":"sudo apt install -y qtractor","type":"apt"}
+    ]},
+    {"id": "u-audio", "icon": "🔊", "title": "AUDIO / SYNTHS / FX", "items": [
+      {"name":"PipeWire + JACK bridge","desc":"Pro audio routing","cmd":"sudo apt install -y pipewire pipewire-jack wireplumber","type":"apt"},
+      {"name":"qpwgraph","desc":"PipeWire visual patchbay","cmd":"sudo apt install -y qpwgraph","type":"apt"},
+      {"name":"Carla Plugin Host","desc":"VST/LV2 host","cmd":"sudo apt install -y carla","type":"apt"},
+      {"name":"EasyEffects","desc":"System audio effects — EQ/compression","cmd":"flatpak install -y flathub com.github.wwmm.easyeffects","type":"flatpak"},
+      {"name":"Calf + LSP + x42 plugins","desc":"Core LV2 plugin suites","cmd":"sudo apt install -y calf-plugins lsp-plugins x42-plugins","type":"apt"},
+      {"name":"Surge XT","desc":"Hybrid wavetable synth","cmd":"flatpak install -y flathub org.surge_synth_team.SurgeXT","type":"flatpak"},
+      {"name":"Vital Synth","desc":"Spectral wavetable — free tier","cmd":"# Download from vital.audio (free account required)","type":"manual"},
+      {"name":"Hydrogen Drum Machine","desc":"Drum machine / step sequencer","cmd":"sudo apt install -y hydrogen","type":"apt"},
+      {"name":"FluidSynth + soundfont","desc":"General MIDI synth engine","cmd":"sudo apt install -y fluidsynth fluid-soundfont-gm","type":"apt"},
+      {"name":"ZynAddSubFX + Yoshimi","desc":"Classic Linux softsynths","cmd":"sudo apt install -y zynaddsubfx yoshimi","type":"apt"},
+      {"name":"Ubuntu Studio audio config","desc":"Realtime privileges + low-latency tuning","cmd":"sudo apt install -y ubuntustudio-audio-core","type":"apt"}
+    ]},
+    {"id": "u-media", "icon": "📺", "title": "MEDIA / T1NK3R.TV", "items": [
+      {"name":"VLC","desc":"Universal media player","cmd":"sudo apt install -y vlc","type":"apt"},
+      {"name":"mpv","desc":"CLI/GPU media player","cmd":"sudo apt install -y mpv","type":"apt"},
+      {"name":"yt-dlp","desc":"YouTube downloader — newer than apt","cmd":"pipx install yt-dlp","type":"pip"},
+      {"name":"Kodi","desc":"Media center — T1NK3R.TV frontend","cmd":"sudo apt install -y kodi","type":"apt"},
+      {"name":"Jellyfin Server","desc":"Local media streaming server","cmd":"flatpak install -y flathub org.jellyfin.JellyfinServer","type":"flatpak"},
+      {"name":"Strawberry","desc":"Local music library player","cmd":"sudo apt install -y strawberry","type":"apt"},
+      {"name":"Calibre","desc":"E-book manager","cmd":"sudo apt install -y calibre","type":"apt"},
+      {"name":"HandBrake","desc":"Video transcoder","cmd":"sudo apt install -y handbrake","type":"apt"}
+    ]},
+    {"id": "u-art", "icon": "🎨", "title": "ART / VIDEO", "items": [
+      {"name":"GIMP","desc":"GNU image manipulation","cmd":"sudo apt install -y gimp","type":"apt"},
+      {"name":"Krita","desc":"Professional digital painting","cmd":"sudo apt install -y krita","type":"apt"},
+      {"name":"Inkscape","desc":"Vector graphics (SVG)","cmd":"sudo apt install -y inkscape","type":"apt"},
+      {"name":"Darktable","desc":"RAW photo workflow","cmd":"sudo apt install -y darktable","type":"apt"},
+      {"name":"OBS Studio","desc":"Streaming & screen recording","cmd":"sudo apt install -y obs-studio","type":"apt"},
+      {"name":"Kdenlive","desc":"KDE video editor","cmd":"sudo apt install -y kdenlive","type":"apt"},
+      {"name":"DaVinci Resolve","desc":"Pro video editor — ACE ViMax backend","cmd":"# Download from blackmagicdesign.com — needs ROCm/OpenCL for AMD","type":"manual"},
+      {"name":"Upscayl","desc":"AI image upscaler","cmd":"flatpak install -y flathub org.upscayl.Upscayl","type":"flatpak"},
+      {"name":"FFmpeg","desc":"CLI multimedia toolkit","cmd":"sudo apt install -y ffmpeg","type":"apt"}
+    ]},
+    {"use":"creai","id":"u-creai"},
+    {"id": "u-homelab", "icon": "🏠", "title": "HOMELAB / SELF-HOSTED", "items": [
+      {"name":"Portainer","desc":"Docker web UI","cmd":"docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce","type":"manual"},
+      {"name":"Open WebUI","desc":"Ollama chat front-end — port 3000","cmd":"docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main","type":"manual"},
+      {"name":"Vaultwarden","desc":"Self-hosted Bitwarden","cmd":"docker run -d -p 8222:80 --name vaultwarden --restart unless-stopped -v ~/vaultwarden:/data vaultwarden/server:latest","type":"manual"},
+      {"name":"Nextcloud AIO","desc":"Full private cloud","cmd":"docker run -d -p 8080:8080 --name nextcloud-aio-mastercontainer --restart always -v nextcloud_aio_mastercontainer:/mnt/docker-aio-config -v /var/run/docker.sock:/var/run/docker.sock nextcloud/all-in-one:latest","type":"manual"},
+      {"name":"Uptime Kuma","desc":"Monitoring dashboard","cmd":"docker run -d -p 3002:3001 --name uptime-kuma --restart unless-stopped -v uptime-kuma:/app/data louislam/uptime-kuma:1","type":"manual"},
+      {"name":"AnythingLLM","desc":"RAG + LLM front-end","cmd":"docker run -d -p 3003:3001 --name anythingllm --restart unless-stopped mintplexlabs/anythingllm","type":"manual"},
+      {"name":"Home Assistant","desc":"Home automation hub","cmd":"docker run -d -p 8123:8123 --name homeassistant --restart unless-stopped -v ~/homeassistant:/config ghcr.io/home-assistant/home-assistant:stable","type":"manual"},
+      {"name":"Syncthing","desc":"Peer-to-peer file sync","cmd":"sudo apt install -y syncthing","type":"apt"}
+    ]},
+    {"id": "u-sdr", "icon": "📡", "title": "SDR / RF / T1NK3R.FM", "items": [
+      {"name":"rtl-sdr tools","desc":"RTL2832U dongle drivers + CLI","cmd":"sudo apt install -y rtl-sdr","type":"apt"},
+      {"name":"GQRX","desc":"SDR receiver GUI","cmd":"sudo apt install -y gqrx-sdr","type":"apt"},
+      {"name":"GNU Radio","desc":"DSP flowgraph toolkit","cmd":"sudo apt install -y gnuradio","type":"apt"},
+      {"name":"SDR++","desc":"Modern cross-platform SDR receiver","cmd":"flatpak install -y flathub org.sdrpp.SDRPlusPlus","type":"flatpak"},
+      {"name":"CubicSDR","desc":"Wideband SDR waterfall","cmd":"sudo apt install -y cubicsdr","type":"apt"},
+      {"name":"multimon-ng","desc":"Digital mode decoder (POCSAG, etc.)","cmd":"sudo apt install -y multimon-ng","type":"apt"},
+      {"name":"dump1090-fa","desc":"ADS-B aircraft tracking","cmd":"sudo apt install -y dump1090-fa","type":"apt"},
+      {"name":"CHIRP","desc":"Radio programming (Baofeng etc.)","cmd":"flatpak install -y flathub com.danplanet.chirp","type":"flatpak"}
+    ]},
+    {"id": "u-print3d", "icon": "🖨️", "title": "3D PRINTING (BAMBU P1S)", "items": [
+      {"name":"Bambu Studio","desc":"Official P1S slicer","cmd":"flatpak install -y flathub com.bambulab.BambuStudio","type":"flatpak"},
+      {"name":"OrcaSlicer","desc":"Community fork — better P1S profiles","cmd":"flatpak install -y flathub io.github.softfever.OrcaSlicer","type":"flatpak"},
+      {"name":"PrusaSlicer","desc":"Alternative slicer","cmd":"sudo apt install -y prusa-slicer","type":"apt"},
+      {"name":"Cura","desc":"Ultimaker slicer","cmd":"flatpak install -y flathub com.ultimaker.cura","type":"flatpak"},
+      {"name":"OctoPrint (container)","desc":"Printer web controller — LAN only","cmd":"docker run -d -p 5000:5000 --name octoprint --restart unless-stopped -v octoprint:/octoprint octoprint/octoprint","type":"manual"},
+      {"name":"FreeCAD","desc":"Parametric CAD for printable parts","cmd":"sudo apt install -y freecad","type":"apt"},
+      {"name":"Blender","desc":"Mesh sculpting / repair","cmd":"sudo snap install blender --classic","type":"snap"},
+      {"name":"MeshLab","desc":"Mesh cleanup and repair","cmd":"sudo apt install -y meshlab","type":"apt"}
+    ]},
+    {"id": "u-network", "icon": "🌐", "title": "NETWORKING / SECURITY", "items": [
+      {"name":"Tailscale","desc":"Mesh VPN — cluster access","cmd":"curl -fsSL https://tailscale.com/install.sh | sh","type":"manual"},
+      {"name":"WireGuard tools","desc":"Modern VPN","cmd":"sudo apt install -y wireguard-tools","type":"apt"},
+      {"name":"Wireshark","desc":"Network protocol analyzer","cmd":"sudo apt install -y wireshark","type":"apt"},
+      {"name":"Nmap","desc":"Network scanner","cmd":"sudo apt install -y nmap","type":"apt"},
+      {"name":"OpenSSH server","desc":"Remote access into this box","cmd":"sudo apt install -y openssh-server","type":"apt"},
+      {"name":"UFW firewall","desc":"Simple firewall front-end","cmd":"sudo apt install -y ufw","type":"apt"},
+      {"name":"croc + magic-wormhole","desc":"One-shot encrypted file transfer","cmd":"sudo apt install -y magic-wormhole","type":"apt"}
+    ]},
+    {"id": "u-writing", "icon": "✍️", "title": "WRITING / KNOWLEDGE", "items": [
+      {"name":"LibreOffice","desc":"Full office suite","cmd":"sudo apt install -y libreoffice","type":"apt"},
+      {"name":"Obsidian","desc":"Markdown PKM — Tinker-Verse vault","cmd":"flatpak install -y flathub md.obsidian.Obsidian","type":"flatpak"},
+      {"name":"Logseq","desc":"Outliner PKM alternative","cmd":"flatpak install -y flathub com.logseq.Logseq","type":"flatpak"},
+      {"name":"Zotero","desc":"Reference manager","cmd":"flatpak install -y flathub org.zotero.Zotero","type":"flatpak"},
+      {"name":"Pandoc","desc":"Universal document converter","cmd":"sudo apt install -y pandoc","type":"apt"},
+      {"name":"TeX Live","desc":"LaTeX typesetting","cmd":"sudo apt install -y texlive-latex-recommended","type":"apt"}
+    ]},
+    {"id": "u-upgrades", "icon": "⬆️", "title": "UPGRADES / SYSTEM UPDATES", "items": [
+      {"name":"apt full-upgrade","desc":"Update every package","cmd":"sudo apt update && sudo apt full-upgrade -y","type":"apt"},
+      {"name":"Flatpak update all","desc":"Update every Flatpak","cmd":"flatpak update -y","type":"flatpak"},
+      {"name":"snap refresh","desc":"Update every snap","cmd":"sudo snap refresh","type":"snap"},
+      {"name":"Claude Code upgrade","desc":"Upgrade Hermes CLI","cmd":"npm update -g @anthropic-ai/claude-code","type":"npm"},
+      {"name":"Gemini CLI upgrade","desc":"Upgrade Gemini CLI","cmd":"npm update -g @google/gemini-cli","type":"npm"},
+      {"name":"Ollama upgrade","desc":"Re-run official installer","cmd":"curl -fsSL https://ollama.com/install.sh | sh","type":"manual"},
+      {"name":"pipx upgrade all","desc":"Upgrade every pipx tool","cmd":"pipx upgrade-all","type":"pip"},
+      {"name":"apt autoremove","desc":"Drop orphaned dependencies","cmd":"sudo apt autoremove -y","type":"apt"}
+    ]},
+    {"id": "u-crosstech", "icon": "🔗", "title": "CROSS-TECH EXTENSIONS", "items": [
+      {"name":"tinker-verse dir structure","desc":"Create canonical project dirs","cmd":"mkdir -p ~/tinker-verse/{ai,games,luna,forge}","type":"manual"},
+      {"name":"OpenRouter env file","desc":"Key at the canonical path","cmd":"mkdir -p ~/.config/tinker-verse && chmod 600 ~/.config/tinker-verse/openrouter.env 2>/dev/null || true","type":"manual"},
+      {"name":"Tailscale mesh join","desc":"Join T1NK3R cluster mesh VPN","cmd":"sudo tailscale up","type":"manual"},
+      {"name":"rclone (offsite sync)","desc":"Backup layer for the float","cmd":"sudo apt install -y rclone","type":"apt"},
+      {"name":"WSL note (if this is WSL)","desc":"systemd needs enabling inside WSL2","cmd":"# Add to /etc/wsl.conf: [boot]\\nsystemd=true — then: wsl --shutdown","type":"manual"}
+    ]}
+  ]
+}

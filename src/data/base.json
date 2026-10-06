@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "_note": "Blocks shared byte-for-byte by two or more OS tabs. Per-OS files pull them in with {\"use\": \"<key>\", \"id\": \"<this OS's id>\"}.",
+  "jumpstart": {
+    "gemini": {"name":"Gemini CLI","desc":"Google Gemini CLI — codegen layer","tier":"ai","cmd":"npm install -g @google/gemini-cli"},
+    "alfred": {"name":"Alfred → qwen3:8b","desc":"Primary companion — always warm","tier":"ai","cmd":"ollama pull qwen3:8b"},
+    "steward": {"name":"Steward → deepseek-r1:14b","desc":"Safety watchdog — always warm","tier":"ai","cmd":"ollama pull deepseek-r1:14b"},
+    "scout": {"name":"Scout → llama3.2:3b","desc":"Field recon — always warm","tier":"ai","cmd":"ollama pull llama3.2:3b"},
+    "embed": {"name":"nomic-embed-text","desc":"RAG embeddings","tier":"ai","cmd":"ollama pull nomic-embed-text"},
+    "base": {"name":"base-devel + git","desc":"Must be first. Needed to build yay and AUR packages.","tier":"sys","cmd":"sudo pacman -S --needed --noconfirm base-devel git"},
+    "yay": {"name":"yay (AUR helper)","desc":"Bootstrap yay if no AUR helper present. Auto-detected.","tier":"sys","cmd":"# Auto-bootstrapped in script"},
+    "flatpak": {"name":"Flatpak + Flathub","desc":"App runtime — many GUI tools come via Flatpak","tier":"sys","cmd":"sudo pacman -S --needed --noconfirm flatpak && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"},
+    "nvm": {"name":"Node.js via nvm","desc":"nvm → Node LTS. Required for Claude Code, Gemini CLI.","tier":"dev","cmd":"curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts"},
+    "rust": {"name":"Rust + Cargo","desc":"Required for RTK, Yazi, Bevy","tier":"dev","cmd":"curl --proto \"=https\" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source $HOME/.cargo/env"},
+    "docker": {"name":"Docker CE","desc":"Container engine","tier":"core","cmd":"sudo pacman -S --needed --noconfirm docker docker-compose && sudo systemctl enable --now docker && sudo usermod -aG docker $USER"},
+    "claude": {"name":"Claude Code (Hermes)","desc":"Agentic coding CLI","tier":"ai","cmd":"npm install -g @anthropic-ai/claude-code"},
+    "rtk": {"name":"RTK","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","tier":"dev","cmd":"cargo install --git https://github.com/rtk-ai/rtk","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+    "whisper": {"name":"Whisper STT","desc":"Local speech recognition — Alfred daemon","tier":"ai","cmd":"pipx install openai-whisper"},
+    "piper": {"name":"Piper TTS","desc":"Local neural TTS — Alfred voice output","tier":"ai","cmd":"pipx install piper-tts"}
+  },
+  "cats": {
+    "companions": {"icon": "🤝", "title": "COMPANION MODELS", "items": [
+      {"name":"Alfred — qwen3:8b","desc":"Always warm","cmd":"ollama pull qwen3:8b","type":"ollama"},
+      {"name":"Steward — deepseek-r1:14b","desc":"Always warm","cmd":"ollama pull deepseek-r1:14b","type":"ollama"},
+      {"name":"Scout — llama3.2:3b","desc":"Always warm","cmd":"ollama pull llama3.2:3b","type":"ollama"},
+      {"name":"Daisy — gemma2:2b","desc":"Safe Space support","cmd":"ollama pull gemma2:2b","type":"ollama"},
+      {"name":"Coach — llama3.2:3b","desc":"Motivation","cmd":"ollama pull llama3.2:3b","type":"ollama"},
+      {"name":"Spark — phi3.5:latest","desc":"Inspiration engine","cmd":"ollama pull phi3.5:latest","type":"ollama"},
+      {"name":"Solace — llama3.2:1b","desc":"Deep creative voice","cmd":"ollama pull llama3.2:1b","type":"ollama"},
+      {"name":"Sage — phi4:14b","desc":"Knowledge layer","cmd":"ollama pull phi4:14b","type":"ollama"},
+      {"name":"Luna — gemma2:2b","desc":"P.A.W.S. / living systems","cmd":"ollama pull gemma2:2b","type":"ollama"},
+      {"name":"Tink — qwen2.5vl:7b","desc":"Ward — vision-capable","cmd":"ollama pull qwen2.5vl:7b","type":"ollama"},
+      {"name":"Wren — qwen2.5:1.5b","desc":"Ward","cmd":"ollama pull qwen2.5:1.5b","type":"ollama"},
+      {"name":"Qwen — qwen2.5:3b","desc":"Ward","cmd":"ollama pull qwen2.5:3b","type":"ollama"},
+      {"name":"Remy — smollm2:1.7b","desc":"Ward — lightweight","cmd":"ollama pull smollm2:1.7b","type":"ollama"},
+      {"name":"moondream","desc":"Vision / daydreaming utility model","cmd":"ollama pull moondream","type":"ollama"},
+      {"name":"nomic-embed-text","desc":"RAG embeddings","cmd":"ollama pull nomic-embed-text","type":"ollama"}
+    ]},
+    "creai": {"icon": "🤖", "title": "CREATIVE AI / ACE STACK", "items": [
+      {"name":"ComfyUI","desc":"Node-based Stable Diffusion — ROCm build","cmd":"git clone https://github.com/comfyanonymous/ComfyUI.git ~/tinker-verse/comfyui && cd ~/tinker-verse/comfyui && python3 -m venv venv && source venv/bin/activate && pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.0 && pip install -r requirements.txt","type":"manual"},
+      {"name":"Fooocus","desc":"Easy high-quality local image gen","cmd":"git clone https://github.com/lllyasviel/Fooocus.git ~/tinker-verse/fooocus","type":"manual"},
+      {"name":"SD WebUI Forge","desc":"Modern A1111 with video support","cmd":"git clone https://github.com/lllyasviel/stable-diffusion-webui-forge.git ~/tinker-verse/sd-forge","type":"manual"},
+      {"name":"InvokeAI","desc":"Clean professional SD interface","cmd":"pipx install InvokeAI","type":"pip"},
+      {"name":"ACE-Step UI","desc":"ACE music generation step UI","cmd":"git clone https://github.com/ace-step/ACE-Step.git ~/tinker-verse/ace-step","type":"manual"},
+      {"name":"text-generation-webui","desc":"Oobabooga — local model chat UI","cmd":"git clone https://github.com/oobabooga/text-generation-webui.git ~/tinker-verse/text-gen-webui","type":"manual"},
+      {"name":"Diffusers (HuggingFace)","desc":"Core AI image library","cmd":"pipx install diffusers","type":"pip"},
+      {"name":"FreeMoCap","desc":"Markerless motion capture — ACE Visual","cmd":"pipx install freemocap","type":"pip"}
+    ]}
+  }
+}

@@ -42,7 +42,10 @@ The app now covers seven targets: Windows (Tiny11), CachyOS, Bazzite, Fedora, Ub
 ```
 src/
   index.html            — 7 OS tab structure, OpenRouter panel, gap-fill panels, header
-  jumpstart-engine.js   — all data (JUMPSTART + CATS for 7 OSes), state, rendering, script generators
+  data-loader.js        — merges + validates src/data/*.json (shared by the app and scripts/verify-data.js)
+  data/base.json        — JUMPSTART items / CATS blocks shared byte-for-byte by 2+ OS tabs
+  data/<os>.json        — each OS's own JUMPSTART + CATS (pulls shared blocks in with {"use":"<key>","id":"…"})
+  jumpstart-engine.js   — state, rendering, script generators (data is loaded from src/data/)
   app.js                — OpenRouter key verification + setup-script generation
   styles.css            — T1NK3R-V3R53 dark theme, OS color vars
   tauri-bridge.js       — Tauri v2 ↔ browser fallback bridge, OS detection, save/download, terminal output, native install runner
@@ -76,6 +79,18 @@ build-rpm-local.sh        .rpm                build-windows-local.ps1 .msi + .ex
 build-arch-local.sh       .pkg.tar.zst        build-windows-local.sh  .msi + .exe (WSL)
 build-flatpak-local.sh    .flatpak
 ```
+
+## Data
+
+JUMPSTART and CATS live in `src/data/` as JSON, not in JS. `data-loader.js` merges `base.json` with each
+OS file at startup and validates every item (`{name, desc, cmd, type}` plus optional `avail`/`fallback`;
+JUMPSTART `{id, name, desc, tier, cmd}` with tier `sys|dev|ai|core`; CATS `{id, icon, title, items[]}`).
+A problem shows as a readable banner instead of a blank screen. In a plain browser the files are fetched,
+so serve `src/` (e.g. `python3 -m http.server` in `src/`) rather than opening `index.html` from disk.
+
+`npm run verify-data` (`node scripts/verify-data.js`) proves the merged data for every OS is identical to
+the pre-split data (deep-compared against git `21e85df` and against `scripts/baseline-hashes.json`), and
+that the validator rejects bad data.
 
 ## Build
 

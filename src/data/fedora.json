@@ -1,0 +1,207 @@
+{
+  "os": "fedora",
+  "jumpstart": [
+    {"id":"f_refresh","name":"dnf refresh + upgrade","desc":"Must run first on a fresh Workstation install.","tier":"sys","cmd":"sudo dnf upgrade --refresh -y"},
+    {"id":"f_rpmfusion","name":"RPM Fusion (free + nonfree)","desc":"Codecs, Steam, OBS, VLC all live here.","tier":"sys","cmd":"sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"},
+    {"id":"f_devtools","name":"Development Tools group","desc":"gcc/make/autotools — needed to build anything","tier":"sys","cmd":"sudo dnf group install -y development-tools && sudo dnf install -y git curl wget"},
+    {"id":"f_flatpak","name":"Flatpak + Flathub","desc":"App runtime — many GUI tools come via Flatpak","tier":"sys","cmd":"sudo dnf install -y flatpak && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"},
+    {"use":"nvm","id":"f_nvm"},
+    {"use":"rust","id":"f_rust"},
+    {"id":"f_pipx","name":"pipx","desc":"Isolated Python tool installs — avoids system pip conflicts","tier":"dev","cmd":"sudo dnf install -y pipx && pipx ensurepath"},
+    {"id":"f_ollama","name":"Ollama 0.17.1+","desc":"Local LLM runner — no Fedora package, official installer","tier":"core","cmd":"curl -fsSL https://ollama.com/install.sh | sh && sudo systemctl enable --now ollama"},
+    {"id":"f_podman","name":"Podman + Compose","desc":"Fedora-native rootless container engine","tier":"core","cmd":"sudo dnf install -y podman podman-compose podman-docker"},
+    {"use":"claude","id":"f_claude"},
+    {"use":"gemini","id":"f_gemini"},
+    {"use":"rtk","id":"f_rtk"},
+    {"id":"f_yazi","name":"Yazi File Manager","desc":"Iron Works themed terminal file manager","tier":"dev","cmd":"sudo dnf install -y yazi"},
+    {"use":"alfred","id":"f_alfred"},
+    {"use":"steward","id":"f_steward"},
+    {"use":"scout","id":"f_scout"},
+    {"use":"embed","id":"f_embed"},
+    {"use":"whisper","id":"f_whisper"},
+    {"use":"piper","id":"f_piper"},
+    {"id":"f_rocm","name":"ROCm (RX 6600)","desc":"AMD GPU compute — HSA override for RDNA2","tier":"sys","cmd":"sudo dnf install -y rocm-opencl rocm-hip rocminfo && echo \"export HSA_OVERRIDE_GFX_VERSION=10.3.0\" >> ~/.bashrc"},
+    {"id":"f_pw","name":"PipeWire JACK + realtime","desc":"PipeWire ships by default — add JACK bridge + RT priority","tier":"sys","cmd":"sudo dnf install -y pipewire-jack-audio-connection-kit wireplumber realtime-setup && sudo usermod -aG realtime $USER"}
+  ],
+  "cats": [
+    {"id": "f-bootstrap", "icon": "🔧", "title": "BOOTSTRAP (AUTO-RUNS FIRST)", "items": [
+      {"name":"dnf upgrade --refresh","desc":"Sync metadata + update before anything else","cmd":"sudo dnf upgrade --refresh -y","type":"dnf"},
+      {"name":"RPM Fusion free + nonfree","desc":"Codecs, Steam, VLC, OBS all live here","cmd":"sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm","type":"dnf"},
+      {"name":"Development Tools group","desc":"gcc / make / autotools","cmd":"sudo dnf group install -y development-tools","type":"dnf"},
+      {"name":"Flatpak + Flathub","desc":"App runtime","cmd":"sudo dnf install -y flatpak && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo","type":"dnf"},
+      {"name":"pipx","desc":"Isolated Python tool runner","cmd":"sudo dnf install -y pipx","type":"dnf"},
+      {"name":"nvm → Node LTS","desc":"Required for CLI AI tools","cmd":"curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts","type":"manual"},
+      {"name":"Rust + Cargo","desc":"Required for RTK, Yazi, Bevy","cmd":"curl --proto \"=https\" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source $HOME/.cargo/env","type":"manual"},
+      {"name":"RPM codecs (multimedia)","desc":"Full ffmpeg + hardware decode","cmd":"sudo dnf swap -y ffmpeg-free ffmpeg --allowerasing","type":"manual"}
+    ]},
+    {"id": "f-cliai", "icon": "🖥️", "title": "CLI AI TOOLS", "items": [
+      {"name":"Claude Code (Hermes)","desc":"Primary agentic coding CLI","cmd":"npm install -g @anthropic-ai/claude-code","type":"npm"},
+      {"name":"Gemini CLI","desc":"Google Gemini — codegen layer","cmd":"npm install -g @google/gemini-cli","type":"npm"},
+      {"name":"OpenAI Codex CLI","desc":"OpenAI Codex — OpenRouter Tier 1","cmd":"npm install -g @openai/codex","type":"npm"},
+      {"name":"OpenCode","desc":"Open-source multi-provider AI CLI","cmd":"npm install -g opencode-ai","type":"npm"},
+      {"name":"Aider","desc":"AI pair programmer — git-aware","cmd":"pipx install aider-chat","type":"pip"},
+      {"name":"Shell-GPT","desc":"LLM queries in terminal","cmd":"pipx install shell-gpt","type":"pip"},
+      {"name":"LLM (Willison)","desc":"Universal LLM CLI","cmd":"pipx install llm","type":"pip"},
+      {"name":"RTK","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","cmd":"cargo install --git https://github.com/rtk-ai/rtk","type":"cargo","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+      {"name":"RTK: enable for Claude Code","desc":"Edits your Claude Code settings (adds a hook); run after installing RTK","cmd":"rtk init -g","type":"cargo"},
+      {"name":"Yazi File Manager","desc":"Rust terminal file manager","cmd":"sudo dnf install -y yazi","type":"dnf"}
+    ]},
+    {"id": "f-sovereign", "icon": "🛡️", "title": "SOVEREIGN STACK", "items": [
+      {"name":"Ollama 0.17.1+","desc":"Local LLM runner — official installer","cmd":"curl -fsSL https://ollama.com/install.sh | sh","type":"manual"},
+      {"name":"Podman + Compose","desc":"Fedora-native rootless containers","cmd":"sudo dnf install -y podman podman-compose podman-docker","type":"dnf"},
+      {"name":"Docker CE (alternative)","desc":"If you need real Docker rather than Podman","cmd":"sudo dnf install -y moby-engine && sudo systemctl enable --now docker","type":"dnf"},
+      {"name":"Open WebUI","desc":"Browser UI for Ollama — port 3000","cmd":"podman run -d -p 3000:8080 --network=host -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:main","type":"manual"},
+      {"name":"LocalSend","desc":"Sovereign LAN file transfer","cmd":"flatpak install -y flathub org.localsend.localsend_app","type":"flatpak"},
+      {"name":"KeePassXC","desc":"Offline password manager","cmd":"sudo dnf install -y keepassxc","type":"dnf"},
+      {"name":"Whisper STT","desc":"Local speech recognition","cmd":"pipx install openai-whisper","type":"pip"},
+      {"name":"Piper TTS","desc":"Local neural TTS","cmd":"pipx install piper-tts","type":"pip"},
+      {"name":"Porcupine Wake Word","desc":"\"Hey Alfred\" wake engine","cmd":"pipx install pvporcupine","type":"pip"}
+    ]},
+    {"use":"companions","id":"f-companions"},
+    {"id": "f-dev", "icon": "💻", "title": "DEVELOPMENT", "items": [
+      {"name":"Git + GitHub CLI","desc":"Version control — kalifurd","cmd":"sudo dnf install -y git gh","type":"dnf"},
+      {"name":"VS Code","desc":"Primary editor","cmd":"flatpak install -y flathub com.visualstudio.code","type":"flatpak"},
+      {"name":"Neovim","desc":"Hyperextensible Vim","cmd":"sudo dnf install -y neovim","type":"dnf"},
+      {"name":"Python 3 + pip + venv","desc":"Python toolchain","cmd":"sudo dnf install -y python3 python3-pip python3-virtualenv","type":"dnf"},
+      {"name":"Go","desc":"Google systems language","cmd":"sudo dnf install -y golang","type":"dnf"},
+      {"name":"Java 21 (OpenJDK)","desc":"JVM runtime + compiler","cmd":"sudo dnf install -y java-21-openjdk-devel","type":"dnf"},
+      {"name":"tmux + zsh + htop","desc":"Terminal essentials","cmd":"sudo dnf install -y tmux zsh htop","type":"dnf"},
+      {"name":"bat + ripgrep + fzf + fd","desc":"Modern CLI search stack","cmd":"sudo dnf install -y bat ripgrep fzf fd-find","type":"dnf"},
+      {"name":"Meld","desc":"Visual diff/merge","cmd":"sudo dnf install -y meld","type":"dnf"},
+      {"name":"SQLite + DB Browser","desc":"Local database work","cmd":"sudo dnf install -y sqlite sqlitebrowser","type":"dnf"}
+    ]},
+    {"id": "f-gaming", "icon": "🎮", "title": "GAMING / EMULATION", "items": [
+      {"name":"Steam","desc":"Needs RPM Fusion nonfree","cmd":"sudo dnf install -y steam","type":"dnf"},
+      {"name":"Lutris","desc":"Wine/Proton game manager","cmd":"sudo dnf install -y lutris","type":"dnf"},
+      {"name":"Wine + winetricks","desc":"Windows compatibility layer","cmd":"sudo dnf install -y wine winetricks","type":"dnf"},
+      {"name":"MangoHud + GOverlay","desc":"FPS/thermal overlay + GUI config","cmd":"sudo dnf install -y mangohud goverlay","type":"dnf"},
+      {"name":"GameMode","desc":"CPU governor switch while gaming","cmd":"sudo dnf install -y gamemode","type":"dnf"},
+      {"name":"Heroic Games Launcher","desc":"Epic / GOG / Amazon","cmd":"flatpak install -y flathub com.heroicgameslauncher.hgl","type":"flatpak"},
+      {"name":"ProtonUp-Qt","desc":"Install GE-Proton builds","cmd":"flatpak install -y flathub net.davidotek.pupgui2","type":"flatpak"},
+      {"name":"RetroArch","desc":"Multi-system emulator frontend","cmd":"flatpak install -y flathub org.libretro.RetroArch","type":"flatpak"},
+      {"name":"Dolphin (GC/Wii)","desc":"Nintendo emulator","cmd":"flatpak install -y flathub org.DolphinEmu.dolphin-emu","type":"flatpak"},
+      {"name":"PCSX2 (PS2)","desc":"PlayStation 2 emulator","cmd":"flatpak install -y flathub net.pcsx2.PCSX2","type":"flatpak"},
+      {"name":"DuckStation (PS1)","desc":"PlayStation 1 emulator","cmd":"flatpak install -y flathub org.duckstation.DuckStation","type":"flatpak"},
+      {"name":"RPCS3 (PS3)","desc":"PlayStation 3 emulator","cmd":"flatpak install -y flathub net.rpcs3.RPCS3","type":"flatpak"},
+      {"name":"PPSSPP (PSP)","desc":"PSP emulator","cmd":"flatpak install -y flathub org.ppsspp.PPSSPP","type":"flatpak"},
+      {"name":"ScummVM","desc":"Classic adventure engine","cmd":"flatpak install -y flathub org.scummvm.ScummVM","type":"flatpak"}
+    ]},
+    {"id": "f-engines", "icon": "🕹️", "title": "GAME ENGINES / 3D", "items": [
+      {"name":"Godot 4","desc":"Open-source engine — T1NK3R Games","cmd":"flatpak install -y flathub org.godotengine.Godot","type":"flatpak"},
+      {"name":"Blender","desc":"3D modeling / VIGA / Modly","cmd":"flatpak install -y flathub org.blender.Blender","type":"flatpak"},
+      {"name":"Unity Hub","desc":"Unity engine manager — AppImage/manual","cmd":"# Download Unity Hub AppImage from unity.com/download","type":"manual"},
+      {"name":"Unreal Engine 5","desc":"Build from source via Epic GitHub access","cmd":"# github.com/EpicGames/UnrealEngine — requires linked Epic account","type":"manual"},
+      {"name":"Bevy (Rust engine)","desc":"ECS game engine — cargo template","cmd":"cargo install cargo-generate","type":"cargo"},
+      {"name":"LÖVE 2D","desc":"Lua game framework","cmd":"sudo dnf install -y love","type":"dnf"},
+      {"name":"FreeCAD","desc":"Parametric CAD","cmd":"flatpak install -y flathub org.freecadweb.FreeCAD","type":"flatpak"},
+      {"name":"OpenSCAD","desc":"Script-driven CAD","cmd":"sudo dnf install -y openscad","type":"dnf"}
+    ]},
+    {"id": "f-daw", "icon": "🎚️", "title": "DAWs", "items": [
+      {"name":"Ardour","desc":"Full pro DAW","cmd":"flatpak install -y flathub org.ardour.Ardour","type":"flatpak"},
+      {"name":"Reaper","desc":"Lightweight pro DAW","cmd":"flatpak install -y flathub fm.reaper.Reaper","type":"flatpak"},
+      {"name":"LMMS","desc":"FL Studio-style beat production","cmd":"flatpak install -y flathub io.lmms.LMMS","type":"flatpak"},
+      {"name":"Audacity","desc":"Audio editor & recorder","cmd":"flatpak install -y flathub org.audacityteam.Audacity","type":"flatpak"},
+      {"name":"Zrythm","desc":"Modern modular DAW","cmd":"flatpak install -y flathub org.zrythm.Zrythm","type":"flatpak"},
+      {"name":"Mixxx","desc":"DJ software — T1NK3R.FM","cmd":"sudo dnf install -y mixxx","type":"dnf"},
+      {"name":"Qtractor","desc":"MIDI/audio sequencer","cmd":"sudo dnf install -y qtractor","type":"dnf"}
+    ]},
+    {"id": "f-audio", "icon": "🔊", "title": "AUDIO / SYNTHS / FX", "items": [
+      {"name":"PipeWire JACK bridge","desc":"Pro audio routing on stock PipeWire","cmd":"sudo dnf install -y pipewire-jack-audio-connection-kit wireplumber","type":"dnf"},
+      {"name":"qpwgraph","desc":"PipeWire visual patchbay","cmd":"sudo dnf install -y qpwgraph","type":"dnf"},
+      {"name":"Carla Plugin Host","desc":"VST/LV2 host — run any plugin standalone","cmd":"sudo dnf install -y carla","type":"dnf"},
+      {"name":"EasyEffects","desc":"System audio effects — EQ/compression","cmd":"flatpak install -y flathub com.github.wwmm.easyeffects","type":"flatpak"},
+      {"name":"Calf + LSP + x42 plugins","desc":"Core LV2 plugin suites","cmd":"sudo dnf install -y calf lsp-plugins x42-plugins","type":"dnf"},
+      {"name":"Surge XT","desc":"Hybrid wavetable synth","cmd":"flatpak install -y flathub org.surge_synth_team.SurgeXT","type":"flatpak"},
+      {"name":"Vital Synth","desc":"Spectral wavetable — free tier","cmd":"# Download from vital.audio (free account required)","type":"manual"},
+      {"name":"Hydrogen Drum Machine","desc":"Drum machine / step sequencer","cmd":"sudo dnf install -y hydrogen","type":"dnf"},
+      {"name":"FluidSynth + soundfont","desc":"General MIDI synth engine","cmd":"sudo dnf install -y fluidsynth fluid-soundfont-gm","type":"dnf"},
+      {"name":"ZynAddSubFX + Yoshimi","desc":"Classic Linux softsynths","cmd":"sudo dnf install -y zynaddsubfx yoshimi","type":"dnf"},
+      {"name":"realtime-setup","desc":"Low-latency audio scheduling","cmd":"sudo dnf install -y realtime-setup && sudo usermod -aG realtime $USER","type":"dnf"}
+    ]},
+    {"id": "f-media", "icon": "📺", "title": "MEDIA / T1NK3R.TV", "items": [
+      {"name":"VLC","desc":"Universal media player (RPM Fusion)","cmd":"sudo dnf install -y vlc","type":"dnf"},
+      {"name":"mpv","desc":"CLI/GPU media player","cmd":"sudo dnf install -y mpv","type":"dnf"},
+      {"name":"yt-dlp","desc":"YouTube downloader","cmd":"sudo dnf install -y yt-dlp","type":"dnf"},
+      {"name":"Kodi","desc":"Media center — T1NK3R.TV frontend","cmd":"flatpak install -y flathub tv.kodi.Kodi","type":"flatpak"},
+      {"name":"Jellyfin Server","desc":"Local media streaming server","cmd":"sudo dnf install -y jellyfin-server jellyfin-web","type":"dnf"},
+      {"name":"Strawberry","desc":"Local music library player","cmd":"flatpak install -y flathub org.strawberrymusicplayer.strawberry","type":"flatpak"},
+      {"name":"Calibre","desc":"E-book manager","cmd":"sudo dnf install -y calibre","type":"dnf"},
+      {"name":"HandBrake","desc":"Video transcoder","cmd":"flatpak install -y flathub fr.handbrake.ghb","type":"flatpak"}
+    ]},
+    {"id": "f-art", "icon": "🎨", "title": "ART / VIDEO", "items": [
+      {"name":"GIMP","desc":"GNU image manipulation","cmd":"sudo dnf install -y gimp","type":"dnf"},
+      {"name":"Krita","desc":"Professional digital painting","cmd":"flatpak install -y flathub org.kde.krita","type":"flatpak"},
+      {"name":"Inkscape","desc":"Vector graphics (SVG)","cmd":"sudo dnf install -y inkscape","type":"dnf"},
+      {"name":"Darktable","desc":"RAW photo workflow","cmd":"sudo dnf install -y darktable","type":"dnf"},
+      {"name":"OBS Studio","desc":"Streaming & screen recording","cmd":"sudo dnf install -y obs-studio","type":"dnf"},
+      {"name":"Kdenlive","desc":"KDE video editor","cmd":"flatpak install -y flathub org.kde.kdenlive","type":"flatpak"},
+      {"name":"DaVinci Resolve","desc":"Pro video editor — ACE ViMax backend","cmd":"# Download from blackmagicdesign.com — needs ROCm/OpenCL for AMD","type":"manual"},
+      {"name":"Upscayl","desc":"AI image upscaler","cmd":"flatpak install -y flathub org.upscayl.Upscayl","type":"flatpak"},
+      {"name":"FFmpeg","desc":"CLI multimedia toolkit","cmd":"sudo dnf install -y ffmpeg","type":"dnf"}
+    ]},
+    {"use":"creai","id":"f-creai"},
+    {"id": "f-homelab", "icon": "🏠", "title": "HOMELAB / SELF-HOSTED", "items": [
+      {"name":"Portainer","desc":"Container web UI","cmd":"podman run -d -p 9000:9000 --name portainer --restart always -v /run/podman/podman.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce","type":"manual"},
+      {"name":"Open WebUI","desc":"Ollama chat front-end — port 3000","cmd":"podman run -d -p 3000:8080 --network=host -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:main","type":"manual"},
+      {"name":"Vaultwarden","desc":"Self-hosted Bitwarden","cmd":"podman run -d -p 8222:80 --name vaultwarden -v ~/vaultwarden:/data vaultwarden/server:latest","type":"manual"},
+      {"name":"Nextcloud AIO","desc":"Full private cloud","cmd":"podman run -d -p 8080:8080 --name nextcloud-aio nextcloud/all-in-one:latest","type":"manual"},
+      {"name":"Uptime Kuma","desc":"Monitoring dashboard","cmd":"podman run -d -p 3002:3001 --name uptime-kuma -v uptime-kuma:/app/data louislam/uptime-kuma:1","type":"manual"},
+      {"name":"AnythingLLM","desc":"RAG + LLM front-end","cmd":"podman run -d -p 3003:3001 --name anythingllm mintplexlabs/anythingllm","type":"manual"},
+      {"name":"Home Assistant","desc":"Home automation hub","cmd":"podman run -d -p 8123:8123 --name homeassistant -v ~/homeassistant:/config ghcr.io/home-assistant/home-assistant:stable","type":"manual"},
+      {"name":"Syncthing","desc":"Peer-to-peer file sync","cmd":"sudo dnf install -y syncthing","type":"dnf"}
+    ]},
+    {"id": "f-sdr", "icon": "📡", "title": "SDR / RF / T1NK3R.FM", "items": [
+      {"name":"rtl-sdr tools","desc":"RTL2832U dongle drivers + CLI","cmd":"sudo dnf install -y rtl-sdr","type":"dnf"},
+      {"name":"GQRX","desc":"SDR receiver GUI","cmd":"sudo dnf install -y gqrx","type":"dnf"},
+      {"name":"GNU Radio","desc":"DSP flowgraph toolkit","cmd":"sudo dnf install -y gnuradio","type":"dnf"},
+      {"name":"SDR++","desc":"Modern cross-platform SDR receiver","cmd":"flatpak install -y flathub org.sdrpp.SDRPlusPlus","type":"flatpak"},
+      {"name":"CubicSDR","desc":"Wideband SDR waterfall","cmd":"sudo dnf install -y CubicSDR","type":"dnf"},
+      {"name":"multimon-ng","desc":"Digital mode decoder (POCSAG, etc.)","cmd":"sudo dnf install -y multimon-ng","type":"dnf"},
+      {"name":"dump1090","desc":"ADS-B aircraft tracking","cmd":"sudo dnf install -y dump1090","type":"dnf"},
+      {"name":"CHIRP","desc":"Radio programming (Baofeng etc.)","cmd":"flatpak install -y flathub com.danplanet.chirp","type":"flatpak"}
+    ]},
+    {"id": "f-print3d", "icon": "🖨️", "title": "3D PRINTING (BAMBU P1S)", "items": [
+      {"name":"Bambu Studio","desc":"Official P1S slicer","cmd":"flatpak install -y flathub com.bambulab.BambuStudio","type":"flatpak"},
+      {"name":"OrcaSlicer","desc":"Community fork — better P1S profiles","cmd":"flatpak install -y flathub io.github.softfever.OrcaSlicer","type":"flatpak"},
+      {"name":"PrusaSlicer","desc":"Alternative slicer","cmd":"flatpak install -y flathub com.prusa3d.PrusaSlicer","type":"flatpak"},
+      {"name":"Cura","desc":"Ultimaker slicer","cmd":"flatpak install -y flathub com.ultimaker.cura","type":"flatpak"},
+      {"name":"OctoPrint (container)","desc":"Printer web controller — LAN only","cmd":"podman run -d -p 5000:5000 --name octoprint -v octoprint:/octoprint octoprint/octoprint","type":"manual"},
+      {"name":"FreeCAD","desc":"Parametric CAD for printable parts","cmd":"flatpak install -y flathub org.freecadweb.FreeCAD","type":"flatpak"},
+      {"name":"Blender","desc":"Mesh sculpting / repair","cmd":"flatpak install -y flathub org.blender.Blender","type":"flatpak"},
+      {"name":"MeshLab","desc":"Mesh cleanup and repair","cmd":"flatpak install -y flathub net.meshlab.MeshLab","type":"flatpak"}
+    ]},
+    {"id": "f-network", "icon": "🌐", "title": "NETWORKING / SECURITY", "items": [
+      {"name":"Tailscale","desc":"Mesh VPN — cluster access","cmd":"curl -fsSL https://tailscale.com/install.sh | sh","type":"manual"},
+      {"name":"WireGuard tools","desc":"Modern VPN","cmd":"sudo dnf install -y wireguard-tools","type":"dnf"},
+      {"name":"Wireshark","desc":"Network protocol analyzer","cmd":"sudo dnf install -y wireshark","type":"dnf"},
+      {"name":"Nmap","desc":"Network scanner","cmd":"sudo dnf install -y nmap","type":"dnf"},
+      {"name":"OpenSSH server","desc":"Remote access into this box","cmd":"sudo dnf install -y openssh-server && sudo systemctl enable --now sshd","type":"dnf"},
+      {"name":"KeePassXC","desc":"Offline password manager","cmd":"sudo dnf install -y keepassxc","type":"dnf"},
+      {"name":"croc + magic-wormhole","desc":"One-shot encrypted file transfer","cmd":"sudo dnf install -y croc magic-wormhole","type":"dnf"}
+    ]},
+    {"id": "f-writing", "icon": "✍️", "title": "WRITING / KNOWLEDGE", "items": [
+      {"name":"LibreOffice","desc":"Full office suite","cmd":"sudo dnf install -y libreoffice","type":"dnf"},
+      {"name":"Obsidian","desc":"Markdown PKM — Tinker-Verse vault","cmd":"flatpak install -y flathub md.obsidian.Obsidian","type":"flatpak"},
+      {"name":"Logseq","desc":"Outliner PKM alternative","cmd":"flatpak install -y flathub com.logseq.Logseq","type":"flatpak"},
+      {"name":"Zotero","desc":"Reference manager","cmd":"flatpak install -y flathub org.zotero.Zotero","type":"flatpak"},
+      {"name":"Pandoc","desc":"Universal document converter","cmd":"sudo dnf install -y pandoc","type":"dnf"},
+      {"name":"TeX Live","desc":"LaTeX typesetting","cmd":"sudo dnf install -y texlive-scheme-medium","type":"dnf"}
+    ]},
+    {"id": "f-upgrades", "icon": "⬆️", "title": "UPGRADES / SYSTEM UPDATES", "items": [
+      {"name":"dnf upgrade all","desc":"Update every RPM","cmd":"sudo dnf upgrade --refresh -y","type":"dnf"},
+      {"name":"Flatpak update all","desc":"Update every Flatpak","cmd":"flatpak update -y","type":"flatpak"},
+      {"name":"Claude Code upgrade","desc":"Upgrade Hermes CLI","cmd":"npm update -g @anthropic-ai/claude-code","type":"npm"},
+      {"name":"Gemini CLI upgrade","desc":"Upgrade Gemini CLI","cmd":"npm update -g @google/gemini-cli","type":"npm"},
+      {"name":"Ollama upgrade","desc":"Re-run official installer","cmd":"curl -fsSL https://ollama.com/install.sh | sh","type":"manual"},
+      {"name":"pipx upgrade all","desc":"Upgrade every pipx tool","cmd":"pipx upgrade-all","type":"pip"},
+      {"name":"dnf autoremove","desc":"Drop orphaned dependencies","cmd":"sudo dnf autoremove -y","type":"dnf"}
+    ]},
+    {"id": "f-crosstech", "icon": "🔗", "title": "CROSS-TECH EXTENSIONS", "items": [
+      {"name":"tinker-verse dir structure","desc":"Create canonical project dirs","cmd":"mkdir -p ~/tinker-verse/{ai,games,luna,forge}","type":"manual"},
+      {"name":"OpenRouter env file","desc":"Key at the canonical path","cmd":"mkdir -p ~/.config/tinker-verse && chmod 600 ~/.config/tinker-verse/openrouter.env 2>/dev/null || true","type":"manual"},
+      {"name":"Tailscale mesh join","desc":"Join T1NK3R cluster mesh VPN","cmd":"sudo tailscale up","type":"manual"},
+      {"name":"rclone (offsite sync)","desc":"Backup layer for the float","cmd":"sudo dnf install -y rclone","type":"dnf"},
+      {"name":"Btrfs snapshot tools","desc":"Snapper — matches the float's btrfs layout","cmd":"sudo dnf install -y snapper btrfs-progs","type":"dnf"}
+    ]}
+  ]
+}

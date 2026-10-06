@@ -1,0 +1,133 @@
+{
+  "os": "bazzite",
+  "jumpstart": [
+    {"id":"b_flathub","name":"Flathub Remote","desc":"Ensure Flathub is configured — primary app source on Bazzite","tier":"sys","cmd":"flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"},
+    {"id":"b_toolbox","name":"Toolbox Container (Fedora)","desc":"Mutable container for CLI tools. Required for pip/cargo/npm on immutable Bazzite.","tier":"sys","cmd":"toolbox create tinker && toolbox enter tinker"},
+    {"id":"b_nvm","name":"Node.js via nvm (in toolbox)","desc":"nvm → Node LTS inside toolbox container","tier":"dev","cmd":"toolbox run --container tinker bash -c \"curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts\""},
+    {"id":"b_rust","name":"Rust + Cargo (in toolbox)","desc":"Rust inside toolbox container","tier":"dev","cmd":"toolbox run --container tinker bash -c \"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y\""},
+    {"id":"b_ollama","name":"Ollama 0.17.1+","desc":"Layer via rpm-ostree OR run in toolbox","tier":"core","cmd":"toolbox run --container tinker bash -c \"curl -fsSL https://ollama.com/install.sh | sh\""},
+    {"id":"b_claude","name":"Claude Code (Hermes)","desc":"In toolbox container","tier":"ai","cmd":"toolbox run --container tinker bash -c \"npm install -g @anthropic-ai/claude-code\""},
+    {"id":"b_gemini","name":"Gemini CLI","desc":"In toolbox container","tier":"ai","cmd":"toolbox run --container tinker bash -c \"npm install -g @google/gemini-cli\""},
+    {"id":"b_rtk","name":"RTK (in toolbox)","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","tier":"dev","cmd":"toolbox run --container tinker bash -c \"cargo install --git https://github.com/rtk-ai/rtk\"","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+    {"use":"alfred","id":"b_alfred"},
+    {"id":"b_steward","name":"Steward → deepseek-r1:14b","desc":"Safety watchdog","tier":"ai","cmd":"ollama pull deepseek-r1:14b"},
+    {"use":"scout","id":"b_scout"},
+    {"use":"embed","id":"b_embed"},
+    {"id":"b_decky","name":"Decky Loader","desc":"Steam Deck plugin loader — pre-installed on Bazzite","tier":"sys","cmd":"# Pre-installed on Bazzite"},
+    {"id":"b_vscode","name":"VS Code","desc":"Via Flatpak","tier":"dev","cmd":"flatpak install -y flathub com.visualstudio.code"},
+    {"id":"b_whisper","name":"Whisper STT (toolbox)","desc":"Local STT in toolbox","tier":"ai","cmd":"toolbox run --container tinker pip install openai-whisper"},
+    {"id":"b_piper","name":"Piper TTS (toolbox)","desc":"Local TTS in toolbox","tier":"ai","cmd":"toolbox run --container tinker pip install piper-tts"},
+    {"id":"b_rocm","name":"ROCm (RX 6600)","desc":"Layer via rpm-ostree — requires reboot","tier":"sys","cmd":"rpm-ostree install rocm-opencl rocm-hip && echo \"export HSA_OVERRIDE_GFX_VERSION=10.3.0\" >> ~/.bashrc"},
+    {"id":"b_steam","name":"Steam (pre-installed)","desc":"Already on Bazzite — verify only","tier":"sys","cmd":"# Pre-installed on Bazzite. Check: flatpak list | grep Steam"}
+  ],
+  "cats": [
+    {"id": "b-bootstrap", "icon": "🔧", "title": "BOOTSTRAP (AUTO-RUNS FIRST)", "items": [
+      {"name":"Flathub Remote","desc":"Primary app source on Bazzite","cmd":"flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo","type":"flatpak"},
+      {"name":"Toolbox Create (tinker)","desc":"Mutable Fedora container — home for all CLI tools","cmd":"toolbox create tinker","type":"manual"},
+      {"name":"nvm + Node LTS (toolbox)","desc":"Node inside toolbox — CLI AI tools need this","cmd":"toolbox run --container tinker bash -c \"curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc && nvm install --lts\"","type":"manual"},
+      {"name":"Rust + Cargo (toolbox)","desc":"RTK, Yazi inside toolbox","cmd":"toolbox run --container tinker bash -c \"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y\"","type":"manual"},
+      {"name":"pipx (toolbox)","desc":"Isolated Python tool runner","cmd":"toolbox run --container tinker bash -c \"pip install pipx && pipx ensurepath\"","type":"manual"},
+      {"name":"Git config","desc":"Set github:kalifurd credentials","cmd":"git config --global user.name \"Brad\" && git config --global user.email \"your@email.com\"","type":"manual"}
+    ]},
+    {"id": "b-cliai", "icon": "🖥️", "title": "CLI AI TOOLS (TOOLBOX)", "items": [
+      {"name":"Claude Code (Hermes)","desc":"In toolbox container","cmd":"toolbox run --container tinker bash -c \"npm install -g @anthropic-ai/claude-code\"","type":"toolbox"},
+      {"name":"Gemini CLI","desc":"In toolbox container","cmd":"toolbox run --container tinker bash -c \"npm install -g @google/gemini-cli\"","type":"toolbox"},
+      {"name":"OpenAI Codex CLI","desc":"In toolbox container","cmd":"toolbox run --container tinker bash -c \"npm install -g @openai/codex\"","type":"toolbox"},
+      {"name":"OpenCode","desc":"In toolbox container","cmd":"toolbox run --container tinker bash -c \"npm install -g opencode-ai\"","type":"toolbox"},
+      {"name":"Aider","desc":"AI pair programmer","cmd":"toolbox run --container tinker bash -c \"pip install aider-chat\"","type":"toolbox"},
+      {"name":"RTK","desc":"Compresses command output for AI coding agents (not the 'rtk' crate on crates.io)","cmd":"toolbox run --container tinker bash -c \"cargo install --git https://github.com/rtk-ai/rtk\"","type":"toolbox","license":"Apache-2.0","help":"https://github.com/rtk-ai/rtk","helpType":"site"},
+      {"name":"RTK: enable for Claude Code","desc":"Edits your Claude Code settings (adds a hook); run after installing RTK","cmd":"toolbox run --container tinker bash -c \"rtk init -g\"","type":"toolbox"},
+      {"name":"LLM (Willison)","desc":"Universal LLM CLI","cmd":"toolbox run --container tinker bash -c \"pip install llm\"","type":"toolbox"}
+    ]},
+    {"id": "b-sovereign", "icon": "🛡️", "title": "SOVEREIGN STACK", "items": [
+      {"name":"Ollama 0.17.1+ (toolbox)","desc":"Local LLM runner","cmd":"toolbox run --container tinker bash -c \"curl -fsSL https://ollama.com/install.sh | sh\"","type":"toolbox"},
+      {"name":"Open WebUI","desc":"Browser UI — port 3000","cmd":"flatpak install -y flathub io.github.openwebui.open_webui","type":"flatpak"},
+      {"name":"LocalSend","desc":"Sovereign LAN file transfer","cmd":"flatpak install -y flathub org.localsend.localsend_app","type":"flatpak"},
+      {"name":"Tailscale","desc":"Mesh VPN — cluster access","cmd":"rpm-ostree install tailscale && sudo systemctl enable --now tailscaled","type":"ostree"},
+      {"name":"Whisper STT (toolbox)","desc":"Local speech recognition","cmd":"toolbox run --container tinker bash -c \"pip install openai-whisper\"","type":"toolbox"},
+      {"name":"Piper TTS (toolbox)","desc":"Local TTS","cmd":"toolbox run --container tinker bash -c \"pip install piper-tts\"","type":"toolbox"}
+    ]},
+    {"use":"companions","id":"b-companions"},
+    {"id": "b-gaming", "icon": "🎮", "title": "GAMING (BAZZITE NATIVE)", "items": [
+      {"name":"Steam","desc":"Pre-installed on Bazzite — verify active","cmd":"# Pre-installed. Verify: flatpak list | grep Steam","type":"flatpak"},
+      {"name":"MangoHud","desc":"Pre-installed on Bazzite","cmd":"# Pre-installed on Bazzite","type":"flatpak"},
+      {"name":"Gamescope","desc":"Pre-installed on Bazzite","cmd":"# Pre-installed on Bazzite","type":"flatpak"},
+      {"name":"Decky Loader","desc":"Plugin loader — pre-installed","cmd":"# Pre-installed on Bazzite","type":"flatpak"},
+      {"name":"ProtonUp-Qt","desc":"Manage Proton-GE builds","cmd":"flatpak install -y flathub net.davidotek.pupgui2","type":"flatpak"},
+      {"name":"Heroic Launcher","desc":"Epic / GOG / Amazon","cmd":"flatpak install -y flathub com.heroicgameslauncher.hgl","type":"flatpak"},
+      {"name":"Bottles","desc":"Wine bottle manager","cmd":"flatpak install -y flathub com.usebottles.bottles","type":"flatpak"},
+      {"name":"Lutris","desc":"Unified game manager","cmd":"flatpak install -y flathub net.lutris.Lutris","type":"flatpak"},
+      {"name":"RetroArch","desc":"Multi-system emulator","cmd":"flatpak install -y flathub org.libretro.RetroArch","type":"flatpak"},
+      {"name":"RPCS3 (PS3)","desc":"PlayStation 3 emulator","cmd":"flatpak install -y flathub net.rpcs3.RPCS3","type":"flatpak"},
+      {"name":"PCSX2 (PS2)","desc":"PS2 emulator","cmd":"flatpak install -y flathub net.pcsx2.PCSX2","type":"flatpak"},
+      {"name":"Dolphin (GC/Wii)","desc":"Nintendo emulator","cmd":"flatpak install -y flathub org.DolphinEmu.dolphin-emu","type":"flatpak"},
+      {"name":"Ryujinx (Switch)","desc":"Switch emulator","cmd":"flatpak install -y flathub org.ryujinx.Ryujinx","type":"flatpak"},
+      {"name":"PPSSPP (PSP)","desc":"PSP emulator","cmd":"flatpak install -y flathub org.ppsspp.PPSSPP","type":"flatpak"},
+      {"name":"DuckStation (PS1)","desc":"Best PS1 emu","cmd":"flatpak install -y flathub org.duckstation.DuckStation","type":"flatpak"},
+      {"name":"Antimicrox","desc":"Controller → keyboard mapper","cmd":"flatpak install -y flathub io.github.antimicrox.antimicrox","type":"flatpak"},
+      {"name":"Flatseal","desc":"Flatpak permission manager","cmd":"flatpak install -y flathub com.github.tchx84.Flatseal","type":"flatpak"}
+    ]},
+    {"id": "b-audio", "icon": "🔊", "title": "AUDIO / DAW / SYNTHS", "items": [
+      {"name":"Ardour 8","desc":"Pro Linux DAW — layer via rpm-ostree","cmd":"rpm-ostree install ardour","type":"ostree"},
+      {"name":"LMMS","desc":"Beat production","cmd":"flatpak install -y flathub io.lmms.LMMS","type":"flatpak"},
+      {"name":"Zrythm","desc":"Modern FOSS DAW","cmd":"flatpak install -y flathub org.zrythm.Zrythm","type":"flatpak"},
+      {"name":"Audacity","desc":"Audio editor","cmd":"flatpak install -y flathub org.audacityteam.Audacity","type":"flatpak"},
+      {"name":"Mixxx","desc":"DJ software — T1NK3R.FM","cmd":"flatpak install -y flathub org.mixxx.Mixxx","type":"flatpak"},
+      {"name":"EasyEffects","desc":"PipeWire audio effects","cmd":"flatpak install -y flathub com.github.wwmm.easyeffects","type":"flatpak"},
+      {"name":"Surge XT","desc":"Hybrid wavetable synth","cmd":"flatpak install -y flathub org.surge_synth_team.surge-xt","type":"flatpak"},
+      {"name":"Hydrogen","desc":"Drum machine / sequencer","cmd":"flatpak install -y flathub org.hydrogenmusic.Hydrogen","type":"flatpak"},
+      {"name":"Sonobus","desc":"P2P audio streaming","cmd":"flatpak install -y flathub net.sonobus.SonoBus","type":"flatpak"}
+    ]},
+    {"id": "b-rocm", "icon": "🔴", "title": "ROCm / AMD GPU (rpm-ostree)", "items": [
+      {"name":"ROCm (layer — needs reboot)","desc":"AMD GPU compute — REBOOT REQUIRED after this step","cmd":"rpm-ostree install rocm-opencl rocm-hip","type":"ostree"},
+      {"name":"HSA Override (RX 6600)","desc":"RDNA2 GFX version fix","cmd":"echo \"export HSA_OVERRIDE_GFX_VERSION=10.3.0\" >> ~/.bashrc","type":"manual"}
+    ]},
+    {"id": "b-apps", "icon": "🎨", "title": "APPS / TOOLS", "items": [
+      {"name":"VS Code","desc":"Primary editor","cmd":"flatpak install -y flathub com.visualstudio.code","type":"flatpak"},
+      {"name":"Obsidian","desc":"Markdown PKM — Tinker-Verse vault","cmd":"flatpak install -y flathub md.obsidian.Obsidian","type":"flatpak"},
+      {"name":"Blender","desc":"3D modeling — VIGA/Modly","cmd":"flatpak install -y flathub org.blender.Blender","type":"flatpak"},
+      {"name":"Krita","desc":"Digital painting","cmd":"flatpak install -y flathub org.kde.krita","type":"flatpak"},
+      {"name":"OBS Studio","desc":"Streaming & recording","cmd":"flatpak install -y flathub com.obsproject.Studio","type":"flatpak"},
+      {"name":"Kdenlive","desc":"NLE video editor","cmd":"flatpak install -y flathub org.kde.kdenlive","type":"flatpak"},
+      {"name":"LocalSend","desc":"LAN file transfer","cmd":"flatpak install -y flathub org.localsend.localsend_app","type":"flatpak"},
+      {"name":"Tailscale","desc":"Mesh VPN","cmd":"rpm-ostree install tailscale","type":"ostree"},
+      {"name":"VLC","desc":"Media player","cmd":"flatpak install -y flathub org.videolan.VLC","type":"flatpak"},
+      {"name":"FreeTube","desc":"Privacy YouTube client","cmd":"flatpak install -y flathub io.freetubeapp.FreeTube","type":"flatpak"},
+      {"name":"Spotify","desc":"Music streaming","cmd":"flatpak install -y flathub com.spotify.Client","type":"flatpak"},
+      {"name":"OrcaSlicer","desc":"Bambu P1S slicer","cmd":"flatpak install -y flathub com.softfever.OrcaSlicer","type":"flatpak"}
+    ]},
+    {"id": "b-creai", "icon": "🤖", "title": "CREATIVE AI / ACE STACK", "items": [
+      {"name":"ComfyUI (toolbox)","desc":"Node-based SD — inside toolbox container","cmd":"toolbox run --container tinker bash -c \"git clone https://github.com/comfyanonymous/ComfyUI.git ~/comfyui && cd ~/comfyui && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt\"","type":"toolbox"},
+      {"name":"ACE-Step UI (toolbox)","desc":"ACE music gen — toolbox","cmd":"toolbox run --container tinker bash -c \"git clone https://github.com/ace-step/ACE-Step.git ~/ace-step && cd ~/ace-step && pip install -r requirements.txt\"","type":"toolbox"},
+      {"name":"FreeMoCap (toolbox)","desc":"Markerless mocap — ACE Visual","cmd":"toolbox run --container tinker bash -c \"pip install freemocap\"","type":"toolbox"},
+      {"name":"InvokeAI (toolbox)","desc":"Clean SD interface","cmd":"toolbox run --container tinker bash -c \"pip install InvokeAI\"","type":"toolbox"},
+      {"name":"text-generation-webui (toolbox)","desc":"Oobabooga local model UI","cmd":"toolbox run --container tinker bash -c \"git clone https://github.com/oobabooga/text-generation-webui.git && cd text-generation-webui && pip install -r requirements.txt\"","type":"toolbox"},
+      {"name":"Diffusers (toolbox)","desc":"HuggingFace AI image library","cmd":"toolbox run --container tinker bash -c \"pip install diffusers transformers accelerate safetensors\"","type":"toolbox"}
+    ]},
+    {"id": "b-homelab", "icon": "🏠", "title": "HOMELAB / SELF-HOSTED", "items": [
+      {"name":"Docker CE (toolbox)","desc":"Container engine inside toolbox","cmd":"toolbox run --container tinker bash -c \"curl -fsSL https://get.docker.com | sh\"","type":"toolbox"},
+      {"name":"Portainer","desc":"Docker web UI","cmd":"flatpak install -y flathub io.portainer.Portainer || docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce","type":"flatpak"},
+      {"name":"Jellyfin","desc":"Local media server — T1NK3R.TV","cmd":"flatpak install -y flathub com.github.iwalton3.jellyfin-media-player","type":"flatpak"},
+      {"name":"Uptime Kuma","desc":"Monitoring dashboard","cmd":"toolbox run --container tinker bash -c \"docker run -d -p 3002:3001 --name uptime-kuma louislam/uptime-kuma:1\"","type":"toolbox"},
+      {"name":"LocalSend","desc":"LAN sovereign file transfer","cmd":"flatpak install -y flathub org.localsend.localsend_app","type":"flatpak"},
+      {"name":"Kiwix Desktop","desc":"Offline Wikipedia/ZIM — Tinker Hands","cmd":"flatpak install -y flathub org.kiwix.desktop","type":"flatpak"}
+    ]},
+    {"id": "b-upgrades", "icon": "⬆️", "title": "UPGRADES / SYSTEM UPDATES", "items": [
+      {"name":"rpm-ostree Upgrade","desc":"Full system layer upgrade — needs reboot","cmd":"rpm-ostree upgrade","type":"ostree"},
+      {"name":"Flatpak Update All","desc":"Update all Flatpak apps","cmd":"flatpak update -y","type":"manual"},
+      {"name":"Toolbox packages update","desc":"Update all toolbox container packages","cmd":"toolbox run --container tinker bash -c \"sudo dnf upgrade -y\"","type":"toolbox"},
+      {"name":"Ollama Upgrade (toolbox)","desc":"Reinstall latest Ollama in toolbox","cmd":"toolbox run --container tinker bash -c \"curl -fsSL https://ollama.com/install.sh | sh\"","type":"toolbox"},
+      {"name":"Claude Code Upgrade","desc":"Upgrade Hermes CLI in toolbox","cmd":"toolbox run --container tinker bash -c \"npm update -g @anthropic-ai/claude-code\"","type":"toolbox"},
+      {"name":"Gemini CLI Upgrade","desc":"Upgrade in toolbox","cmd":"toolbox run --container tinker bash -c \"npm update -g @google/gemini-cli\"","type":"toolbox"}
+    ]},
+    {"id": "b-crosstech", "icon": "🔗", "title": "CROSS-TECH EXTENSIONS", "items": [
+      {"name":"OpenRouter env load","desc":"Source OR key from config file","cmd":"echo \"source ~/.config/tinker-verse/openrouter.env\" >> ~/.bashrc && source ~/.bashrc","type":"manual"},
+      {"name":"HSA ROCm env permanent","desc":"AMD RX 6600 GFX version fix in bashrc","cmd":"echo \"export HSA_OVERRIDE_GFX_VERSION=10.3.0\" >> ~/.bashrc && source ~/.bashrc","type":"manual"},
+      {"name":"Tailscale mesh join","desc":"Join T1NK3R cluster mesh","cmd":"sudo tailscale up","type":"manual"},
+      {"name":"CachyOS SSH alias","desc":"Quick SSH to CachyOS main rig","cmd":"echo \"alias cachy='ssh tinkerv@192.168.1.138'\" >> ~/.bashrc && source ~/.bashrc","type":"manual"},
+      {"name":"Pi5 SSH alias","desc":"Quick SSH to Pi5 anchor node","cmd":"echo \"alias pi5='ssh tinkerv@192.168.1.110'\" >> ~/.bashrc && source ~/.bashrc","type":"manual"},
+      {"name":"CLAUDE.md sync from Ventoy","desc":"Copy context files to project dir","cmd":"mkdir -p ~/tinker-verse && cp /run/media/$USER/Ventoy/float/New\\ Folder/tinker-verse/CLAUDE.md ~/tinker-verse/ && cp /run/media/$USER/Ventoy/float/New\\ Folder/tinker-verse/tinker.md ~/tinker-verse/","type":"manual"},
+      {"name":"toolbox enter alias","desc":"Quick drop into tinker container","cmd":"echo \"alias tinker='toolbox enter tinker'\" >> ~/.bashrc && source ~/.bashrc","type":"manual"}
+    ]}
+  ]
+}

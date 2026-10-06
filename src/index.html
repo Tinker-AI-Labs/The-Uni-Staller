@@ -480,25 +480,27 @@
 
 
 <script src="tauri-bridge.js"></script>
+<script src="data-loader.js"></script>
 <script src="jumpstart-engine.js"></script>
 <script src="app.js"></script>
 <script>
-// Run OS/arch detection now that both script files and the DOM are ready.
+// Run OS/arch detection once the data files have loaded and every tab has
+// rendered (dataReady is defined in jumpstart-engine.js and never rejects).
 // (Previously defined but never called anywhere — this was the actual
 // cause of "Detecting OS..." never resolving.)
-if (typeof window.detectOS === 'function') {
-  window.detectOS();
-} else if (typeof switchTab === 'function') {
-  switchTab('win');
-}
-
 // URL anchor support — #win #cachy #bazzite #fedora #ubuntu #arch
 // #android open that tab instead of the detected one.
 function tabFromHash() {
   const id = (location.hash || '').replace('#', '');
   if (id && typeof allTabs !== 'undefined' && allTabs.includes(id)) switchTab(id);
 }
-tabFromHash();
+dataReady.then(() => {
+  if (typeof window.detectOS === 'function') {
+    return window.detectOS();
+  } else if (typeof switchTab === 'function') {
+    switchTab('win');
+  }
+}).then(tabFromHash);
 window.addEventListener('hashchange', tabFromHash);
 
 // GAP-FILL COMPANION — generalized to any OS that has one wired in
