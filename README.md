@@ -42,6 +42,8 @@ The app now covers seven targets: Windows (Tiny11), CachyOS, Bazzite, Fedora, Ub
 ```
 src/
   index.html            — 7 OS tab structure, OpenRouter panel, gap-fill panels, header
+  guide.js              — the guided front screen (wings, need rooms, review/preview/install)
+  data/needs.json       — wings and needs for the guide; points at existing items by name
   data-loader.js        — merges + validates src/data/*.json (shared by the app and scripts/verify-data.js)
   data/base.json        — JUMPSTART items / CATS blocks shared byte-for-byte by 2+ OS tabs
   data/<os>.json        — each OS's own JUMPSTART + CATS (pulls shared blocks in with {"use":"<key>","id":"…"})
@@ -79,6 +81,19 @@ build-rpm-local.sh        .rpm                build-windows-local.ps1 .msi + .ex
 build-arch-local.sh       .pkg.tar.zst        build-windows-local.sh  .msi + .exe (WSL)
 build-flatpak-local.sh    .flatpak
 ```
+
+## The guided front screen
+
+The app opens on **“What do you want to do?”**. It detects your system (the picker lets you override it),
+groups needs into campus wings (The Shop, Art Studio, Music Hall, Central Library, Computer Lab, Media Theater,
+The Gatehouse), and shows a couple of real options per need as side-by-side cards. Nothing is preselected.
+Raw commands stay behind **View script**. Review → **Preview (dry run)** → **Install** gives per-item progress,
+readable errors and per-item retry; AUR packages are skipped unless you allow them. “Browse full catalog” (header)
+opens the original power-user tabs, which share the same selections. In a plain browser there is no installer: use
+View script, then copy or save the script.
+
+`src/data/needs.json` only *points at* items that already exist in the per-OS data; `npm run verify-needs` checks
+every pointer resolves and prints which options each OS shows.
 
 ## Data
 

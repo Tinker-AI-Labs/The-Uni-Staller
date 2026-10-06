@@ -40,6 +40,10 @@ function switchTab(os) {
   });
 
   if (typeof updateCount === 'function') updateCount();
+  // Only the current system's tab is shown (CSS: body.os-locked); the system
+  // picker is the manual override. The guide re-renders for the new system.
+  document.body.classList.add('os-locked');
+  if (typeof window.onSystemChanged === 'function') window.onSystemChanged(os);
 }
 window.switchTab = switchTab;
 
@@ -77,7 +81,7 @@ if (IS_TAURI) {
       archBadge.textContent = String(detectedArch).toUpperCase();
     }
     if (banner) {
-      banner.className = 'detect-banner ' + detectedOS;
+      banner.className = 'detect-banner advanced-only ' + detectedOS;
       const available = (tauriPkgManagers || []).filter(p => p.available).map(p => p.name);
       banner.textContent = 'Detected: ' + detectedOS.toUpperCase() +
         (available.length ? ' — package managers: ' + available.join(', ') : '');
@@ -90,6 +94,8 @@ if (IS_TAURI) {
 
   // Install progress listener
   EVENT.listen('install-progress', (event) => {
+    // The guide shows per-item progress; fall back to the raw terminal otherwise.
+    if (typeof window.onInstallProgress === 'function') { window.onInstallProgress(event.payload); return; }
     const { step, status, output } = event.payload;
     appendToTerminal(step, status, output);
   });
@@ -124,7 +130,7 @@ if (!IS_TAURI) {
       archBadge.textContent = detectedArch.toUpperCase();
     }
     if (banner) {
-      banner.className = 'detect-banner ' + detectedOS;
+      banner.className = 'detect-banner advanced-only ' + detectedOS;
       banner.textContent = 'Detected from browser: ' + detectedOS.toUpperCase() +
         ' — package managers are not probed outside the Tauri app. Switch tabs freely.';
     }

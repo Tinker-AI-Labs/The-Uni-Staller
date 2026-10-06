@@ -218,16 +218,20 @@ function collectCatItems(os) {
   return items;
 }
 
+// Script text for the current selection on one OS tab (no DOM side effects).
+function scriptFor(os) {
+  if (os==='win') return genWin();
+  if (os==='cachy') return genCachy();
+  if (os==='bazzite') return genBazzite();
+  if (os==='fedora') return genFedora();
+  if (os==='ubuntu') return genUbuntu();
+  if (os==='arch') return genArch();
+  if (os==='android') return genAndroid();
+  return `# Unknown OS tab: ${os}`;
+}
+
 function generateScript(os) {
-  let script='';
-  if (os==='win') script=genWin();
-  else if (os==='cachy') script=genCachy();
-  else if (os==='bazzite') script=genBazzite();
-  else if (os==='fedora') script=genFedora();
-  else if (os==='ubuntu') script=genUbuntu();
-  else if (os==='arch') script=genArch();
-  else if (os==='android') script=genAndroid();
-  else script = `# Unknown OS tab: ${os}`;
+  const script = scriptFor(os);
   const codeEl = document.getElementById(`code-${os}`);
   if (codeEl) codeEl.textContent = script;
   const p = document.getElementById(`out-${os}`);

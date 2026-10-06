@@ -6,7 +6,8 @@
 <title>T1NK3R-V3R53 // UNI-STALLER</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="mode-guide">
+<a class="skip-link" href="#guide">Skip to the guide</a>
 <header>
   <div>
     <div class="logo">T1NK3R<span>.</span>TRIBOOT</div>
@@ -17,13 +18,33 @@
     <span id="osBadge" class="os-badge unknown">DETECTING...</span>
     <span id="archBadge" class="os-badge unknown">DETECTING ARCH...</span>
     <div class="stats"><span class="count" id="totalCount">0</span>SELECTED</div>
+    <button type="button" class="mode-toggle" id="modeToggle" onclick="toggleMode()" aria-pressed="false">Browse full catalog</button>
   </div>
 </header>
 
-<div id="detectBanner" class="detect-banner unknown">Detecting operating system...</div>
+<div id="detectBanner" class="detect-banner unknown advanced-only">Detecting operating system...</div>
+
+<!-- GUIDE: the first screen -->
+<main id="guide" class="guide-view" tabindex="-1">
+  <div id="guideLive" class="sr-only" aria-live="polite" role="status"></div>
+  <section id="guideHome">
+    <h1 class="guide-title" id="guideTitle" tabindex="-1">What do you want to do?</h1>
+    <p class="guide-sub">Pick something you’d like to do. We’ll show a couple of good ways to do it. Nothing is chosen for you.</p>
+    <p class="sys-line">Setting up <strong id="sysName">your system</strong> <span id="sysNote"></span>
+      <label for="sysPicker" class="sys-change">Not right? Choose another:</label>
+      <select id="sysPicker" class="sys-picker" onchange="chooseSystem(this.value)"></select></p>
+    <div id="wings"></div>
+  </section>
+  <section id="guideRoom" hidden></section>
+  <section id="guideReview" hidden></section>
+</main>
+<div id="pickTray" class="pick-tray" hidden>
+  <span id="trayCount" aria-live="polite">0 items picked</span>
+  <button type="button" class="btn primary" onclick="openReviewFromTray()">Review &amp; install</button>
+</div>
 
 <!-- OPENROUTER -->
-<div class="or-panel" id="orPanel">
+<div class="or-panel advanced-only" id="orPanel">
   <div class="or-head" onclick="toggleOR()">
     <span style="font-size:20px">🔑</span>
     <div>
@@ -72,7 +93,9 @@
 </div>
 
 <!-- OS TABS -->
-<div class="tab-bar">
+<div class="tab-bar advanced-only">
+  <label for="sysPickerTab" class="sr-only">Choose a different system</label>
+  <select id="sysPickerTab" class="sys-picker tab-picker" onchange="chooseSystem(this.value)"></select>
   <div class="tab win" id="tab-win" onclick="switchTab('win')">
     🪟 TINY11
     <span class="cross-warn" id="cwarn-win"></span>
@@ -472,7 +495,7 @@
 </div>
 
 <!-- ADD ALL BUTTON -->
-<div style="text-align:center;margin:16px 0;">
+<div class="advanced-only" style="text-align:center;margin:16px 0;">
   <button class="generate-btn" style="width:auto;padding:10px 30px;font-size:12px;" onclick="addAll()">
     ☑️ ADD ALL — TAG EVERY OPTION ACROSS ALL OS TABS
   </button>
@@ -483,6 +506,7 @@
 <script src="data-loader.js"></script>
 <script src="jumpstart-engine.js"></script>
 <script src="app.js"></script>
+<script src="guide.js"></script>
 <script>
 // Run OS/arch detection once the data files have loaded and every tab has
 // rendered (dataReady is defined in jumpstart-engine.js and never rejects).
@@ -492,7 +516,7 @@
 // #android open that tab instead of the detected one.
 function tabFromHash() {
   const id = (location.hash || '').replace('#', '');
-  if (id && typeof allTabs !== 'undefined' && allTabs.includes(id)) switchTab(id);
+  if (id && typeof allTabs !== 'undefined' && allTabs.includes(id)) { switchTab(id); setMode('full'); }
 }
 dataReady.then(() => {
   if (typeof window.detectOS === 'function') {

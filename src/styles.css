@@ -2,7 +2,7 @@
 :root {
   --bg:#0e0e0e; --panel:#1a1a1a; --border:#2a2a2a;
   --copper:#b87333; --green:#00ff88; --amber:#ffaa00;
-  --red:#ff4444; --blue:#4a9eff; --purple:#a855f7;
+  --red:#ff4444; --blue:#4a9eff; --purple:#c084fc;
   --cyan:#00e5ff; --win:#0078d4; --cachy:#6bc5f8; --bazzite:#6a5acd; --fedora:#3c6eb4; --ubuntu:#E95420; --arch:#1793D1; --android:#3DDC84; --aarch64:#FF6B35;
   --text:#c8c8c8; --dim:#555;
   --mono:'Share Tech Mono',monospace; --display:'Orbitron',monospace;
@@ -244,3 +244,97 @@ header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
 .copy-btn{margin-top:10px;font-family:var(--mono);font-size:11px;padding:5px 12px;background:transparent;
   border:1px solid var(--green);color:var(--green);cursor:pointer;border-radius:3px;transition:all .15s;}
 .copy-btn:hover{background:rgba(0,255,136,0.08);}
+/* ═══════════════════════════════════════════════════════════════
+   GUIDE (front screen) — accessible contrast, keyboard focus, small windows
+   ═══════════════════════════════════════════════════════════════ */
+[hidden]{display:none !important;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.skip-link{position:absolute;left:8px;top:-60px;background:var(--green);color:#000;padding:8px 12px;z-index:100;border-radius:4px;}
+.skip-link:focus{top:8px;}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+
+/* Mode switching: the guide is the default; the full catalog is behind the header button. */
+body.mode-guide .advanced-only,body.mode-guide .tab-content{display:none !important;}
+body.mode-full .guide-view,body.mode-full .pick-tray{display:none !important;}
+body.os-locked .tab:not(.active){display:none;}
+.tab-picker{margin:0 8px 4px auto;align-self:center;}
+.mode-toggle{font-family:var(--mono);font-size:12px;color:var(--text);background:transparent;border:1px solid var(--copper);border-radius:3px 10px 3px 3px;padding:8px 14px;cursor:pointer;min-height:36px;}
+.mode-toggle:hover{background:#241a10;}
+
+.guide-view{max-width:1000px;margin:0 auto;padding:4px 0 90px;}
+.guide-title{font-family:var(--display);font-size:clamp(20px,4vw,30px);color:#f2f2f2;letter-spacing:1px;margin:8px 0 6px;}
+.guide-sub{color:var(--text);font-size:13px;line-height:1.6;margin:4px 0 10px;max-width:70ch;}
+.sys-line{font-size:13px;color:var(--text);margin:6px 0 18px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;}
+.sys-line strong{color:#fff;}
+.sys-change{color:var(--text);font-size:12px;}
+.sys-picker{font-family:var(--mono);font-size:12px;background:var(--panel);color:var(--text);border:1px solid #5a5a5a;border-radius:3px;padding:6px 8px;min-height:32px;}
+.guide-error{border:1px solid var(--red);padding:12px;border-radius:6px;color:#ffb3b3;}
+
+.wing{margin:0 0 26px;}
+.wing-name{font-family:var(--display);font-size:15px;letter-spacing:1.5px;color:var(--copper);margin:0;}
+.wing-blurb{color:var(--text);font-size:12px;margin:3px 0 10px;max-width:70ch;}
+.need-grid,.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;}
+.need-tile{display:flex;flex-direction:column;gap:4px;text-align:left;font-family:var(--mono);color:var(--text);background:var(--panel);border:1px solid #444;border-radius:4px 12px 4px 4px;padding:14px;cursor:pointer;min-height:96px;position:relative;}
+.need-tile:hover{border-color:var(--copper);background:#211c16;}
+.need-icon{font-size:22px;}
+.need-title{color:#fff;font-size:14px;}
+.need-blurb{font-size:12px;color:var(--text);}
+.need-picked{position:absolute;top:10px;right:10px;font-size:11px;color:#000;background:var(--green);border-radius:10px;padding:1px 8px;}
+
+.link-btn{font-family:var(--mono);font-size:13px;color:var(--cyan);background:none;border:none;cursor:pointer;padding:8px 0;text-decoration:underline;min-height:36px;}
+.link-btn:disabled{opacity:.5;cursor:default;}
+.room-wing{color:var(--copper);font-size:12px;margin-top:6px;}
+.room-title{font-family:var(--display);font-size:clamp(18px,3.4vw,24px);color:#f2f2f2;margin:4px 0 6px;letter-spacing:1px;}
+.opt-card{background:var(--panel);border:1px solid #444;border-radius:4px 12px 4px 4px;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.opt-card.on{border-color:var(--green);background:#10201a;}
+.opt-pick{display:grid;grid-template-columns:28px 1fr;column-gap:10px;text-align:left;font-family:var(--mono);color:var(--text);background:none;border:none;cursor:pointer;padding:2px;min-height:64px;}
+.opt-check{grid-row:1 / span 2;width:24px;height:24px;border:2px solid #888;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#000;font-size:15px;margin-top:2px;}
+.opt-card.on .opt-check{background:var(--green);border-color:var(--green);}
+.opt-label{color:#fff;font-size:15px;}
+.opt-plain{font-size:13px;color:var(--text);line-height:1.5;}
+.opt-notes{margin:0 0 0 38px;padding-left:14px;font-size:12px;color:#ffd27a;}
+.opt-script{margin-left:38px;font-size:12px;}
+.opt-script summary{cursor:pointer;color:var(--cyan);min-height:28px;}
+.opt-script pre,.row-cmd,.script-pre{background:#0a0a0a;border:1px solid #333;border-radius:3px;padding:8px;font-size:12px;color:#d6d6d6;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-width:100%;}
+.script-pre{max-height:360px;overflow:auto;}
+
+.review-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0 12px;}
+.check-line{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text);}
+.check-line input{width:18px;height:18px;}
+.rows{list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 0 14px;}
+.row{display:grid;grid-template-columns:24px 1fr auto;gap:10px;background:var(--panel);border:1px solid #3a3a3a;border-radius:4px;padding:10px;}
+.row-ok{border-color:var(--green);} .row-error{border-color:var(--red);} .row-manual{border-style:dashed;}
+.row-icon{font-size:16px;color:#fff;text-align:center;}
+.row-ok .row-icon{color:var(--green);} .row-error .row-icon{color:var(--red);}
+.row-name{color:#fff;font-size:14px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.row-desc,.row-how{font-size:12px;color:var(--text);margin-top:2px;}
+.row-err{color:#ffb3b3;font-size:13px;margin-top:6px;}
+.row details{font-size:12px;margin-top:4px;} .row summary{cursor:pointer;color:var(--cyan);}
+.row-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-size:12px;}
+.row-status{color:#fff;}
+.btn,.btn-small{font-family:var(--mono);color:var(--text);background:var(--panel);border:1px solid #6a6a6a;border-radius:3px 10px 3px 3px;cursor:pointer;}
+.btn{padding:10px 16px;font-size:13px;min-height:44px;} .btn-small{padding:5px 10px;font-size:12px;min-height:30px;}
+.btn:hover,.btn-small:hover{border-color:var(--copper);}
+.btn.primary{background:var(--green);color:#000;border-color:var(--green);}
+.btn.quiet,.btn-small.quiet{border-color:#444;}
+.btn:disabled,.btn-small:disabled{opacity:.45;cursor:not-allowed;}
+.action-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0;}
+.script-box{margin:10px 0;} .script-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:#fff;}
+.summary{margin:12px 0;color:#fff;font-size:14px;}
+
+.pick-tray{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px;background:#141414;border-top:1px solid var(--copper);color:#fff;z-index:50;}
+
+/* Contrast: the old dim grey (#555 on #0e0e0e) is under 3:1; lift it for readable secondary text. */
+:root{--dim:#8f8f8f;}
+
+@media (max-width:640px){
+  body{padding:10px;font-size:14px;}
+  header{padding:12px;}
+  .row{grid-template-columns:20px 1fr;}
+  .row-side{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;flex-wrap:wrap;}
+  .opt-script,.opt-notes{margin-left:0;}
+  .mode-toggle,.btn{width:100%;}
+  .pick-tray{flex-direction:column;align-items:stretch;}
+  .tab-picker{margin-left:0;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;scroll-behavior:auto !important;}}

@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "_note": "The guided front screen. Wings group needs; each option points at items that already exist in the per-OS data (match is by exact item name; a 'js:' prefix means the JUMPSTART list, otherwise CATS). 'items' maps an OS id, or '*' for every OS; an OS with no entry (and no '*') simply doesn't show that option. Nothing here adds an app: it only describes and points.",
+  "wings": [
+    {"id":"shop","icon":"🛠️","name":"The Shop","guide":"Coach","blurb":"Coach says: pick one thing, make it real. Start small, then print something."},
+    {"id":"studio","icon":"🎨","name":"Art Studio","guide":"Solace","blurb":"Solace keeps the lights low and the brushes out: pictures and video live here."},
+    {"id":"music","icon":"🎵","name":"Music Hall","guide":"Spark","blurb":"Spark has an idea for a tune. Record it, build it, or mix it down."},
+    {"id":"library","icon":"📚","name":"Central Library","guide":"Sage","blurb":"Sage tends the stacks: your notes, documents and files, kept in order."},
+    {"id":"lab","icon":"🧪","name":"Computer Lab","guide":"Alfred","blurb":"Alfred keeps the lab warm. Pick a helper that lives on your own computer, or an editor to build with."},
+    {"id":"theater","icon":"🎬","name":"Media Theater","guide":"Tink","blurb":"Tink has good eyes for this: something to play your videos and music."},
+    {"id":"gate","icon":"🔐","name":"The Gatehouse","guide":"Steward","blurb":"Steward watches the gate: a private way to reach your own devices from anywhere."}
+  ],
+  "needs": [
+    {"id":"print3d","wing":"shop","icon":"🖨️","title":"Print something in 3D","blurb":"Get a model ready for your printer.",
+     "options":[
+       {"id":"orca","label":"OrcaSlicer","plain":"Gets 3D models ready to print, with good presets for many printers.","items":{"*":["OrcaSlicer"]}},
+       {"id":"prusa","label":"PrusaSlicer","plain":"A long-established slicer that works with many printers.","items":{"*":["PrusaSlicer"]}}
+     ]},
+    {"id":"model3d","wing":"shop","icon":"🧊","title":"Design my own 3D models","blurb":"Sculpt, model or draw up parts.",
+     "options":[
+       {"id":"blender","label":"Blender","plain":"Sculpt, model and animate 3D scenes.","items":{"*":["Blender"]}},
+       {"id":"freecad","label":"FreeCAD","plain":"Precise, measured parts, the kind you build or print.","items":{"*":["FreeCAD"]}}
+     ]},
+    {"id":"photos","wing":"studio","icon":"🖼️","title":"Edit photos and drawings","blurb":"Touch up pictures or paint from scratch.",
+     "options":[
+       {"id":"gimp","label":"GIMP","plain":"Retouch and edit photos.","items":{"*":["GIMP"]}},
+       {"id":"krita","label":"Krita","plain":"Paint and draw, built for artists.","items":{"*":["Krita"]}}
+     ]},
+    {"id":"video","wing":"studio","icon":"🎥","title":"Record or edit video","blurb":"Capture your screen or cut clips together.",
+     "options":[
+       {"id":"obs","label":"OBS Studio","plain":"Record your screen or stream live.","items":{"*":["OBS Studio"]}},
+       {"id":"kdenlive","label":"Kdenlive","plain":"Cut and arrange video clips.","items":{"*":["Kdenlive"]}},
+       {"id":"davinci","label":"DaVinci Resolve","plain":"Professional video editing and colour work.","items":{"win":["DaVinci Resolve"]}}
+     ]},
+    {"id":"music","wing":"music","icon":"🎹","title":"Make music","blurb":"Record, sequence or build beats.",
+     "options":[
+       {"id":"ardour","label":"Ardour","plain":"Record and mix music like a small studio.","items":{"cachy":["Ardour 8"],"bazzite":["Ardour 8"],"fedora":["Ardour"],"ubuntu":["Ardour"],"arch":["Ardour"]}},
+       {"id":"lmms","label":"LMMS","plain":"Build songs and beats from loops and synths.","items":{"*":["LMMS"]}},
+       {"id":"audacity","label":"Audacity","plain":"Record and clean up audio.","items":{"win":["Audacity"]}}
+     ]},
+    {"id":"notes","wing":"library","icon":"📝","title":"Take notes and write documents","blurb":"Somewhere to put your thinking.",
+     "options":[
+       {"id":"obsidian","label":"Obsidian","plain":"Notes that link together, kept as plain files on your computer.","items":{"*":["Obsidian"],"android":["Obsidian for Android"],"arch":[]}},
+       {"id":"libreoffice","label":"LibreOffice","plain":"Documents, spreadsheets and slides; opens Microsoft Office files.","items":{"*":["LibreOffice"],"arch":["LibreOffice (stable)"]}},
+       {"id":"joplin","label":"Joplin","plain":"A simple notebook app that can sync between devices.","items":{"arch":["Joplin"]}}
+     ]},
+    {"id":"sync","wing":"library","icon":"🔄","title":"Keep my files in sync","blurb":"The same files on all your devices.",
+     "options":[
+       {"id":"syncthing","label":"Syncthing","plain":"Keeps folders in sync directly between your devices, no account needed.","items":{"fedora":["Syncthing"],"ubuntu":["Syncthing"],"arch":["Syncthing"],"android":["Syncthing-Fork"]}},
+       {"id":"nextcloud","label":"Nextcloud","plain":"Your own cloud storage you run yourself (more setup).","items":{"win":["Nextcloud AIO"],"cachy":["Nextcloud AIO"],"fedora":["Nextcloud AIO"],"ubuntu":["Nextcloud AIO"],"arch":["Nextcloud"]}}
+     ]},
+    {"id":"ai","wing":"lab","icon":"🤖","title":"Chat with an AI that stays on my computer","blurb":"A helper that works offline, with nothing sent to the cloud.",
+     "options":[
+       {"id":"alfred","label":"Alfred","plain":"The all-rounder, a bigger model that wants a reasonably capable computer.","items":{"*":["js:Ollama 0.17.1+","js:Alfred → qwen3:8b"],"android":[]}},
+       {"id":"scout","label":"Scout","plain":"Small and quick, a lighter download that suits modest computers.","items":{"*":["js:Ollama 0.17.1+","js:Scout → llama3.2:3b"],"android":["js:tur-repo (extra packages)","js:Ollama (tur-repo)","js:Scout → llama3.2:3b"]}}
+     ]},
+    {"id":"code","wing":"lab","icon":"⌨️","title":"Write code","blurb":"An editor to build things in.",
+     "options":[
+       {"id":"vscode","label":"VS Code","plain":"A friendly code editor with lots of extensions.","items":{"*":["VS Code"],"arch":["Code - OSS"],"android":[]}},
+       {"id":"neovim","label":"Neovim","plain":"A fast editor you drive from the keyboard, in the terminal.","items":{"*":["Neovim"]}}
+     ]},
+    {"id":"watch","wing":"theater","icon":"📺","title":"Watch videos and play music","blurb":"A player for the files you already have.",
+     "options":[
+       {"id":"vlc","label":"VLC","plain":"Plays almost any video or audio file.","items":{"*":["VLC"],"android":["VLC for Android"]}},
+       {"id":"mpv","label":"mpv","plain":"A minimal, fast player controlled from the keyboard.","items":{"*":["mpv"],"android":["mpv-android"]}}
+     ]},
+    {"id":"connect","wing":"gate","icon":"🛡️","title":"Reach my devices from anywhere, privately","blurb":"A secure link between your own machines.",
+     "options":[
+       {"id":"tailscale","label":"Tailscale","plain":"Links your devices into one private network with an easy sign-in.","items":{"*":["Tailscale"],"android":["js:Tailscale (Play Store)"]}},
+       {"id":"wireguard","label":"WireGuard","plain":"A fast, simple VPN tunnel that you set up yourself.","items":{"win":["WireGuard"],"fedora":["WireGuard tools"],"ubuntu":["WireGuard tools"],"arch":["WireGuard tools"]}}
+     ]}
+  ]
+}
